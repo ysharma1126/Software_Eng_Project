@@ -1,0 +1,19 @@
+.root {
+}
+
+.label {
+	-fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+#welcome-text {
+	-fx-font-size: 32px;
+}
+
+#actiontarget {
+	-fx-fill: FIREBRICK;
+}
+
+.button {
+	-fx-font-family: "Arial Narrow";
+}
