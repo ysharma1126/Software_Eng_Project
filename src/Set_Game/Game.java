@@ -1,5 +1,6 @@
 package Set_Game;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -77,9 +78,12 @@ public class Game {
 				Card b = cards.get(j);
 				for (int k = 0; k < size; k++) {
 					Card c = cards.get(k);
-					if (validateSet(a,b,c)) {
+					ArrayList <Card> temp = new ArrayList <Card>();
+					temp.addAll(Arrays.asList(a,b,c));
+					if (validateSet(temp)) {
 						return true;
 					}
+					temp.clear();
 				}
 			}
 		}
