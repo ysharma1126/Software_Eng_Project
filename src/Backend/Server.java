@@ -1,7 +1,8 @@
 package Backend;
+import Set_Game.*;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Collections;
 import java.net.*;
 import java.io.*;
@@ -45,7 +46,7 @@ public class Server {
 	}
 	*/
 
-	static Set<Socket> connected_players = null;
+	static Map<Player, Socket> connected_players = null;
 	static int portNumber;
 
 	public static void main(String[] args) throws IOException {
@@ -54,7 +55,7 @@ public class Server {
 			System.exit(1);
 		}
 
-		connected_players = Collections.synchronizedSet(new HashSet<Socket>());
+		connected_players = Collections.synchronizedMap(new HashMap<Player,Socket>());
 		portNumber = Integer.parseInt(args[0]);
         Thread clientListener = new Thread(new clientListenerThread(), "clientListener");
         clientListener.setDaemon(true);
