@@ -1,8 +1,13 @@
-package Set_Game;
+package Backend;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Collections;
+import java.net.*;
+import java.io.*;
 /**
- * Handles actually playing the game set.
- * @author ysharma1126
+ * Server handles communication with clients and spawning threads to handle communication with the players
+ * @author Shalin
  *
  */
 public class Server {
@@ -16,8 +21,9 @@ public class Server {
 	 * @param	p	Players who have entered this game
 	 *
 	 */
-	public void play(ArrayList <Player> p) {
+	/* TODO: commented out temporarily to avoid errors
 		
+	public void play(ArrayList <Player> p) {
 		Game game = new Game();
 		ArrayList <Card> deck = game.createDeck();
 		ArrayList <Card> table = new ArrayList <Card>();
@@ -35,7 +41,42 @@ public class Server {
 				}
 			}
 		}
-		//Push/Send game/player stats to DB/client
+		// Push/Send game/player stats to DB/client
 	}
+	*/
 
+	static Set<Socket> connected_players = null;
+	static int portNumber;
+
+	public static void main(String[] args) throws IOException {
+		if (args.length != 1){
+			System.err.print("Usage: java Server <port Number>");
+			System.exit(1);
+		}
+
+		connected_players = Collections.synchronizedSet(new HashSet<Socket>());
+		portNumber = Integer.parseInt(args[0]);
+        Thread clientListener = new Thread(new clientListenerThread(), "clientListener");
+        clientListener.setDaemon(true);
+        clientListener.start();
+        while(true){
+        	// DO STUFF
+        }
+    }
+	
+	static class clientListenerThread implements Runnable {
+		public void run(){
+	        try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
+	        	while(true){
+	    			Socket s = serverSocket.accept();
+	    			Thread t = new Thread(new PlayerThread(s));
+	    			t.start();
+				}
+		    } catch (IOException e) {
+	            System.err.println("Could not listen on port " + portNumber);
+	            System.exit(-1);
+	        }
+		}
+	}
+	
 }
