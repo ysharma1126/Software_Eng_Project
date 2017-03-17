@@ -34,9 +34,7 @@ public class Game {
 	/**
 	 * Checks to see if a card trio is a set
 	 * @author		ysharma1126
-	 * @param	a	card in question 
-	 * @param	b	card in question
-	 * @param	c	card in question
+	 * @param	set	card trio in question
 	 * @return		boolean representing whether the card trio is a set
 	 *
 	 */
