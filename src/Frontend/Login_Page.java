@@ -86,11 +86,18 @@ public class Login_Page extends Application {
 	        
 	      PasswordField pwBox = new PasswordField();
 	      grid.add(pwBox, 1, 2);  
-	        
-	      Button btn = new Button("Sign in");
+	      
+	      
+	      Button sign_up_btn = new Button("Sign up");
+	      HBox hbSignUpBtn = new HBox(10);
+	      hbSignUpBtn.setAlignment(Pos.BOTTOM_LEFT);
+	      hbSignUpBtn.getChildren().add(sign_up_btn);
+	      grid.add(hbSignUpBtn, 1, 4);
+	      
+	      Button sign_in_btn = new Button("Sign in");
 	      HBox hbBtn = new HBox(10);
 	      hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-	      hbBtn.getChildren().add(btn);
+	      hbBtn.getChildren().add(sign_in_btn);
 	        
 	      grid.add(hbBtn, 1, 4);
 	      //grid.setGridLinesVisible(true);
@@ -99,7 +106,7 @@ public class Login_Page extends Application {
 	      actiontarget.setId("actiontarget");
 	      grid.add(actiontarget, 1, 6);
 	                
-	      btn.setOnAction(new EventHandler<ActionEvent>(){
+	      sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
 	        @Override
 	        public void handle(ActionEvent e) {
 	          Sendable send_msg = new Login_Message(userTextField.getText(), pwBox.getText());
@@ -131,8 +138,7 @@ public class Login_Page extends Application {
 	      primaryStage.setScene(scene);
 	      scene.getStylesheets().add
 	          (Frontend.Login_Page.class.getResource("Login.css").toExternalForm());
-	      primaryStage.show();
-	            
+	      primaryStage.show();     
 	    } catch (ConnectException e1) {
           System.err.println("Did not enter in proper server address/portnumber!");
         } catch (UnknownHostException e1) {
