@@ -9,7 +9,7 @@ public class MenuBar extends HBox {
   public MenuBar() {
     this.getStyleClass().add("menubar");
     Button button1 = new Button("+");
-    Button button2 = new Button("hello");
+    Button button2 = new Button("+");
     button1.getStyleClass().add("btn-menu");
     button2.getStyleClass().add("btn-menu");
     this.setSpacing(10);

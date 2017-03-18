@@ -10,11 +10,10 @@ import javafx.scene.layout.VBox;
 public class Lobby extends BorderPane {
   
   private HBox menu;
-  private GridPane gamebrowser;
-  private GridPane userlist;
+  private GridPane main;
   
+
   public Lobby() {
-    gamebrowser = new ListView<String>();
     // TODO Auto-generated constructor stub
   }
   
@@ -27,5 +26,7 @@ public class Lobby extends BorderPane {
     super(center, top, right, bottom, left);
     // TODO Auto-generated constructor stub
   }
+  
+  
 
 }

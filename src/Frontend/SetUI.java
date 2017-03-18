@@ -1,4 +1,5 @@
 package Frontend;
+import Frontend.Browser;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,8 +19,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class SetUI extends Application {
-  
-  Lobby lobby;
   
   @Override
   public void start(Stage primaryStage) {
@@ -54,7 +53,7 @@ public class SetUI extends Application {
     btn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent e) {
-          openLobby(primaryStage);
+          openBrowser(primaryStage);
       }
     });
     
@@ -65,10 +64,11 @@ public class SetUI extends Application {
     primaryStage.show();
   }
   
-  public void openLobby(Stage primaryStage) {
-    lobby = new Lobby();
-    Scene scene = new Scene(lobby, 800, 600);
+  public void openBrowser(Stage primaryStage) {
+    Browser browser = new Browser();
+    Scene scene = new Scene(browser, 800, 600);
     scene.getStylesheets().add("Frontend/style.css"); 
+    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,700,700i"); 
     primaryStage.setTitle("SET");
     primaryStage.setScene(scene);
     primaryStage.setResizable(false);
@@ -96,6 +96,7 @@ public class SetUI extends Application {
     
     Scene scene = new Scene(game, 800, 600);
     scene.getStylesheets().add("Frontend/style.css"); 
+    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,700,700i"); 
     primaryStage.setTitle("SET");
     primaryStage.setScene(scene);
     primaryStage.setResizable(false);

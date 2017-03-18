@@ -1,15 +1,54 @@
+.browser {
+	-fx-background-color: #303030;
+}
+
+.btn-newgame {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f4511e;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+	
+.btn-newgame: hover {
+	-fx-background-color: #ff5722;
+}
+
+.tbl-game {
+	-fx-background-color: #424242;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+
+.tbl-game .column-header-background{
+    -fx-background-color: red;
+}
+	
+.tbl-game .tabel-cell{
+    -fx-background-color: yellow;
+}
+
 .btn-card {
 	-fx-font-family: "sans-serif";
 	-fx-font-weight: 600;
 	-fx-font-size: 24;
-	-fx-background-color: #FFFFFF;
+	-fx-background-color: #ffffff;
 	-fx-background-radius: 6, 5;
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
 }
 
 .btn-card: hover {
-	-fx-background-color: #DDDDDD;
+	-fx-background-color: #dddddd;
 }
 
 .btn-menu {
