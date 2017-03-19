@@ -2,13 +2,14 @@ package ui;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Login_Message implements Sendable {
+public class LoginMessage implements Sendable, Serializable {
   
-  private String username;
-  private String password;
+  public String username;
+  public String password;
   
-  public Login_Message(String username, String password)
+  public LoginMessage(String username, String password)
   {
     this.username = username;
     this.password = password;
