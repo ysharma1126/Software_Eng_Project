@@ -21,7 +21,7 @@ import ui.Browser;
 public class SetUI extends Application {
   
   @Override
-  public void start(Stage primaryStage) {
+  public void login(Stage primaryStage) {
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
@@ -64,11 +64,11 @@ public class SetUI extends Application {
     primaryStage.show();
   }
   
-  public void openBrowser(Stage primaryStage) {
+  public void start(Stage primaryStage) {
     Browser browser = new Browser();
     Scene scene = new Scene(browser, 800, 600);
-    scene.getStylesheets().add("Frontend/style.css"); 
-    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,700,700i"); 
+    scene.getStylesheets().add("ui/style.css"); 
+    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"); 
     primaryStage.setTitle("SET");
     primaryStage.setScene(scene);
     primaryStage.setResizable(false);
@@ -95,8 +95,8 @@ public class SetUI extends Application {
 
     
     Scene scene = new Scene(game, 800, 600);
-    scene.getStylesheets().add("Frontend/style.css"); 
-    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,700,700i"); 
+    scene.getStylesheets().add("ui/style.css"); 
+    scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i"); 
     primaryStage.setTitle("SET");
     primaryStage.setScene(scene);
     primaryStage.setResizable(false);

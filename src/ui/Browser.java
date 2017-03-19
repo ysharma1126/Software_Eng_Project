@@ -24,6 +24,31 @@ public class Browser extends VBox {
   private final TableView<GameData> game_tbl = new TableView<>();
   private final ObservableList<GameData> game_data = 
       FXCollections.observableArrayList (
+          new GameData("game1", "poop", "8/10", "2 minutes ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
+          new GameData("game1", "poop", "8/10", "2 hours ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
+          new GameData("game1", "poop", "8/10", "2 hours ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
+          new GameData("game1", "poop", "8/10", "2 hours ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
+          new GameData("game1", "poop", "8/10", "2 hours ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
           new GameData("game1", "poop", "8/10", "2 hours ago"),
           new GameData("game2", "oop", "8/10", "3 hours ago"),
           new GameData("game3", "asd", "8/10", "4 hours ago"),
@@ -38,39 +63,39 @@ public class Browser extends VBox {
     content = new GridPane();
     
     content.setGridLinesVisible(true);
-    content.setHgap(10);
-    content.setVgap(10);
+    content.setHgap(30);
+    content.setVgap(30);
     content.setPadding(new Insets(0, 10, 0, 10));
     
-    // Active game browser
-
-        
-    game_tbl.setEditable(true);
-
-
-    TableColumn col_name = new TableColumn("Name");
-    col_name.setMinWidth(200);
+    // Active game browser        
+    game_tbl.setEditable(false);
+    game_tbl.setPrefWidth(460);
+    game_tbl.setPrefHeight(420);
+    game_tbl.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    
+    TableColumn<GameData, String> col_name = new TableColumn<>("NAME");
+    col_name.setPrefWidth(160);
     col_name.setResizable(false);
     col_name.setCellValueFactory(
-        new PropertyValueFactory<>("game_name"));
+        new PropertyValueFactory<>("Name"));
     
-    TableColumn col_owner = new TableColumn("Owner");
-    col_owner.setMinWidth(100);
+    TableColumn<GameData, String> col_owner = new TableColumn<>("OWNER");
+    col_owner.setPrefWidth(120);
     col_owner.setResizable(false);
     col_owner.setCellValueFactory(
-        new PropertyValueFactory<>("game_owner"));
+        new PropertyValueFactory<>("Owner"));
     
-    TableColumn col_players = new TableColumn("Players");
-    col_players.setMinWidth(100);
+    TableColumn<GameData, String> col_players = new TableColumn<>("PLAYERS");
+    col_players.setPrefWidth(80);
     col_players.setResizable(false);
     col_players.setCellValueFactory(
-        new PropertyValueFactory<>("game_players"));
+        new PropertyValueFactory<>("Players"));
     
-    TableColumn col_time = new TableColumn("Created");
-    col_time.setMinWidth(100);
+    TableColumn<GameData, String> col_time = new TableColumn<>("CREATED");
+    col_time.setPrefWidth(120);
     col_time.setResizable(false);
     col_time.setCellValueFactory(
-        new PropertyValueFactory<>("game_time"));
+        new PropertyValueFactory<>("Time"));
     
     game_tbl.setItems(game_data);
     game_tbl.getColumns().addAll(col_name, col_owner, col_players, col_time);
@@ -93,14 +118,18 @@ public class Browser extends VBox {
     
     game_tbl.getStyleClass().add("tbl-game");
     
-    content.add(game_tbl, 0, 0, 1, 1);
+    content.add(game_tbl, 0, 0, 1, 2);
     
     // Create game button
     Button newgame_btn = new Button("NEW GAME");
     newgame_btn.getStyleClass().add("btn-newgame");
-    content.add(newgame_btn, 0, 1, 1, 1);
+    content.add(newgame_btn, 0, 2, 1, 1);
+    
     // User info
     GridPane userinfo = new GridPane();
+    userinfo.setGridLinesVisible(true);
+    userinfo.setPrefWidth(230);
+    userinfo.setPrefHeight(120);
     userinfo.setHgap(10);
     userinfo.setVgap(10);
     userinfo.setPadding(new Insets(0, 10, 0, 10));
@@ -114,7 +143,6 @@ public class Browser extends VBox {
     Label nbronze = new Label("0");
     
     user_wins.getChildren().addAll(ngold, nsilver, nbronze);
-
     userinfo.add(user_avatar, 0, 0, 1, 1);
     userinfo.add(user_name, 1, 0, 1, 1);
     userinfo.add(user_wins, 0, 1, 2, 1);
@@ -125,6 +153,7 @@ public class Browser extends VBox {
     
     this.getChildren().addAll(menubar, content);
     this.getStyleClass().add("browser");
+    this.setPadding(new Insets(0, 40, 0, 40));
   }
   
   public static class GameData {
