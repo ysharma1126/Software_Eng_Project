@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.*;
 import gamelogic.*;
 import ui.LoginMessage;
+import java.sql.*;
 
 /**
  * A thread for a single player.
@@ -25,8 +26,11 @@ public class PlayerThread implements Runnable {
         try (
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         ) {
-
-            this.authenticate();
+        	// try authenticating 3 times
+        	for(int i=0; i<3; i++){
+        		if (this.authenticate())
+        			break;
+        	}
             this.terminate();
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,7 +47,12 @@ public class PlayerThread implements Runnable {
 	        username = inputObject.username;
 	        password = inputObject.password;
 	    	System.out.println("Recieved from client:" + username + password);
+    		DatabaseConnection conn = Database.getConnection();
+    		authenticate_status = conn.authenticateUser(username, password);
+    		conn.close();
     	} catch (ClassNotFoundException e) {
+        	e.printStackTrace();
+        } catch (SQLException e){
         	e.printStackTrace();
         }
     	return authenticate_status;
