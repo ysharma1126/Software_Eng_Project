@@ -1,5 +1,4 @@
-package Frontend;
-import Frontend.Browser;
+package ui;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ui.Browser;
 
 public class SetUI extends Application {
   

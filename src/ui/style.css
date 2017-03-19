@@ -35,6 +35,7 @@
 	
 .tbl-game .tabel-cell{
     -fx-background-color: yellow;
+    -fx-text-fill: #000000;
 }
 
 .btn-card {

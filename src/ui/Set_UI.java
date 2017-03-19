@@ -1,4 +1,4 @@
-package Frontend;
+package ui;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;

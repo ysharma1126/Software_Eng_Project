@@ -1,4 +1,4 @@
-package Frontend;
+package ui;
 
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;

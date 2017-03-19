@@ -1,28 +1,36 @@
-package Frontend;
+package ui;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
-
 
 public class Browser extends VBox {
   
   private MenuBar menubar;
   private GridPane content;
+  private final TableView<GameData> game_tbl = new TableView<>();
+  private final ObservableList<GameData> game_data = 
+      FXCollections.observableArrayList (
+          new GameData("game1", "poop", "8/10", "2 hours ago"),
+          new GameData("game2", "oop", "8/10", "3 hours ago"),
+          new GameData("game3", "asd", "8/10", "4 hours ago"),
+          new GameData("game4", "231", "8/10", "5 hours ago"),
+          new GameData("game5", "asdfa", "8/10", "6 hours ago"),
+          new GameData("game6", "123", "8/10", "7 hours ago")
+       );
   
   public Browser() {
     
@@ -35,47 +43,53 @@ public class Browser extends VBox {
     content.setPadding(new Insets(0, 10, 0, 10));
     
     // Active game browser
-    TableView<GameData> game_tbl = new TableView<>();
-    ObservableList<GameData> game_data = 
-        FXCollections.observableArrayList (
-            new GameData("game1", "poop", "8/10", "2 hours ago"),
-            new GameData("game2", "oop", "8/10", "3 hours ago"),
-            new GameData("game3", "asd", "8/10", "4 hours ago"),
-            new GameData("game4", "231", "8/10", "5 hours ago"),
-            new GameData("game5", "asdfa", "8/10", "6 hours ago"),
-            new GameData("game6", "123", "8/10", "7 hours ago")
-         );
+
         
     game_tbl.setEditable(true);
 
 
     TableColumn col_name = new TableColumn("Name");
     col_name.setMinWidth(200);
-    col_name.setMaxWidth(200);
     col_name.setResizable(false);
     col_name.setCellValueFactory(
-        new PropertyValueFactory<GameData, String>("game_name"));
+        new PropertyValueFactory<>("game_name"));
     
     TableColumn col_owner = new TableColumn("Owner");
-    col_name.setMinWidth(200);
-    col_name.setMaxWidth(200);
-    col_name.setCellValueFactory(
+    col_owner.setMinWidth(100);
+    col_owner.setResizable(false);
+    col_owner.setCellValueFactory(
         new PropertyValueFactory<>("game_owner"));
     
     TableColumn col_players = new TableColumn("Players");
-    col_name.setMinWidth(200);
-    col_name.setMaxWidth(200);
-    col_name.setCellValueFactory(
+    col_players.setMinWidth(100);
+    col_players.setResizable(false);
+    col_players.setCellValueFactory(
         new PropertyValueFactory<>("game_players"));
     
     TableColumn col_time = new TableColumn("Created");
-    col_name.setMinWidth(200);
-    col_name.setMaxWidth(200);
-    col_name.setCellValueFactory(
+    col_time.setMinWidth(100);
+    col_time.setResizable(false);
+    col_time.setCellValueFactory(
         new PropertyValueFactory<>("game_time"));
     
     game_tbl.setItems(game_data);
     game_tbl.getColumns().addAll(col_name, col_owner, col_players, col_time);
+    
+    // Disable user reordering of columns at runtime
+    game_tbl.widthProperty().addListener(new ChangeListener<Number>()
+    {
+        @Override
+        public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth)
+        {
+            TableHeaderRow header = (TableHeaderRow) game_tbl.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    header.setReordering(false);
+                }
+            });
+        }
+    });
     
     game_tbl.getStyleClass().add("tbl-game");
     
