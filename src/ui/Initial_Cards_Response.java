@@ -1,17 +1,18 @@
-package Frontend;
+package ui;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class Login_Response implements Sendable {
-
-  public boolean is_valid;
+public class Initial_Cards_Response implements Sendable {
   
-  public Login_Response(boolean is_valid)
+  public int cards[] = new int[12];
+    
+  public Initial_Cards_Response(int cards[])
   {
-    this.is_valid = is_valid;
+    this.cards = cards;
   }
   
+  @Override
   public void send(ObjectOutputStream outputstream)
   {
     try {
@@ -21,5 +22,5 @@ public class Login_Response implements Sendable {
       e.printStackTrace();
     }
   }
-   
+  
 }

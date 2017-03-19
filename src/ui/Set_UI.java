@@ -1,4 +1,4 @@
-package Frontend;
+package ui;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -89,7 +89,7 @@ public class Set_UI extends Application {
               else if (location_to_click_status.get(location) == true)
               {
                 setCard.setStrokeWidth(0);
-                location_to_click_status.put(key, false);
+                location_to_click_status.put(location, false);
               }
               
             }

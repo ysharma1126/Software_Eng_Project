@@ -1,4 +1,4 @@
-package Frontend;
+package ui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -15,6 +15,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import ui.Login_Message;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -22,8 +24,6 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
-
-import Frontend.Login_Message;
 
 
 /*
@@ -137,7 +137,7 @@ public class Login_Page extends Application {
 	        
 	      primaryStage.setScene(scene);
 	      scene.getStylesheets().add
-	          (Frontend.Login_Page.class.getResource("Login.css").toExternalForm());
+	          (ui.Login_Page.class.getResource("Login.css").toExternalForm());
 	      primaryStage.show();     
 	    } catch (ConnectException e1) {
           System.err.println("Did not enter in proper server address/portnumber!");

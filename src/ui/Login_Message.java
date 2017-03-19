@@ -1,15 +1,17 @@
-package Frontend;
+package ui;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class Initial_Cards_Response implements Sendable {
+public class Login_Message implements Sendable {
   
-  public int cards[] = new int[12];
-    
-  public Initial_Cards_Response(int cards[])
+  private String username;
+  private String password;
+  
+  public Login_Message(String username, String password)
   {
-    this.cards = cards;
+    this.username = username;
+    this.password = password;
   }
   
   @Override

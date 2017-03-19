@@ -1,17 +1,12 @@
-package Frontend;
+package ui;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class Login_Message implements Sendable {
-  
-  private String username;
-  private String password;
-  
-  public Login_Message(String username, String password)
+public class Initial_Cards_Message implements Sendable {
+
+  public Initial_Cards_Message()
   {
-    this.username = username;
-    this.password = password;
   }
   
   @Override
