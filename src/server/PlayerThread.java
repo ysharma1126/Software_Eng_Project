@@ -1,7 +1,7 @@
-package Backend;
+package server;
 import java.io.*;
 import java.net.*;
-import Set_Game.*;
+import gamelogic.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 

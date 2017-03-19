@@ -1,0 +1,131 @@
+.root {
+	-fx-font-family: "Montserrat";
+}
+
+.browser {
+	-fx-background-color: #303030;
+}
+
+.btn-newgame {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f4511e;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+
+.btn-newgame: hover {
+	-fx-background-color: #ff5722;
+}
+
+.tbl-game {
+	-fx-background-color: #424242;
+}
+
+.tbl-game: focused {
+	-fx-background-color: #424242;
+}
+
+.tbl-game .filler {
+    -fx-background-color: #424242;
+}
+	
+.tbl-game .column-header {
+	-fx-background-color: #212121;
+    
+}
+
+.tbl-game .column-header-background {
+    -fx-background-color: #212121;
+}
+
+.tbl-game .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-alignment: center-left;
+    -fx-font-family: "Montserrat";
+	-fx-font-size: 12;
+	-fx-font-weight: 500;
+    -fx-margin-bottom: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 4px;
+}
+	
+.tbl-game .table-cell {
+    -fx-alignment: center-left;
+    -fx-font-family: "Montserrat";
+	-fx-font-size: 10;
+	-fx-font-weight: normal;
+    -fx-margin-bottom: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 5px;
+}
+
+.tbl-game .table-row-cell {
+	-fx-background-color: #424242;
+}
+
+.tbl-game .table-row-cell: hover{
+	-fx-background-color: #607d8b;
+}
+
+.tbl-game .table-row-cell: focused{
+	-fx-background-color: #78909c;
+}
+.tbl-game > .virtual-flow > .scroll-bar {
+	-fx-background-color: transparent;
+}
+.tbl-game > .virtual-flow > .scroll-bar:vertical,
+.tbl-game > .virtual-flow > .scroll-bar:vertical > .track,
+.tbl-game > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.tbl-game > .virtual-flow > .scroll-bar:horizontal,
+.tbl-game > .virtual-flow > .scroll-bar:horizontal > .track,
+.tbl-game > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+
+.tbl-game > .virtual-flow > .scroll-bar > .increment-button, 
+.tbl-game > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
+}
+
+.user {
+	-fx-background-color: #424242;
+	-fx-background-radius: 3;
+    -fx-background-insets: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+    -fx-alignment: center;
+    -fx-font-family: "Montserrat";
+	-fx-font-size: 14;
+	-fx-font-weight: normal;
+    -fx-margin-bottom: 10px;
+    -fx-text-fill: #ffffff;
+}
+
+.user .label {
+	-fx-text-fill: #ffffff;
+}
+
+.btn-card {
+	-fx-font-family: "sans-serif";
+	-fx-font-weight: 600;
+	-fx-font-size: 24;
+	-fx-background-color: #ffffff;
+	-fx-background-radius: 6, 5;
+    -fx-background-insets: 0, 1;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+}
+
+.btn-card: hover {
+	-fx-background-color: #dddddd;
+}
+
+.btn-menu {
+}
