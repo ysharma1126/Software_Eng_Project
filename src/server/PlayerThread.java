@@ -7,7 +7,9 @@ import ui.LoginResponse;
 import java.sql.*;
 
 /**
- * A thread for a single player.
+ * A thread for a single player/client.
+ * Handles communication with the client for things such as
+ * authentication, stat retrieval, etc
  * @author Shalin
  *
  */
@@ -18,12 +20,25 @@ public class PlayerThread implements Runnable {
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
     
+    /**
+     * Initializes the PlayerThread. Keeps track of the given socket and
+     * creates the Object Stream's to communicate with the Client
+     * @param	socket	The Socket object for the client
+     * @author Shalin
+     */
     public PlayerThread(Socket socket) throws IOException{
         this.socket = socket;
         clientInput = new ObjectInputStream(socket.getInputStream());
         clientOutput = new ObjectOutputStream(socket.getOutputStream());
     }
 
+    /**
+     * Obtained from the Runnable interface. Is called from Thread.start().
+	 * It is essentially the main method for the thread, handling
+	 * authentication and subsequently requests to check stats, join
+	 * a game, logout, etc.
+     * @author Shalin
+     */
     public void run() {
     	
         try (
@@ -34,6 +49,7 @@ public class PlayerThread implements Runnable {
         		if (this.authenticate()){
         			LoginResponse lr = new LoginResponse(true);
         			lr.send(clientOutput);
+        			// TODO add to connected_players
         			break;
         		}
         	}
@@ -43,6 +59,11 @@ public class PlayerThread implements Runnable {
         }
     }
     
+    /**
+     * Authenticates the user by checking if the credentials are valid according to the database
+     * @return Boolean value. true if the credentials are valid, false otherwise
+     * @author Shalin
+     */
     private Boolean authenticate() throws IOException{
     	Boolean authenticate_status = false;
     	String username, password;
@@ -64,6 +85,12 @@ public class PlayerThread implements Runnable {
     	return authenticate_status;
     }
     
+    /**
+     * Handles the cleanup when the thread closes.
+     * This includes closing the socket and removing the player from the connect_players set
+     * maintained by the main Server class.
+     * @author Shalin
+     */
     public void terminate() throws IOException{
 		socket.close();
     }

@@ -2,16 +2,15 @@ package server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import gamelogic.*;
-
 import java.util.Collections;
 import java.net.*;
 import java.io.*;
+
 /**
- * Server handles communication with clients and spawning threads to handle communication with the players
+ * Server class handles keeping track of logged in users and the games that are running.
+ * Spawns a Daemon thread to accept connection from client's and spawn PlayerThread objects.
  * @author Shalin
- *
  */
 public class Server {
 	/**
@@ -51,6 +50,12 @@ public class Server {
 	static Map<Player, Socket> connected_players = null;
 	static int portNumber;
 
+    /**
+     * Main method that spawns a Daemon thread to add new clients.
+     * What the method will do after is undecided as of now.
+     * @param	args	[portNumber]
+     * @author Shalin
+     */
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1){
 			System.err.print("Usage: java Server <port Number>");
@@ -67,6 +72,10 @@ public class Server {
         }
     }
 	
+    /**
+     * The thread that accepts connections on the serverSocket and spawns a PlayerThread foreach connection.
+     * @author Shalin
+     */
 	static class clientListenerThread implements Runnable {
 		public void run(){
 	        try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
