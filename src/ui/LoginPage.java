@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import message.Sendable;
 import ui.Login_Message;
 
 import java.io.IOException;

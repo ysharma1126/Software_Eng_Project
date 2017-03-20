@@ -2,8 +2,9 @@ package server;
 
 import java.io.*;
 import java.net.*;
-import ui.LoginMessage;
-import ui.LoginResponse;
+
+import message.LoginMessage;
+import message.LoginResponse;
 
 public class ClientTest {
     public static void main(String[] args) throws IOException {

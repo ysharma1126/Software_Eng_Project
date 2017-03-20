@@ -2,8 +2,9 @@ package server;
 import java.io.*;
 import java.net.*;
 import gamelogic.*;
-import ui.LoginMessage;
-import ui.LoginResponse;
+import message.LoginMessage;
+import message.LoginResponse;
+
 import java.sql.*;
 
 /**
