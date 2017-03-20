@@ -49,7 +49,7 @@ public class PlayerThread implements Runnable {
         		if (this.authenticate()){
         			LoginResponse lr = new LoginResponse(true);
         			lr.send(clientOutput);
-        			// TODO add to connected_players
+        			Server.connected_players.put(player, socket);
         			break;
         		}
         	}
@@ -60,14 +60,16 @@ public class PlayerThread implements Runnable {
     }
     
     /**
-     * Authenticates the user by checking if the credentials are valid according to the database
+     * Authenticates the user by checking if the credentials are valid according to the database.
+     * Will create the Player Object if the credentials are valid
      * @return Boolean value. true if the credentials are valid, false otherwise
      * @author Shalin
      */
     private Boolean authenticate() throws IOException{
     	Boolean authenticate_status = false;
-    	String username, password;
-    	LoginMessage inputObject;
+    	String username = null;
+    	String password = null;
+    	LoginMessage inputObject = null;
     	
     	try {
 	        inputObject = (LoginMessage)clientInput.readObject();
@@ -82,6 +84,9 @@ public class PlayerThread implements Runnable {
         } catch (SQLException e){
         	e.printStackTrace();
         }
+    	if (authenticate_status){
+    		player = new Player(username);
+    	}
     	return authenticate_status;
     }
     
@@ -93,5 +98,6 @@ public class PlayerThread implements Runnable {
      */
     public void terminate() throws IOException{
 		socket.close();
+		Server.connected_players.remove(player);
     }
 }
