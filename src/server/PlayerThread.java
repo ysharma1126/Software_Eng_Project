@@ -3,6 +3,7 @@ import java.io.*;
 import java.net.*;
 import gamelogic.*;
 import ui.LoginMessage;
+import ui.LoginResponse;
 import java.sql.*;
 
 /**
@@ -15,10 +16,12 @@ public class PlayerThread implements Runnable {
     private Socket socket = null;
     public Player player = null;
     private ObjectInputStream clientInput = null;
+    private ObjectOutputStream clientOutput = null;
     
     public PlayerThread(Socket socket) throws IOException{
         this.socket = socket;
         clientInput = new ObjectInputStream(socket.getInputStream());
+        clientOutput = new ObjectOutputStream(socket.getOutputStream());
     }
 
     public void run() {
@@ -28,8 +31,11 @@ public class PlayerThread implements Runnable {
         ) {
         	// try authenticating 3 times
         	for(int i=0; i<3; i++){
-        		if (this.authenticate())
+        		if (this.authenticate()){
+        			LoginResponse lr = new LoginResponse(true);
+        			lr.send(clientOutput);
         			break;
+        		}
         	}
             this.terminate();
         } catch (IOException e) {

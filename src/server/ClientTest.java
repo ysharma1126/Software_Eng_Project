@@ -3,6 +3,7 @@ package server;
 import java.io.*;
 import java.net.*;
 import ui.LoginMessage;
+import ui.LoginResponse;
 
 public class ClientTest {
     public static void main(String[] args) throws IOException {
@@ -19,11 +20,14 @@ public class ClientTest {
         try (
             Socket gameSocket = new Socket(hostName, portNumber);
         	ObjectOutputStream serverOutput = new ObjectOutputStream(gameSocket.getOutputStream());
+        	ObjectInputStream serverInput = new ObjectInputStream(gameSocket.getInputStream());
             BufferedReader in = new BufferedReader(
                 new InputStreamReader(gameSocket.getInputStream()));
         ) {
             LoginMessage login_info = new LoginMessage("Shalin","123");
             login_info.send(serverOutput);
+            LoginResponse login_response = (LoginResponse) serverInput.readObject();
+            System.out.println("Authentication Response: " + login_response.is_valid);
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -31,6 +35,9 @@ public class ClientTest {
             System.err.println("Couldn't get I/O for the connection to " +
                 hostName);
             System.exit(1);
+        } catch (ClassNotFoundException e){
+        	System.err.println(e.getMessage());
+        	System.exit(1);
         }
     }
 }
