@@ -1,13 +1,14 @@
-package ui;
+package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Initial_Cards_Response implements Sendable {
+public class InitialCardsResponse implements Sendable, Serializable {
   
   public int cards[] = new int[12];
     
-  public Initial_Cards_Response(int cards[])
+  public InitialCardsResponse(int cards[])
   {
     this.cards = cards;
   }

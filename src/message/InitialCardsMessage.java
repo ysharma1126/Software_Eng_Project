@@ -1,11 +1,12 @@
-package ui;
+package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class Initial_Cards_Message implements Sendable {
+public class InitialCardsMessage implements Sendable, Serializable {
 
-  public Initial_Cards_Message()
+  public InitialCardsMessage()
   {
   }
   

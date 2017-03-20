@@ -1,4 +1,4 @@
-package ui;
+package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
