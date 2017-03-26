@@ -13,7 +13,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import message.Sendable;
-import ui.Login_Message;
+import message.LoginMessage;
+import message.LoginResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -73,14 +74,15 @@ public class Login extends GridPane {
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        Sendable send_msg = new Login_Message(userTextField.getText(), pwBox.getText());
+        Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
         
         try {
-        Login_Response response = (Login_Response)inFromServer.readObject();
+        LoginResponse response = (LoginResponse)inFromServer.readObject();
         
         if (response.is_valid)
         {
+          Launcher.username = userTextField.getText();
           Launcher.openBrowser(primaryStage, outToServer, inFromServer);
         }
         

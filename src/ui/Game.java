@@ -3,6 +3,8 @@ package ui;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -33,11 +35,12 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import message.Initial_Cards_Message;
-import message.Initial_Cards_Response;
+import message.InitialCardsMessage;
+import message.InitialCardsResponse;
 import message.Sendable;
 import message.SetSelectMessage;
 import message.SetSelectResponse;
+import server.PlayerThread;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +52,22 @@ public class Game extends BorderPane {
   private HashMap<String, Node> location_to_node = new HashMap<String, Node>();
   private HashMap<String, Boolean> location_to_click_status = new HashMap<String, Boolean>();
   private HashSet<String> locations_clicked = new HashSet<String>();
+  
+  
+  private class serverListenerThread implements Runnable {
+    private ObjectOutputStream toServer;
+    private ObjectInputStream fromServer;
+    
+    public serverListenerThread(ObjectOutputStream toServer, ObjectInputStream fromServer)
+    {
+      this.toServer = toServer;
+      this.fromServer = fromServer;
+    }
+    
+    public void run(){
+      Thread t = new Thread();
+    }
+  }
   
   private void load_initial_cards(GridPane grid)
   {
@@ -98,10 +117,10 @@ public class Game extends BorderPane {
   
   private void load_initial_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer, GridPane grid)
   {
-   Initial_Cards_Message start_msg = new Initial_Cards_Message();
+   InitialCardsMessage start_msg = new InitialCardsMessage();
    start_msg.send(outToServer);
    try {
-    Initial_Cards_Response start_response = (Initial_Cards_Response)inFromServer.readObject();
+    InitialCardsResponse start_response = (InitialCardsResponse)inFromServer.readObject();
     
     for (int colindex = 0; colindex < 4; ++colindex)
     {
@@ -155,6 +174,75 @@ public class Game extends BorderPane {
     }
   }
   
+  /*
+   * Submits the set to the server
+   * Gets response from the server
+   * Returns whether valid set or not
+   */
+  private boolean submit_cards(GridPane grid, Text set_correct)
+  {
+    if (locations_clicked.size() != 3)
+    {
+      set_correct.setText("Select 3 Cards");
+      return false;
+    }
+    
+    else
+    {
+      int cards[] = new int[3];
+      int index = 0;
+      for (String location : locations_clicked)
+      {
+        cards[index] = location_to_card.get(location);
+        System.out.println(location_to_card.get(location));
+      }
+    }
+    set_correct.setText("Correct");
+    return true;
+  }
+  
+  private void submit_cards(GridPane grid, Text set_correct, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  {
+    if (locations_clicked.size() != 3)
+    {
+      set_correct.setText("Select 3 Cards");
+    }
+    
+    else
+    {
+      int cards[] = new int[3];
+      int index = 0;
+      for (String location : locations_clicked)
+      {
+        cards[index] = location_to_card.get(location);
+      }
+      SetSelectMessage set_message = new SetSelectMessage(Launcher.username, cards);
+      try {
+        outToServer.writeObject(set_message);
+      } catch (IOException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+    } 
+  }
+  
+  private void delete_cards(GridPane grid)
+  {
+    for (String location : locations_clicked)
+    {
+      /*
+       * Since location stored as "colindex"+"rowindex"
+       */
+      int colindex = Character.getNumericValue(location.charAt(1));
+      int rowindex = Character.getNumericValue(location.charAt(0));
+      grid.getChildren().remove(location_to_node.get(location));
+      location_to_node.remove(location);
+      location_to_card.remove(location);
+      location_to_click_status.remove(location);
+    }
+    locations_clicked.clear();
+  }
+  
   public Game(Stage primaryStage)
   {
     ToolBar toolbar = new ToolBar(
@@ -183,7 +271,11 @@ public class Game extends BorderPane {
     set_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        set_correct.setText("Wrong");
+        boolean valid_set = submit_cards(center_pane, set_correct);
+        if (valid_set)
+        {
+          delete_cards(center_pane);
+        }
       }
     });
     
@@ -236,7 +328,7 @@ public class Game extends BorderPane {
           {
             cards[index] = location_to_card.get(location);
           }
-          Sendable set_select_message = new SetSelectMessage(cards);
+          Sendable set_select_message = new SetSelectMessage(Launcher.username, cards);
           set_select_message.send(outToServer);
           
           try {
@@ -266,8 +358,6 @@ public class Game extends BorderPane {
           }
           
         }
-
-
       }
     });
     

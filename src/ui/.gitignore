@@ -33,3 +33,6 @@
 /Game$5.class
 /SetSelectMessage.class
 /SetSelectResponse.class
+/Game$clientListenerThread.class
+/Game$serverListenerThread.class
+/ClientThread.class

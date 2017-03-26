@@ -13,6 +13,9 @@ import javafx.stage.Stage;
 
 public class Launcher extends Application {
 
+  public static String username = null;
+  
+  
   public static void main(String[] args) {
     // TODO Auto-generated method stub
     launch(args);

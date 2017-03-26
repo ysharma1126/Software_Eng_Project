@@ -6,10 +6,12 @@ import java.io.ObjectOutputStream;
 public class SetSelectResponse implements Sendable {
 
   public boolean is_valid;
+  public String username;
   
-  public SetSelectResponse(boolean is_valid)
+  public SetSelectResponse(String username, boolean is_valid)
   {
     this.is_valid = is_valid;
+    this.username = username;
   }
   
   public void send(ObjectOutputStream outputstream)
