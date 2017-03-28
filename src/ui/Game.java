@@ -201,6 +201,10 @@ public class Game extends BorderPane {
     return true;
   }
   
+  /*
+   * Submit cards to server
+   * GameThread will handle the response
+   */
   private void submit_cards(GridPane grid, Text set_correct, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
     if (locations_clicked.size() != 3)
@@ -286,8 +290,8 @@ public class Game extends BorderPane {
     this.setMargin(center_pane, new Insets(10, 10, 10, 10));
   }
   
-  public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
-  {
+  public Game(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  {    
     ToolBar toolbar = new ToolBar(
         new Button("Surrender"),
         new Button("Change Password"),
@@ -308,6 +312,15 @@ public class Game extends BorderPane {
     left_detail_pane.getChildren().add(set_btn);
     left_detail_pane.getChildren().add(set_correct);
     left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
+    
+    Thread server_response_handler = null;
+    try {
+      server_response_handler = new Thread(new GameThread(socket, outToServer, inFromServer, set_correct, center_pane));
+    } catch (IOException e2) {
+      // TODO Auto-generated catch block
+      e2.printStackTrace();
+    }
+    server_response_handler.start();   
     
     load_initial_cards(outToServer, inFromServer, center_pane);
     

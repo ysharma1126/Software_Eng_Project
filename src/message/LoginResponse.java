@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/*
+ * LoginResponse
+ * Should be sent only to the client that sent a 
+ * LoginMessage to the server.
+ * LoginResponse should say whether the login was valid or not
+ */
+
 public class LoginResponse implements Sendable, Serializable {
 
   public boolean is_valid;

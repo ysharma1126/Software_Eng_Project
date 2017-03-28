@@ -55,9 +55,9 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
-    Game game = new Game(primaryStage, outToServer, inFromServer);
+    Game game = new Game(primaryStage, socket, outToServer, inFromServer);
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);
     primaryStage.show();

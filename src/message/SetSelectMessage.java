@@ -3,6 +3,12 @@ package message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+/*
+ * SetSelectMessage
+ * Contains the cards and username
+ * That a certain client picked.
+ */
+
 public class SetSelectMessage implements Sendable {
 
   public int cards[];

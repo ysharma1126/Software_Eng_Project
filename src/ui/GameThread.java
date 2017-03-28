@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 import message.LoginMessage;
 import message.LoginResponse;
 import message.SetSelectResponse;
+import message.SurrenderResponse;
 
 import java.sql.*;
 
@@ -16,7 +17,7 @@ import java.sql.*;
  * From the server.
  */
 
-public class ClientThread implements Runnable {
+public class GameThread implements Runnable {
     private Socket socket = null;
     public Player player = null;
     private ObjectOutputStream outToServer = null;
@@ -28,8 +29,9 @@ public class ClientThread implements Runnable {
      * Initializes the ClientThread
      * takes in the outputstream and inputstream as arguments
      */
-    public ClientThread(ObjectOutputStream outToServer, ObjectInputStream inFromServer, Text set_correct, 
+    public GameThread(Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Text set_correct, 
         GridPane grid) throws IOException{
+      this.socket = socket;
       this.outToServer = outToServer;
       this.inFromServer = inFromServer;
       this.set_correct = set_correct;
@@ -93,6 +95,7 @@ public class ClientThread implements Runnable {
            * If its invalid, server only sends response to client
            * If its valid, server sends response to all clients, with the username
            * Of the user that got it right
+           * Users all update guis
            */
           SetSelectResponse resp = (SetSelectResponse) obj;
           handleSetResponse(resp);
@@ -100,6 +103,25 @@ public class ClientThread implements Runnable {
         /*
          * Handle other server responses.
          */
+        if (obj instanceof SurrenderResponse)
+        {
+          /*
+           * SurrenderResponse Message
+           * Client sends SurrenderMessage to server
+           * Server sends response to all clients, with the username
+           * That is surrendering
+           * Users all update guis
+           */
+          try {
+            this.terminate();
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          
+          break;
+          
+        }
       }
     }
     
@@ -113,6 +135,5 @@ public class ClientThread implements Runnable {
      */
     public void terminate() throws IOException{
         socket.close();
-        Server.connected_players.remove(player);
     }
 }

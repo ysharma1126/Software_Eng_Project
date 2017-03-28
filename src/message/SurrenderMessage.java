@@ -2,27 +2,21 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
 /*
- * LoginMessage
- * A Client sends a login message to the server
- * that contains the username and password that the user
- * Is trying to login with
+ * SurrenderMessage
+ * Contains the username of the client that surrendered
  */
 
-public class LoginMessage implements Sendable, Serializable {
+public class SurrenderMessage implements Sendable {
   
   public String username;
-  public String password;
   
-  public LoginMessage(String username, String password)
+  public SurrenderMessage(String username, int cards[])
   {
     this.username = username;
-    this.password = password;
   }
   
-  @Override
   public void send(ObjectOutputStream outputstream)
   {
     try {
@@ -32,5 +26,4 @@ public class LoginMessage implements Sendable, Serializable {
       e.printStackTrace();
     }
   }
-  
 }
