@@ -6,6 +6,6 @@
 /Login_Page$1.class
 /Login_Page.class
 /Set_UI.class
-/ui/
-/message/
-/server/
+/TestThread1.class
+/TestVolatility.class
+/MutableBoolean.class
