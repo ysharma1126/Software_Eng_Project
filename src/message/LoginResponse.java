@@ -1,13 +1,21 @@
-package ui;
+package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class SetSelectResponse implements Sendable {
+/*
+ * LoginResponse
+ * Should be sent only to the client that sent a 
+ * LoginMessage to the server.
+ * LoginResponse should say whether the login was valid or not
+ */
+
+public class LoginResponse implements Sendable, Serializable {
 
   public boolean is_valid;
   
-  public SetSelectResponse(boolean is_valid)
+  public LoginResponse(boolean is_valid)
   {
     this.is_valid = is_valid;
   }
@@ -21,5 +29,5 @@ public class SetSelectResponse implements Sendable {
       e.printStackTrace();
     }
   }
-  
+   
 }

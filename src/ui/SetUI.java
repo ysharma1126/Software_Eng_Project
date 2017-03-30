@@ -33,6 +33,9 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import message.Initial_Cards_Message;
+import message.Initial_Cards_Response;
+
 import java.util.HashMap;
 
 

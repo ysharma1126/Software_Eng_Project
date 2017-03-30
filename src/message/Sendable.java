@@ -1,4 +1,4 @@
-package ui;
+package message;
 
 import java.io.ObjectOutputStream;
 

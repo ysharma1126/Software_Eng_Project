@@ -15,7 +15,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+<<<<<<< HEAD
 import ui.LoginMessage;
+=======
+import message.Sendable;
+import ui.Login_Message;
+>>>>>>> branch 'master' of https://github.com/sahpat229/Software_Eng_Project.git
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
