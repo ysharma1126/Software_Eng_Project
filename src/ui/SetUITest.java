@@ -18,7 +18,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import ui.Browser;
 
-public class SetUI extends Application {
+public class SetUITest extends Application {
   
   @Override
   public void login(Stage primaryStage) {

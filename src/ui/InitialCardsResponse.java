@@ -3,11 +3,11 @@ package ui;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class Initial_Cards_Response implements Sendable {
+public class InitialCardsResponse implements Sendable {
   
   public int cards[] = new int[12];
     
-  public Initial_Cards_Response(int cards[])
+  public InitialCardsResponse(int cards[])
   {
     this.cards = cards;
   }

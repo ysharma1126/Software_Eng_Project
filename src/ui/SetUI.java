@@ -36,7 +36,7 @@ import javafx.util.Duration;
 import java.util.HashMap;
 
 
-public class Set_UI extends Application {
+public class SetUI extends Application {
 
     private HashMap<String, Integer> location_to_card = new HashMap<String, Integer>();
     private HashMap<String, Node> location_to_node = new HashMap<String, Node>();
@@ -49,10 +49,10 @@ public class Set_UI extends Application {
 	
 	private void load_initial_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer, GridPane grid)
 	{
-	 Initial_Cards_Message start_msg = new Initial_Cards_Message();
+	 InitialCardsMessage start_msg = new InitialCardsMessage();
 	 start_msg.send(outToServer);
 	 try {
-      Initial_Cards_Response start_response = (Initial_Cards_Response)inFromServer.readObject();
+      InitialCardsResponse start_response = (InitialCardsResponse)inFromServer.readObject();
       
       for (int colindex = 0; colindex < 4; ++colindex)
       {

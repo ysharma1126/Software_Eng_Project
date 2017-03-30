@@ -15,7 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import ui.Login_Message;
+import ui.LoginMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,7 +32,7 @@ import java.util.LinkedList;
  * Must make sure that you enter in the hostname and portnumber of where the server is running on
  * before you start the client.  It won't work otherwise.
  */
-public class Login_Page extends Application {
+public class LoginPage extends Application {
 
 	public static void main(String[] args)
 	{
@@ -61,7 +61,7 @@ public class Login_Page extends Application {
 	       */
 	      
 	      LinkedList<Sendable> outToServerList = new LinkedList<Sendable>();
-	      LinkedList<Login_Message> inFromServerList = new LinkedList<Login_Message>();
+	      LinkedList<LoginMessage> inFromServerList = new LinkedList<LoginMessage>();
 	      
 	      primaryStage.setTitle("JavaFX Welcome");
 	        
@@ -109,11 +109,11 @@ public class Login_Page extends Application {
 	      sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
 	        @Override
 	        public void handle(ActionEvent e) {
-	          Sendable send_msg = new Login_Message(userTextField.getText(), pwBox.getText());
+	          Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
 	          send_msg.send(outToServer);
 	          
 	          try {
-              Login_Response response = (Login_Response)inFromServer.readObject();
+              LoginResponse response = (LoginResponse)inFromServer.readObject();
               
               if (response.is_valid)
               {
@@ -137,7 +137,7 @@ public class Login_Page extends Application {
 	        
 	      primaryStage.setScene(scene);
 	      scene.getStylesheets().add
-	          (ui.Login_Page.class.getResource("Login.css").toExternalForm());
+	          (ui.LoginPage.class.getResource("Login.css").toExternalForm());
 	      primaryStage.show();     
 	    } catch (ConnectException e1) {
           System.err.println("Did not enter in proper server address/portnumber!");

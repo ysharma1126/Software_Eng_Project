@@ -3,9 +3,9 @@ package ui;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class Initial_Cards_Message implements Sendable {
+public class InitialCardsMessage implements Sendable {
 
-  public Initial_Cards_Message()
+  public InitialCardsMessage()
   {
   }
   
