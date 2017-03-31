@@ -97,6 +97,7 @@ public class GameThread implements Runnable {
            * Of the user that got it right
            * Users all update guis
            */
+          
           SetSelectResponse resp = (SetSelectResponse) obj;
           handleSetResponse(resp);
         }

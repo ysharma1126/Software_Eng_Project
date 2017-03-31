@@ -16,7 +16,7 @@ public class SurrenderResponse implements Sendable {
   
   public String username;
   
-  public SurrenderMessage(String username, int cards[])
+  public SurrenderResponse(String username, int cards[])
   {
     this.username = username;
   }
