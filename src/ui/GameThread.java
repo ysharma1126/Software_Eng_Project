@@ -3,14 +3,27 @@ package ui;
 import java.io.*;
 import java.net.*;
 import gamelogic.*;
+import gamelogic.Card;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import message.LoginMessage;
 import message.LoginResponse;
 import message.SetSelectResponse;
+import message.TableResponse;
+import message.EndGameResponse;
 import message.LeaveGameResponse;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /*
  * A thread for the client to get updates
@@ -18,24 +31,37 @@ import java.sql.*;
  */
 
 public class GameThread implements Runnable {
-    private Socket socket = null;
+    private Stage primaryStage = null;
     public Player player = null;
     private ObjectOutputStream outToServer = null;
     private ObjectInputStream inFromServer = null;
     private Text set_correct;
     private GridPane grid;
     
+    private volatile HashMap<Location, Card> location_to_card;
+    private volatile HashMap<Location, Node> location_to_node;
+    private volatile HashMap<Location, Boolean> location_to_click_status;
+    private volatile HashSet<Location> locations_clicked;
+    private volatile HashMap<String, Text> username_to_score_field;
+    
     /**
      * Initializes the ClientThread
      * takes in the outputstream and inputstream as arguments
      */
-    public GameThread(Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Text set_correct, 
-        GridPane grid) throws IOException{
-      this.socket = socket;
+    public GameThread(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Text set_correct, 
+        GridPane grid, HashMap<Location, Card> location_to_card, HashMap<Location, Node> location_to_node,
+        HashMap<Location, Boolean> location_to_click_status, HashSet<Location> locations_clicked,
+        HashMap<String, Text> username_to_score_field) throws IOException{
+      this.primaryStage = primaryStage;
       this.outToServer = outToServer;
       this.inFromServer = inFromServer;
       this.set_correct = set_correct;
       this.grid = grid;
+      this.location_to_card = location_to_card;
+      this.location_to_node = location_to_node;
+      this.location_to_click_status = location_to_click_status;
+      this.locations_clicked = locations_clicked;
+      this.username_to_score_field = username_to_score_field;
     }
     
     private void handleSetResponse(SetSelectResponse resp)
@@ -61,13 +87,73 @@ public class GameThread implements Runnable {
          * Increase the score in the GUI for the
          * corresponding user
          */
-        
-        /*
-         * Delete the cards that were right
-         */
+        username_to_score_field.get(resp.username).setText(Integer.toString(resp.setcount));
       }
     }
-
+    
+    private void handleTableResponse(TableResponse resp)
+    {
+      int colindex = 0;
+      int rowindex = 0;
+      
+      location_to_card.clear();
+      location_to_node.clear();
+      locations_clicked.clear();
+      grid.getChildren().clear();
+      
+      for (Card card : resp.table)
+      {
+        if (card.hole == false)
+        {
+          Rectangle setCard = new Rectangle();
+          setCard.setHeight(200);
+          setCard.setWidth(100);
+          setCard.setFill(Color.WHITE);
+          setCard.setArcHeight(20);
+          setCard.setArcWidth(20);
+          setCard.setStrokeType(StrokeType.INSIDE);
+          setCard.setStroke(Color.web("blue", 0.30));
+          setCard.setStrokeWidth(0);
+          grid.add(setCard, colindex, rowindex);
+          Location location = new Location(rowindex, colindex);
+          location_to_card.put(location, card);
+          location_to_node.put(location, setCard);
+          
+          setCard.setOnMouseClicked(new EventHandler<MouseEvent>()
+          {
+            @Override
+            public void handle(MouseEvent t) {
+              if (locations_clicked.contains(location) == false)
+              {
+                setCard.setStrokeWidth(4);
+                locations_clicked.add(location);
+              }
+              else if (locations_clicked.contains(location) == true)
+              {
+                setCard.setStrokeWidth(0);
+                locations_clicked.add(location);
+              }
+              
+            }
+          });       
+        }
+        /*
+         * Update row and column index
+         */
+        rowindex = rowindex + 1;
+        if ((rowindex % 3) == 1)
+        {
+          colindex = colindex + 1;
+          rowindex = 0;
+        }
+      }
+    }
+    
+    private void handleLeaveGameResponse(LeaveGameResponse resp)
+    {
+      username_to_score_field.get(resp.uname).setText("Surrendered");
+    }
+    
     /**
      * Obtained from the Runnable interface. Is called from Thread.start().
      * It is essentially the main method for the thread
@@ -108,6 +194,20 @@ public class GameThread implements Runnable {
         /*
          * Handle other server responses.
          */
+        
+        if (obj instanceof TableResponse)
+        {
+          TableResponse resp = (TableResponse) obj;
+          handleTableResponse(resp);
+        }
+        
+        if (obj instanceof EndGameResponse)
+        {
+          EndGameResponse resp = (EndGameResponse) obj;
+          Launcher.openBrowser(primaryStage);
+          return;
+        }
+        
         if (obj instanceof LeaveGameResponse)
         {
           /*
@@ -117,28 +217,10 @@ public class GameThread implements Runnable {
            * That is surrendering
            * Users all update guis
            */
-          try {
-            this.terminate();
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-          
-          break;
-          
+          LeaveGameResponse resp = (LeaveGameResponse) obj;
+          handleLeaveGameResponse(resp);
+          return;        
         }
       }
-    }
-    
-    
-    
-    /**
-     * Handles the cleanup when the thread closes.
-     * This includes closing the socket and removing the player from the connect_players set
-     * maintained by the main Server class.
-     * @author Shalin
-     */
-    public void terminate() throws IOException{
-        socket.close();
     }
 }

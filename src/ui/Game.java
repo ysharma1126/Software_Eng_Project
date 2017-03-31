@@ -3,8 +3,6 @@ package ui;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -54,15 +52,15 @@ public class Game extends BorderPane {
   private volatile HashMap<Location, Node> location_to_node = new HashMap<Location, Node>();
   private volatile HashMap<Location, Boolean> location_to_click_status = new HashMap<Location, Boolean>();
   private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
-  private volatile ArrayList<Location> holes = new ArrayList<Location>();
+  private volatile HashMap<String, Text> username_to_score_field = new HashMap<String, Text>();
     
   private void load_initial_cards(GridPane grid)
   {
-    for (int colindex = 0; colindex < 4; ++colindex)
+    for (int colindex = 0; colindex < 5; ++colindex)
     {
       for (int rowindex = 0; rowindex < 3; ++rowindex)
       {
-        Card card = new Card(colindex, rowindex, 0, 0);
+        Card card = new Card(colindex, rowindex, 0, 0, true);
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
@@ -125,7 +123,6 @@ public class Game extends BorderPane {
         Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
-        location_to_click_status.put(location, false);
         
         setCard.setOnMouseClicked(new EventHandler<MouseEvent>()
         {
@@ -222,13 +219,7 @@ public class Game extends BorderPane {
     locations_clicked.clear();
   }
   
-  
-  
-  
-  
-  
-  
-  public Game(Stage primaryStage)
+  public Game(Stage primaryStage, ArrayList<String> users)
   {
     ToolBar toolbar = new ToolBar(
         new Button("Surrender"),
@@ -237,11 +228,17 @@ public class Game extends BorderPane {
         );
     
     VBox right_detail_pane = new VBox();
+    for (String user : users)
+    {
+      Text text = new Text();
+      right_detail_pane.getChildren().add(text);
+      username_to_score_field.put(user, text);
+    }
     
     GridPane center_pane = new GridPane();
     center_pane.setAlignment(Pos.CENTER);
-    center_pane.setHgap(20);
-    center_pane.setVgap(20);
+//    center_pane.setHgap(20);
+//    center_pane.setVgap(20);
     
     VBox left_detail_pane = new VBox();
     Button set_btn = new Button("Set!");
@@ -271,7 +268,7 @@ public class Game extends BorderPane {
     this.setMargin(center_pane, new Insets(10, 10, 10, 10));
   }
   
-  public Game(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
   {    
     ToolBar toolbar = new ToolBar(
         new Button("Surrender"),
@@ -280,11 +277,14 @@ public class Game extends BorderPane {
         );
     
     VBox right_detail_pane = new VBox();
+    /*
+     * Add in user score boxes to right detail pane
+     */
     
     GridPane center_pane = new GridPane();
     center_pane.setAlignment(Pos.CENTER);
-    center_pane.setHgap(20);
-    center_pane.setVgap(20);
+    //center_pane.setHgap(20);
+    //center_pane.setVgap(20);
     
     VBox left_detail_pane = new VBox();
     Button set_btn = new Button("Set!");
@@ -296,7 +296,8 @@ public class Game extends BorderPane {
     
     Thread server_response_handler = null;
     try {
-      server_response_handler = new Thread(new GameThread(socket, outToServer, inFromServer, set_correct, center_pane));
+      server_response_handler = new Thread(new GameThread(primaryStage, outToServer, inFromServer, set_correct, center_pane,
+          location_to_card, location_to_node, location_to_click_status, locations_clicked, username_to_score_field));
     } catch (IOException e2) {
       // TODO Auto-generated catch block
       e2.printStackTrace();
