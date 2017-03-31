@@ -4,8 +4,10 @@ import java.io.*;
 import java.net.*;
 import gamelogic.*;
 import gamelogic.Card;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -204,7 +206,18 @@ public class GameThread implements Runnable {
         if (obj instanceof EndGameResponse)
         {
           EndGameResponse resp = (EndGameResponse) obj;
-          Launcher.openBrowser(primaryStage);
+          /*
+           * Maybe display scores of all users at end
+           */
+          
+          grid.getChildren().clear();
+          Button go_back = new Button("Back to Lobby");
+          go_back.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent e) {
+              Launcher.openBrowser(primaryStage);
+            }
+          });
           return;
         }
         
