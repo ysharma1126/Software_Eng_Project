@@ -2,18 +2,21 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 
-public class InitialCardsResponse implements Sendable, Serializable {
+/*
+ * SurrenderMessage
+ * Contains the username of the client that surrendered
+ */
+
+public class LeaveGameMessage implements Sendable {
   
-  public int cards[] = new int[12];
-    
-  public InitialCardsResponse(int cards[])
+  public String username;
+  
+  public LeaveGameMessage(String username)
   {
-    this.cards = cards;
+    this.username = username;
   }
   
-  @Override
   public void send(ObjectOutputStream outputstream)
   {
     try {
@@ -23,5 +26,4 @@ public class InitialCardsResponse implements Sendable, Serializable {
       e.printStackTrace();
     }
   }
-  
 }

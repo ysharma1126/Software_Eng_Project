@@ -29,6 +29,8 @@ public class GameThread implements Runnable {
     private ObjectOutputStream hostOutput = null;
     int gid;
     
+    private volatile boolean shutdown = false;
+    
     public GameThread(Player p, Socket s, int id) throws IOException {
     	hostp = p;
     	hosts = s;
@@ -43,11 +45,11 @@ public class GameThread implements Runnable {
     }
 
 	public void run() {
-		while(true) {
+		while(!shutdown) {
 			Object obj;
 			try {
 				obj = (Object) hostInput.readObject();
-				if (obj instanceof StartGame) {
+				if (obj instanceof StartGameMessage) {
 					StartGameResponse sgr = new StartGameResponse(gid);
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
@@ -62,7 +64,7 @@ public class GameThread implements Runnable {
 					for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 	    				tr.send(value);
 	    			}
-					while (true) {
+					while (!shutdown) {
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
@@ -102,7 +104,7 @@ public class GameThread implements Runnable {
 									}
 								}
 								
-								if (obj instanceof LeaveGame) {
+								if (obj instanceof LeaveGameMessage) {
 									entry.getKey().setcount = -1;
 									
 									LeaveGameResponse lgr = new LeaveGameResponse(entry.getKey());
@@ -129,7 +131,7 @@ public class GameThread implements Runnable {
 				}
 				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 					obj = (Object) entry.getValue().readObject();
-					if (obj instanceof LeaveGame) {
+					if (obj instanceof LeaveRoomMessage) {
 						this.connected_playerInput.remove(entry.getKey());
 						this.connected_playerOutput.remove(entry.getKey());
 						

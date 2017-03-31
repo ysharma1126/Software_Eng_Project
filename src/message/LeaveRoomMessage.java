@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /*
- * SurrenderMessage
+ * SurrenderRoomMessage
  * Contains the username of the client that surrendered
  */
 
-public class LeaveGame implements Sendable {
+public class LeaveRoomMessage implements Sendable {
   
   public String username;
   
-  public LeaveGame(String username)
+  public LeaveRoomMessage(String username)
   {
     this.username = username;
   }

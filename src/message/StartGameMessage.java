@@ -11,9 +11,9 @@ import java.io.Serializable;
  * The initial cards before starting the game.
  */
 
-public class StartGame implements Sendable, Serializable {
+public class StartGameMessage implements Sendable, Serializable {
 
-  public StartGame()
+  public StartGameMessage()
   {
   }
   

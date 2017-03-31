@@ -20,6 +20,8 @@ public class PlayerThread implements Runnable {
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
     
+    private volatile boolean shutdown = false;
+    
     /**
      * Initializes the PlayerThread. Keeps track of the given socket and
      * creates the Object Stream's to communicate with the Client
@@ -54,20 +56,21 @@ public class PlayerThread implements Runnable {
         			break;
         		}
         	}
+        	shutdown = true;
             socket.close();
           //Interrupt thread?
         } catch (IOException e) {
             e.printStackTrace();
         }
         //Requests for checking stats, joining a game, logging out, etc
-        while (true) {
+        while (!shutdown) {
         	Object obj;
         	try {
 				obj = (Object) clientInput.readObject();
 				//if (obj instanceof StatsRequest) {
 				//	Stats stat = new Stats(this.getStats());
 				//}
-				if (obj instanceof CreateGame) {
+				if (obj instanceof CreateGameMessage) {
 					GameThread gt = new GameThread(player, socket, Server.gamesize);
 	    			Thread t = new Thread(gt);
 	    			t.start();
@@ -92,10 +95,11 @@ public class PlayerThread implements Runnable {
 	    				jgr.send(value);
 	    			}
 				}
-				else if (obj instanceof LogOut) {
+				else if (obj instanceof LogOutResponse) {
 					Server.connected_playerInput.remove(player);
 					Server.connected_playerOutput.remove(player);
 					socket.close();
+					shutdown = true;
 					//Interrupt thread?
 				}
 				else {

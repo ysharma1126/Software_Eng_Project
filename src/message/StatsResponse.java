@@ -8,6 +8,6 @@ import java.io.Serializable;
 * Stats should send the stats from the DB to the client
 */
 
-public class Stats implements Sendable, Serializable {
+public class StatsResponse implements Sendable, Serializable {
 	
 }
