@@ -105,7 +105,7 @@ public class GameThread implements Runnable {
 									if(game.validateSet(resp.cards)) {
 										game.updateSetcount(entry.getKey());
 										
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), resp.cards, true);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												ssr.send(entry1.getValue());
