@@ -77,7 +77,8 @@ public class GameThread implements Runnable {
 							for (Map.Entry<Player, ObjectInputStream> entry: GameThread.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
-									
+									SetSelectMessage resp = (SetSelectMessage) obj;
+									if()
 								}
 							}
 						}

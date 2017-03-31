@@ -75,7 +75,6 @@ public class PlayerThread implements Runnable {
 				//	Stats stat = new Stats(this.getStats());
 				//}
 				if (obj instanceof CreateGame) {
-					CreateGame resp = (CreateGame) obj;
 					GameThread gt = new GameThread(player, socket, Server.gamesize);
 	    			Thread t = new Thread(gt);
 	    			t.start();
