@@ -10,9 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gamelogic.*;
-import message.LeaveGameResponse;
-import message.StartGameResponse;
-import message.TableResponse;
+import message.*;
 
 /**
  * A thread for a single game
@@ -23,12 +21,12 @@ import message.TableResponse;
 
 public class GameThread implements Runnable {
 	
-    static Map<Player, ObjectInputStream> connected_playerInput = null;
-    static Map<Player, ObjectOutputStream> connected_playerOutput = null;
+    public Map<Player, ObjectInputStream> connected_playerInput = null;
+    public Map<Player, ObjectOutputStream> connected_playerOutput = null;
     private Player hostp = null;
     private Socket hosts = null;
-    public ObjectInputStream hostInput = null;
-    public ObjectOutputStream hostOutput = null;
+    private ObjectInputStream hostInput = null;
+    private ObjectOutputStream hostOutput = null;
     int gid;
     
     public GameThread(Player p, Socket s, int id) throws IOException {
@@ -40,8 +38,8 @@ public class GameThread implements Runnable {
         hostOutput = new ObjectOutputStream(hosts.getOutputStream());
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
-		Server.connected_playerInput.put(p, hostInput);
-		Server.connected_playerOutput.put(p, hostOutput);
+		connected_playerInput.put(p, hostInput);
+		connected_playerOutput.put(p, hostOutput);
     }
 
 	public void run() {
@@ -61,7 +59,7 @@ public class GameThread implements Runnable {
 					game.dealCards(deck, table, 12);
 					
 					TableResponse tr = new TableResponse(table);
-					for(ObjectOutputStream value : GameThread.connected_playerOutput.values()) {
+					for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 	    				tr.send(value);
 	    			}
 					while (true) {
@@ -69,27 +67,75 @@ public class GameThread implements Runnable {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
 								
-								TableResponse tr = new TableResponse(table);
-								for(ObjectOutputStream value : GameThread.connected_playerOutput.values()) {
-				    				tr.send(value);
+								TableResponse tr1 = new TableResponse(table);
+								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
+									if (entry.getKey().setcount != -1) {
+										tr1.send(entry.getValue());
+									}
 				    			}
 							}
-							for (Map.Entry<Player, ObjectInputStream> entry: GameThread.connected_playerInput.entrySet()) {
+							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
 									SetSelectMessage resp = (SetSelectMessage) obj;
-									if()
+									if(game.validateSet(resp.cards)) {
+										game.updateSetcount(entry.getKey());
+										
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey());
+										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+											if (entry1.getKey().setcount != -1) {
+												ssr.send(entry1.getValue());
+											}
+						    			}
+										
+										game.removeCards(resp.cards, table);
+										if (table.size() < 12 && !deck.isEmpty()) {
+											game.dealCards(deck, table, 3);
+											
+											TableResponse tr2 = new TableResponse(table);
+											for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+												if (entry1.getKey().setcount != -1) {
+													tr2.send(entry1.getValue());
+												}
+							    			}
+										}
+									}
+								}
+								
+								if (obj instanceof LeaveGame) {
+									entry.getKey().setcount = -1;
+									
+									LeaveGameResponse lgr = new LeaveGameResponse(entry.getKey());
+									for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+										if (entry1.getKey().setcount != -1) {
+											lgr.send(entry1.getValue());
+										}
+					    			}
 								}
 							}
 						}
+						
+						EndGameResponse eg = new EndGameResponse();
+						for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
+							if (entry.getKey().setcount != -1) {
+								eg.send(entry.getValue());
+							}
+		    			}
+						Server.connected_games.remove(gid);
+						//Push Stats to DB
+						
+						//Interrupt thread?
 					}
 				}
-				for (Map.Entry<Player, ObjectInputStream> entry: GameThread.connected_playerInput.entrySet()) {
+				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveGame) {
-						LeaveGameResponse lgr = new LeaveGameResponse(entry.getKey());
-						for(ObjectOutputStream value : GameThread.connected_playerOutput.values()) {
-		    				lgr.send(value);
+						this.connected_playerInput.remove(entry.getKey());
+						this.connected_playerOutput.remove(entry.getKey());
+						
+						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
+						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
+		    				lrr.send(value);
 		    			}
 					}
 				}

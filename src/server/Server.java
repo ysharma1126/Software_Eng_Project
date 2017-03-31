@@ -22,7 +22,7 @@ public class Server {
 	 * , if not deal 3 more cards. Wait for player to pick set, if valid, update set count, remove the 3 set cards, 
 	 * and deal 3 more cards if there are less than 12 cards on the board. Once while loop is exited, the game has ended.
 	 * Push game/player stats to DB, and send data to client for display
-	 * @author		ysharma1126
+	 * @author		Yash
 	 * @param	p	Players who have entered this game
 	 *
 	 */

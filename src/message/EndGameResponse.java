@@ -2,20 +2,19 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /*
- * SurrenderMessage
- * Contains the username of the client that surrendered
+ * LoginResponse
+ * Should be sent only to the client that sent a 
+ * LoginMessage to the server.
+ * LoginResponse should say whether the login was valid or not
  */
 
-public class SurrenderMessage implements Sendable {
+public class EndGameResponse implements Sendable, Serializable {
   
-  public String username;
-  
-  public SurrenderMessage(String username, int cards[])
-  {
-    this.username = username;
-  }
+  public EndGameResponse()
+  {}
   
   public void send(ObjectOutputStream outputstream)
   {
@@ -26,4 +25,5 @@ public class SurrenderMessage implements Sendable {
       e.printStackTrace();
     }
   }
+   
 }

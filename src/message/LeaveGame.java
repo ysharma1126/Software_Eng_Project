@@ -3,20 +3,16 @@ package message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-
 /*
- * Surrender Response
- * Should be broadcasted to all available
- * clients for a particular game room
- * Once a user surrenders.
- * this.username contains the username of the user that surrendered.
+ * SurrenderMessage
+ * Contains the username of the client that surrendered
  */
 
-public class SurrenderResponse implements Sendable {
+public class LeaveGame implements Sendable {
   
   public String username;
   
-  public SurrenderResponse(String username, int cards[])
+  public LeaveGame(String username)
   {
     this.username = username;
   }

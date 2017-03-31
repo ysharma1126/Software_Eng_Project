@@ -5,15 +5,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /*
- * InitialCardsMessage
+ * StartGame
  * A ping from a client to the server to send it the twelve initial
  * Cards for a game.  The server should make sure that all clients got
  * The initial cards before starting the game.
  */
 
-public class InitialCardsMessage implements Sendable, Serializable {
+public class StartGame implements Sendable, Serializable {
 
-  public InitialCardsMessage()
+  public StartGame()
   {
   }
   

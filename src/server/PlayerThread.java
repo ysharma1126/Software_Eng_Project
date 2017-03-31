@@ -2,17 +2,9 @@ package server;
 import java.io.*;
 import java.net.*;
 import gamelogic.*;
-import message.CreateGame;
-import message.CreateGameResponse;
-import message.JoinGame;
-import message.JoinGameResponse;
-import message.LoginMessage;
-import message.LoginResponse;
-import message.SetSelectResponse;
+import message.*;
 
 import java.sql.*;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * A thread for a single player/client.
@@ -62,7 +54,8 @@ public class PlayerThread implements Runnable {
         			break;
         		}
         	}
-            this.terminate();
+            socket.close();
+          //Interrupt thread?
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,11 +83,11 @@ public class PlayerThread implements Runnable {
 				}
 				else if (obj instanceof JoinGame) {
 					JoinGame resp = (JoinGame) obj;
-					GameThread t = Server.connected_games.get(resp.id);
+					GameThread t = Server.connected_games.get(resp.gid);
 					t.connected_playerInput.put(player, clientInput);
 					t.connected_playerOutput.put(player, clientOutput);
 					
-					JoinGameResponse jgr = new JoinGameResponse(player, resp.id);
+					JoinGameResponse jgr = new JoinGameResponse(player, resp.gid);
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				jgr.send(value);
 	    			}
@@ -102,9 +95,8 @@ public class PlayerThread implements Runnable {
 				else if (obj instanceof LogOut) {
 					Server.connected_playerInput.remove(player);
 					Server.connected_playerOutput.remove(player);
-					clientInput.close();
-					clientOutput.close();
-					this.terminate();
+					socket.close();
+					//Interrupt thread?
 				}
 				else {
 					//Handle request we don't understand
@@ -146,16 +138,5 @@ public class PlayerThread implements Runnable {
     		player = new Player(username);
     	}
     	return authenticate_status;
-    }
-    
-    /**
-     * Handles the cleanup when the thread closes.
-     * This includes closing the socket and removing the player from the connect_players set
-     * maintained by the main Server class.
-     * @author Shalin
-     */
-    public void terminate() throws IOException{
-		socket.close();
-		Server.connected_players.remove(player);
     }
 }

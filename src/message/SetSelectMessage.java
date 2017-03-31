@@ -2,6 +2,9 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import gamelogic.Card;
 
 /*
  * SetSelectMessage
@@ -12,11 +15,11 @@ import java.io.ObjectOutputStream;
 public class SetSelectMessage implements Sendable {
 	
   //Change to public ArrayList <Card> cards;
-  public int cards[];
+  public ArrayList <Card> cards;
   public String username;
   
 //Change to public ArrayList <Card> cards;
-  public SetSelectMessage(String username, int cards[])
+  public SetSelectMessage(String username, ArrayList <Card> cards)
   {
     this.username = username;
     this.cards = cards;

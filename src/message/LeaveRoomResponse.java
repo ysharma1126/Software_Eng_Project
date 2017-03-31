@@ -5,14 +5,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import gamelogic.*;
 
-public class LeaveGameResponse implements Sendable, Serializable{
+public class LeaveRoomResponse implements Sendable, Serializable{
 	
 	public String uname;
-	public int setcount;
 	
-	public LeaveGameResponse(Player p) {
+	public LeaveRoomResponse(Player p) {
 		uname = p.username;
-		setcount = p.setcount;
 	}
 	
 	public void send(ObjectOutputStream outputstream)

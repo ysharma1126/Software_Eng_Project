@@ -3,15 +3,16 @@ package message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class SetSelectResponse implements Sendable {
+import gamelogic.Player;
 
-  public boolean is_valid;
-  public String username;
-  
-  public SetSelectResponse(String username, boolean is_valid)
-  {
-    this.is_valid = is_valid;
-    this.username = username;
+public class SetSelectResponse implements Sendable {
+	
+	public String username;
+	public int setcount;
+	
+  public SetSelectResponse(Player p) {
+    this.setcount = p.setcount;
+    this.username = p.username;
   }
   
   public void send(ObjectOutputStream outputstream)
