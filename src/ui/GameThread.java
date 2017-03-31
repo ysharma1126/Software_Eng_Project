@@ -61,6 +61,10 @@ public class GameThread implements Runnable {
          * Increase the score in the GUI for the
          * corresponding user
          */
+        
+        /*
+         * Delete the cards that were right
+         */
       }
     }
 

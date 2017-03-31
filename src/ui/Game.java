@@ -54,6 +54,7 @@ public class Game extends BorderPane {
   private volatile HashMap<Location, Node> location_to_node = new HashMap<Location, Node>();
   private volatile HashMap<Location, Boolean> location_to_click_status = new HashMap<Location, Boolean>();
   private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
+  private volatile ArrayList<Location> holes = new ArrayList<Location>();
     
   private void load_initial_cards(GridPane grid)
   {
