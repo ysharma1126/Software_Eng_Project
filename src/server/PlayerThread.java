@@ -2,10 +2,17 @@ package server;
 import java.io.*;
 import java.net.*;
 import gamelogic.*;
+import message.CreateGame;
+import message.CreateGameResponse;
+import message.JoinGame;
+import message.JoinGameResponse;
 import message.LoginMessage;
 import message.LoginResponse;
+import message.SetSelectResponse;
 
 import java.sql.*;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A thread for a single player/client.
@@ -50,13 +57,64 @@ public class PlayerThread implements Runnable {
         		if (this.authenticate()){
         			LoginResponse lr = new LoginResponse(true);
         			lr.send(clientOutput);
-        			Server.connected_players.put(player, socket);
+        			Server.connected_playerInput.put(player, clientInput);
+        			Server.connected_playerOutput.put(player, clientOutput);
         			break;
         		}
         	}
             this.terminate();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        //Requests for checking stats, joining a game, logging out, etc
+        while (true) {
+        	Object obj;
+        	try {
+				obj = (Object) clientInput.readObject();
+				//if (obj instanceof StatsRequest) {
+				//	Stats stat = new Stats(this.getStats());
+				//}
+				if (obj instanceof CreateGame) {
+					CreateGame resp = (CreateGame) obj;
+					GameThread gt = new GameThread(player, socket, Server.gamesize);
+	    			Thread t = new Thread(gt);
+	    			t.start();
+	    			
+	    			Server.connected_games.put(Server.gamesize, gt);
+	    			
+	    			CreateGameResponse cgr = new CreateGameResponse(player, Server.gamesize);
+	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	    				cgr.send(value);
+	    			}
+					
+	    			Server.gamesize++;
+				}
+				else if (obj instanceof JoinGame) {
+					JoinGame resp = (JoinGame) obj;
+					GameThread t = Server.connected_games.get(resp.id);
+					t.connected_playerInput.put(player, clientInput);
+					t.connected_playerOutput.put(player, clientOutput);
+					
+					JoinGameResponse jgr = new JoinGameResponse(player, resp.id);
+	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	    				jgr.send(value);
+	    			}
+				}
+				else if (obj instanceof LogOut) {
+					Server.connected_playerInput.remove(player);
+					Server.connected_playerOutput.remove(player);
+					clientInput.close();
+					clientOutput.close();
+					this.terminate();
+				}
+				else {
+					//Handle request we don't understand
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        	
         }
     }
     

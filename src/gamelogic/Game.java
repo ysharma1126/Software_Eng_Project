@@ -38,7 +38,7 @@ public class Game {
 	 * @return		boolean representing whether the card trio is a set
 	 *
 	 */
-	boolean validateSet(ArrayList <Card> set) {
+	public boolean validateSet(ArrayList <Card> set) {
 		if (!((set.get(0).shape == set.get(1).shape) && (set.get(1).shape == set.get(2).shape) ||
                 (set.get(0).shape != set.get(1).shape) && (set.get(0).shape != set.get(2).shape) && (set.get(1).shape != set.get(2).shape))) {
             return false;
@@ -65,7 +65,7 @@ public class Game {
 	 * @return		boolean representing whether there is a set on the table
 	 *
 	 */
-	boolean checkSetexists(ArrayList <Card> cards) {
+	public boolean checkSetexists(ArrayList <Card> cards) {
 		if (cards == null) {
 			return false;
 		}
@@ -95,7 +95,7 @@ public class Game {
 	 * @param	numcards	Number of cards to be dealt
 	 *
 	 */
-	void dealCards(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
+	public void dealCards(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
 		for (int i = 0; i < numcards; i++) {
 			if (deck.isEmpty()) {
 				break;
@@ -110,7 +110,7 @@ public class Game {
 	 * @param	table	The cards currently on the table
 	 *
 	 */
-	void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
+	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
 			table.remove(card);
 		}
@@ -121,7 +121,7 @@ public class Game {
 	 * @param	p	Player whose set count needs to be incremented
 	 *
 	 */
-	void updateSetcount(Player p) {
+	public void updateSetcount(Player p) {
 		p.setcount++;
 	}
 }
