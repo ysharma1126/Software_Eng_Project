@@ -10,6 +10,7 @@ public class Card {
 	public int number;
 	public int color;
 	public int shading;
+	public boolean hole;
 	/**
 	 * Initializes a card
 	 * @author		ysharma1126
@@ -19,11 +20,12 @@ public class Card {
 	 * @param	shde	Shading feature
 	 *
 	 */
-	public Card(int shpe, int num, int col, int shde) {
+	public Card(int shpe, int num, int col, int shde, boolean hle) {
 		shape = shpe;
 		number = num;
 		color = col;
 		shading = shde;
+		hole = hle;
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ public class Game {
 			for (int number = 0; number < 3; number++) {
 				for (int color = 0; color < 3; color++) {
 					for (int shading = 0; shading < 3; shading++) {
-						cards.add(new Card(shape, number, color, shading));
+						cards.add(new Card(shape, number, color, shading, false));
 					}
 				}
 				
@@ -112,7 +112,7 @@ public class Game {
 	 */
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
-			table.remove(card);
+			table.get()
 		}
 	}
 	/**

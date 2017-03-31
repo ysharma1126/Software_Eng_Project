@@ -87,11 +87,7 @@ public class GameThread implements Runnable {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
 								
-								ArrayList <Card> newcards = new ArrayList<Card>();
-								newcards.add(table.get(table.size()-1));
-								newcards.add(table.get(table.size()-2));
-								newcards.add(table.get(table.size()-3));
-								NewCardsResponse tr1 = new NewCardsResponse(newcards);
+								TableResponse tr1 = new TableResponse(table);
 								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
 									if (entry.getKey().setcount != -1) {
 										tr1.send(entry.getValue());
@@ -105,7 +101,7 @@ public class GameThread implements Runnable {
 									if(game.validateSet(resp.cards)) {
 										game.updateSetcount(entry.getKey());
 										
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true, resp.cards);
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												ssr.send(entry1.getValue());
@@ -116,20 +112,16 @@ public class GameThread implements Runnable {
 										if (table.size() < 12 && !deck.isEmpty()) {
 											game.dealCards(deck, table, 3);
 											
-											ArrayList <Card> newcards = new ArrayList<Card>();
-											newcards.add(table.get(table.size()-1));
-											newcards.add(table.get(table.size()-2));
-											newcards.add(table.get(table.size()-3));
-											NewCardsResponse tr1 = new NewCardsResponse(newcards);
+											TableResponse tr2 = new TableResponse(table);
 											for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 												if (entry1.getKey().setcount != -1) {
-													tr1.send(entry1.getValue());
+													tr2.send(entry1.getValue());
 												}
 							    			}
 										}
 									}
 									else {
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false, resp.cards);
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												ssr.send(entry1.getValue());
