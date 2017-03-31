@@ -40,7 +40,6 @@ public class PlayerThread implements Runnable {
      * @author Shalin
      */
     public void run() {
-    	
         try (
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         ) {
@@ -78,8 +77,8 @@ public class PlayerThread implements Runnable {
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				cgr.send(value);
 	    			}
-					
 	    			Server.gamesize++;
+	    			t.join();
 	    			
 				}
 				else if (obj instanceof JoinRoomMessage) {

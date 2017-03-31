@@ -70,15 +70,25 @@ public class Game {
 			return false;
 		}
 		int size = cards.size();
+		boolean holecheck = false;
 		for (int i = 0; i < size; i++){
 			Card a = cards.get(i);
+			if (a.hole) {
+				holecheck = true;
+			}
 			for (int j = 0; j < size; j++) {
 				Card b = cards.get(j);
+				if (b.hole) {
+					holecheck = true;
+				}
 				for (int k = 0; k < size; k++) {
 					Card c = cards.get(k);
+					if (c.hole) {
+						holecheck = true;
+					}
 					ArrayList <Card> temp = new ArrayList <Card>();
 					temp.addAll(Arrays.asList(a,b,c));
-					if (validateSet(temp)) {
+					if (validateSet(temp) && (!holecheck)) {
 						return true;
 					}
 					temp.clear();
@@ -88,7 +98,24 @@ public class Game {
 		return false;
 	}
 	/**
-	 * Deals the cards
+	 * Init table
+	 * @author		ysharma1126
+	 * @param	deck	The remaining cards in the deck
+	 * @param	table	The cards currently on the table
+	 * @param	numcards	Number of cards to be dealt
+	 *
+	 */
+	public void initTable(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
+		for (int i = 0; i < numcards; i++) {
+			if (deck.isEmpty()) {
+				break;
+			}
+			table.add(deck.remove(deck.size()-1));
+		}
+	}
+	
+	/**
+	 * Deal cards
 	 * @author		ysharma1126
 	 * @param	deck	The remaining cards in the deck
 	 * @param	table	The cards currently on the table
@@ -96,11 +123,46 @@ public class Game {
 	 *
 	 */
 	public void dealCards(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
-		for (int i = 0; i < numcards; i++) {
+		if (deck.isEmpty()) {
+			return;
+		}
+		boolean holechecker = false;
+		int count = 0;
+		for (Card card: table) {
+			if (count != (numcards - 1)) {
+				if (card.hole) {
+					holechecker = true;
+					table.get(table.indexOf(card)).hole = false;
+					table.set(table.indexOf(card), deck.remove(deck.size()-1));
+					count++;
+				}
+			}
+			else {
+				break;
+			}
+		}
+		if (!holechecker) {
+			for (int i = 0;i < numcards;i++) {
+				table.add(deck.remove(deck.size()-1));
+			}
+		}
+	}
+	
+	/**
+	 * Replaces the cards
+	 * @author		ysharma1126
+	 * @param	deck	The remaining cards in the deck
+	 * @param	table	The cards currently on the table
+	 * @param	numcards	Number of cards to be dealt
+	 *
+	 */
+	public void replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
+		for (Card card: set) {
 			if (deck.isEmpty()) {
 				break;
 			}
-			table.add(deck.remove(deck.size()-1));
+			table.get(table.indexOf(card)).hole = false;
+			table.set(table.indexOf(card), deck.remove(deck.size()-1));
 		}
 	}
 	/**
@@ -112,7 +174,7 @@ public class Game {
 	 */
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
-			table.get()
+			table.get(table.indexOf(card)).hole = true;
 		}
 	}
 	/**
@@ -123,5 +185,15 @@ public class Game {
 	 */
 	public void updateSetcount(Player p) {
 		p.setcount++;
+	}
+	
+	public int getsize(ArrayList <Card> table) {
+		int size = 0;
+		for (Card card: table) {
+			if (!card.hole) {
+				size++;
+			}
+		}
+		return size;
 	}
 }

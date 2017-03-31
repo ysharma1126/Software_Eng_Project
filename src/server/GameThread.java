@@ -69,7 +69,7 @@ public class GameThread implements Runnable {
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
-					game.dealCards(deck, table, 12);
+					game.initTable(deck, table, 12);
 					//Send cards when Sahil asks
 					int check = 0;
 					while(!(check == this.connected_playerInput.size()-1)) {
@@ -109,16 +109,15 @@ public class GameThread implements Runnable {
 						    			}
 										
 										game.removeCards(resp.cards, table);
-										if (table.size() < 12 && !deck.isEmpty()) {
-											game.dealCards(deck, table, 3);
-											
-											TableResponse tr2 = new TableResponse(table);
-											for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-												if (entry1.getKey().setcount != -1) {
-													tr2.send(entry1.getValue());
-												}
-							    			}
+										if (game.getsize(table) < 12 && !deck.isEmpty()) {
+											game.replaceCards(resp.cards, deck, table);
 										}
+										TableResponse tr2 = new TableResponse(table);
+										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+											if (entry1.getKey().setcount != -1) {
+												tr2.send(entry1.getValue());
+											}
+						    			}
 									}
 									else {
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);

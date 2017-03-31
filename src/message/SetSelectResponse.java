@@ -12,7 +12,7 @@ public class SetSelectResponse implements Sendable {
 	public int setcount;
 	public boolean is_valid;
 	
-  public SetSelectResponse(Player p, boolean is_valid, ArrayList <Card> cards) {
+  public SetSelectResponse(Player p, boolean is_valid) {
     this.setcount = p.setcount;
     this.username = p.username;
     this.is_valid = is_valid;
