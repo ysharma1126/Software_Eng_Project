@@ -71,10 +71,6 @@ public class GameThread implements Runnable {
 							}
 						}
 					}
-					TableResponse tr = new TableResponse(table);
-					for(ObjectOutputStream value : this.connected_playerOutput.values()) {
-	    				tr.send(value);
-	    			}
 					while (!shutdown) {
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
