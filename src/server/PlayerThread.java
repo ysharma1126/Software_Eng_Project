@@ -50,6 +50,9 @@ public class PlayerThread implements Runnable {
         			lr.send(clientOutput);
         			Server.connected_playerInput.put(player, clientInput);
         			Server.connected_playerOutput.put(player, clientOutput);
+        			
+        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games);
+        			gur.send(clientOutput);
         			break;
         		}
         	}
@@ -72,6 +75,7 @@ public class PlayerThread implements Runnable {
 	    			t.start();
 	    			
 	    			Server.connected_games.put(Server.gamesize, gt);
+	    			Server.connected_gamethreads.put(Server.gamesize, t);
 	    			
 	    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
@@ -79,18 +83,20 @@ public class PlayerThread implements Runnable {
 	    			}
 	    			Server.gamesize++;
 	    			t.join();
-	    			
 				}
 				else if (obj instanceof JoinRoomMessage) {
 					JoinRoomMessage resp = (JoinRoomMessage) obj;
-					GameThread t = Server.connected_games.get(resp.gid);
-					t.connected_playerInput.put(player, clientInput);
-					t.connected_playerOutput.put(player, clientOutput);
+					GameThread gt = Server.connected_games.get(resp.gid);
+					Thread t = Server.connected_gamethreads.get(resp.gid);
+					gt.connected_playerInput.put(player, clientInput);
+					gt.connected_playerOutput.put(player, clientOutput);
 					
 					JoinRoomResponse jgr = new JoinRoomResponse(player, resp.gid);
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				jgr.send(value);
 	    			}
+	    			
+	    			t.join();
 				}
 				else if (obj instanceof LogOutMessage) {
 					this.terminate();
@@ -100,6 +106,9 @@ public class PlayerThread implements Runnable {
 					//Handle request we don't understand
 				}
 			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

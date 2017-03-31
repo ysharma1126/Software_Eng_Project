@@ -52,7 +52,8 @@ public class Server {
 	static int gamesize = 0;
     static Map<Player, ObjectInputStream> connected_playerInput = null;
     static Map<Player, ObjectOutputStream> connected_playerOutput = null;
-	static Map<Integer, Thread> connected_games = null;
+	static Map<Integer, GameThread> connected_games = null;
+	static Map<Integer, Thread> connected_gamethreads = null;
 	static int portNumber;
 	
     /**
@@ -66,7 +67,8 @@ public class Server {
 			System.err.print("Usage: java Server <port Number>");
 			System.exit(1);
 		}
-		connected_games = Collections.synchronizedMap(new HashMap<Integer, Thread>());
+		connected_games = Collections.synchronizedMap(new HashMap<Integer, GameThread>());
+		connected_gamethreads = Collections.synchronizedMap(new HashMap<Integer, Thread>());
 		connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
 		portNumber = Integer.parseInt(args[0]);

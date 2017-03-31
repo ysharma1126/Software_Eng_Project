@@ -16,15 +16,14 @@ import message.*;
  * A thread for a single game
  * Handles communication with the client for things pertaining to the game
  * @author Yash
- *
  */
 
 public class GameThread implements Runnable {
 	
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
-    private Player hostp = null;
-    private Socket hosts = null;
+    public Player hostp = null;
+    public Socket hosts = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
     int gid;
