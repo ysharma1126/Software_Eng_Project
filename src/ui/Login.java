@@ -69,7 +69,33 @@ public class Login extends GridPane {
     Text actiontarget = new Text();
     actiontarget.setId("actiontarget");
     this.add(actiontarget, 1, 6);
-              
+      
+    sign_up_btn.setOnAction(new EventHandler<ActionEvent>(){
+      @Override
+      public void handle(ActionEvent e) {
+        Sendable send_msg = new SignUpMessage(userTextField.getText(), pwBox.getText());
+        send_msg.send(outToServer);
+        
+        try {
+        SignUpResponse response = (SignUpResponse)inFromServer.readObject();
+        
+        if (response.is_valid)
+        {
+          Launcher.username = userTextField.getText();
+          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+        }
+        
+        } catch (ClassNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+  
+      }
+    });
+      
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
