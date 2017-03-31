@@ -70,32 +70,32 @@ public class PlayerThread implements Runnable {
 				//if (obj instanceof StatsRequest) {
 				//	Stats stat = new Stats(this.getStats());
 				//}
-				if (obj instanceof CreateGameMessage) {
+				if (obj instanceof CreateRoomMessage) {
 					GameThread gt = new GameThread(player, socket, Server.gamesize);
 	    			Thread t = new Thread(gt);
 	    			t.start();
 	    			
 	    			Server.connected_games.put(Server.gamesize, gt);
 	    			
-	    			CreateGameResponse cgr = new CreateGameResponse(player, Server.gamesize);
+	    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				cgr.send(value);
 	    			}
 					
 	    			Server.gamesize++;
 				}
-				else if (obj instanceof JoinGame) {
-					JoinGame resp = (JoinGame) obj;
+				else if (obj instanceof JoinRoomMessage) {
+					JoinRoomMessage resp = (JoinRoomMessage) obj;
 					GameThread t = Server.connected_games.get(resp.gid);
 					t.connected_playerInput.put(player, clientInput);
 					t.connected_playerOutput.put(player, clientOutput);
 					
-					JoinGameResponse jgr = new JoinGameResponse(player, resp.gid);
+					JoinRoomResponse jgr = new JoinRoomResponse(player, resp.gid);
 	    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				jgr.send(value);
 	    			}
 				}
-				else if (obj instanceof LogOutResponse) {
+				else if (obj instanceof LogOutMessage) {
 					Server.connected_playerInput.remove(player);
 					Server.connected_playerOutput.remove(player);
 					socket.close();

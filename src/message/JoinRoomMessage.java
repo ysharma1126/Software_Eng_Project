@@ -11,12 +11,12 @@ import java.io.Serializable;
  * Is trying to login with
  */
 
-public class JoinGame implements Sendable, Serializable {
+public class JoinRoomMessage implements Sendable, Serializable {
   
   public String username;
   public int gid;
   
-  public JoinGame(String username, int gid)
+  public JoinRoomMessage(String username, int gid)
   {
     this.username = username;
     this.gid = gid;

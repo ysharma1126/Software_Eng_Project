@@ -5,12 +5,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import gamelogic.*;
 
-public class CreateGameResponse implements Sendable, Serializable{
+public class CreateRoomResponse implements Sendable, Serializable{
 	
 	public String uname;
 	public int gid;
 	
-	public CreateGameResponse(Player p, int id) {
+	public CreateRoomResponse(Player p, int id) {
 		uname = p.username;
 		gid = id;
 	}

@@ -59,7 +59,18 @@ public class GameThread implements Runnable {
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
 					game.dealCards(deck, table, 12);
-					
+					//Send cards when Sahil asks
+					int check = 0;
+					while(!(check == this.connected_playerInput.size()-1)) {
+						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
+							obj = (Object) entry.getValue().readObject();
+							if (obj instanceof InitialCardsMessage) {
+								check++;
+								InitialCardsResponse icr = new InitialCardsResponse(table);
+								icr.send(this.connected_playerOutput.get(entry.getKey()));
+							}
+						}
+					}
 					TableResponse tr = new TableResponse(table);
 					for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 	    				tr.send(value);
@@ -83,7 +94,7 @@ public class GameThread implements Runnable {
 									if(game.validateSet(resp.cards)) {
 										game.updateSetcount(entry.getKey());
 										
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey());
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												ssr.send(entry1.getValue());
@@ -101,6 +112,14 @@ public class GameThread implements Runnable {
 												}
 							    			}
 										}
+									}
+									else {
+										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
+										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+											if (entry1.getKey().setcount != -1) {
+												ssr.send(entry1.getValue());
+											}
+						    			}
 									}
 								}
 								

@@ -3,16 +3,16 @@ package message;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+
 import gamelogic.*;
 
-public class JoinGameResponse implements Sendable, Serializable{
+public class InitialCardsResponse implements Sendable, Serializable{
 	
-	public String uname;
-	public int gid;
+	public ArrayList<Card> table;
 	
-	public JoinGameResponse(Player p, int id) {
-		uname = p.username;
-		gid = id;
+	public InitialCardsResponse(ArrayList <Card> t) {
+		table = t;
 	}
 	
 	public void send(ObjectOutputStream outputstream)
