@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 import message.LoginMessage;
 import message.LoginResponse;
 import message.SetSelectResponse;
-import message.SurrenderResponse;
+import message.LeaveGameResponse;
 
 import java.sql.*;
 
@@ -104,7 +104,7 @@ public class GameThread implements Runnable {
         /*
          * Handle other server responses.
          */
-        if (obj instanceof SurrenderResponse)
+        if (obj instanceof LeaveGameResponse)
         {
           /*
            * SurrenderResponse Message

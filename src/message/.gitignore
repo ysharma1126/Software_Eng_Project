@@ -1,0 +1,15 @@
+/CreateGameMessage.class
+/EndGameResponse.class
+/LeaveGameMessage.class
+/LeaveRoomMessage.class
+/LeaveRoomResponse.class
+/LogOutResponse.class
+/StartGameMessage.class
+/StatsResponse.class
+/CreateRoomMessage.class
+/CreateRoomResponse.class
+/InitialCardsMessage.class
+/InitialCardsResponse.class
+/JoinRoomMessage.class
+/JoinRoomResponse.class
+/LogOutMessage.class

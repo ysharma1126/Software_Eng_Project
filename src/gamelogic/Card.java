@@ -25,4 +25,11 @@ public class Card {
 		color = col;
 		shading = shde;
 	}
+	
+	@Override
+	public String toString()
+	{
+	  String return_string = "Shape: " + shape + "Number: " + number + "Color: " + color + "Shading: " + shading;
+	  return return_string;
+	}
 }

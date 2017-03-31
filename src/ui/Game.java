@@ -41,41 +41,27 @@ import message.Sendable;
 import message.SetSelectMessage;
 import message.SetSelectResponse;
 import server.PlayerThread;
+import gamelogic.Card;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 
 public class Game extends BorderPane {
 
-  private HashMap<String, Integer> location_to_card = new HashMap<String, Integer>();
-  private HashMap<String, Node> location_to_node = new HashMap<String, Node>();
-  private HashMap<String, Boolean> location_to_click_status = new HashMap<String, Boolean>();
-  private HashSet<String> locations_clicked = new HashSet<String>();
-  
-  
-  private class serverListenerThread implements Runnable {
-    private ObjectOutputStream toServer;
-    private ObjectInputStream fromServer;
+  private volatile HashMap<Location, Card> location_to_card = new HashMap<Location, Card>();
+  private volatile HashMap<Location, Node> location_to_node = new HashMap<Location, Node>();
+  private volatile HashMap<Location, Boolean> location_to_click_status = new HashMap<Location, Boolean>();
+  private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
     
-    public serverListenerThread(ObjectOutputStream toServer, ObjectInputStream fromServer)
-    {
-      this.toServer = toServer;
-      this.fromServer = fromServer;
-    }
-    
-    public void run(){
-      Thread t = new Thread();
-    }
-  }
-  
   private void load_initial_cards(GridPane grid)
   {
     for (int colindex = 0; colindex < 4; ++colindex)
     {
       for (int rowindex = 0; rowindex < 3; ++rowindex)
       {
-        int card = colindex*3 + rowindex;
+        Card card = new Card(colindex, rowindex, 0, 0);
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
@@ -86,9 +72,7 @@ public class Game extends BorderPane {
         setCard.setStroke(Color.web("blue", 0.30));
         setCard.setStrokeWidth(0);
         grid.add(setCard, colindex, rowindex);
-        final int card_row_ind = rowindex;
-        final int card_col_ind = colindex;
-        String location = ""+card_row_ind+""+card_col_ind;
+        Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
         location_to_click_status.put(location, false);
@@ -117,7 +101,7 @@ public class Game extends BorderPane {
   
   private void load_initial_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer, GridPane grid)
   {
-   InitialCardsMessage start_msg = new InitialCardsMessage();
+   InitialCardsMessage start_msg = new InitialCardsMessage(Launcher.username);
    start_msg.send(outToServer);
    try {
     InitialCardsResponse start_response = (InitialCardsResponse)inFromServer.readObject();
@@ -126,7 +110,7 @@ public class Game extends BorderPane {
     {
       for (int rowindex = 0; rowindex < 3; ++rowindex)
       {
-        int card = start_response.cards[colindex*3 + rowindex];
+        Card card = start_response.table.get(colindex*3 + rowindex);
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
@@ -137,9 +121,7 @@ public class Game extends BorderPane {
         setCard.setStroke(Color.web("blue", 0.30));
         setCard.setStrokeWidth(0);
         grid.add(setCard, colindex, rowindex);
-        final int card_row_ind = rowindex;
-        final int card_col_ind = colindex;
-        String location = ""+card_row_ind+""+card_col_ind;
+        Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
         location_to_click_status.put(location, false);
@@ -148,15 +130,15 @@ public class Game extends BorderPane {
         {
           @Override
           public void handle(MouseEvent t) {
-            if (location_to_click_status.get(location) == false)
+            if (locations_clicked.contains(location) == false)
             {
               setCard.setStrokeWidth(4);
-              location_to_click_status.put(location, true);
+              locations_clicked.add(location);
             }
-            else if (location_to_click_status.get(location) == true)
+            else if (locations_clicked.contains(location) == true)
             {
               setCard.setStrokeWidth(0);
-              location_to_click_status.put(location, false);
+              locations_clicked.add(location);
             }
             
           }
@@ -189,11 +171,10 @@ public class Game extends BorderPane {
     
     else
     {
-      int cards[] = new int[3];
-      int index = 0;
-      for (String location : locations_clicked)
+      ArrayList<Card> cards = new ArrayList<Card>();
+      for (Location location : locations_clicked)
       {
-        cards[index] = location_to_card.get(location);
+        cards.add(location_to_card.get(location));
         System.out.println(location_to_card.get(location));
       }
     }
@@ -202,6 +183,7 @@ public class Game extends BorderPane {
   }
   
   /*
+   * Real code
    * Submit cards to server
    * GameThread will handle the response
    */
@@ -214,31 +196,23 @@ public class Game extends BorderPane {
     
     else
     {
-      int cards[] = new int[3];
-      int index = 0;
-      for (String location : locations_clicked)
+      ArrayList<Card> cards = new ArrayList<Card>();
+      for (Location location : locations_clicked)
       {
-        cards[index] = location_to_card.get(location);
+        cards.add(location_to_card.get(location));
       }
       SetSelectMessage set_message = new SetSelectMessage(Launcher.username, cards);
-      try {
-        outToServer.writeObject(set_message);
-      } catch (IOException e1) {
-        // TODO Auto-generated catch block
-        e1.printStackTrace();
-      }
+      set_message.send(outToServer);
     } 
   }
   
+  /*
+   * Only for test code
+   */
   private void delete_cards(GridPane grid)
   {
-    for (String location : locations_clicked)
+    for (Location location : locations_clicked)
     {
-      /*
-       * Since location stored as "colindex"+"rowindex"
-       */
-      int colindex = Character.getNumericValue(location.charAt(1));
-      int rowindex = Character.getNumericValue(location.charAt(0));
       grid.getChildren().remove(location_to_node.get(location));
       location_to_node.remove(location);
       location_to_card.remove(location);
@@ -246,6 +220,12 @@ public class Game extends BorderPane {
     }
     locations_clicked.clear();
   }
+  
+  
+  
+  
+  
+  
   
   public Game(Stage primaryStage)
   {
@@ -328,49 +308,7 @@ public class Game extends BorderPane {
       @Override
       public void handle(ActionEvent e) {
         
-        if (locations_clicked.size() != 3)
-        {
-          set_correct.setText("Select 3 Cards");
-        }
-        
-        else
-        {
-          int cards[] = new int[3];
-          int index = 0;
-          for (String location : locations_clicked)
-          {
-            cards[index] = location_to_card.get(location);
-          }
-          Sendable set_select_message = new SetSelectMessage(Launcher.username, cards);
-          set_select_message.send(outToServer);
-          
-          try {
-            SetSelectResponse response = (SetSelectResponse)inFromServer.readObject();
-            if (response.is_valid)
-            {
-              /*
-               * Increase Score by one
-               */
-              
-              set_correct.setText("Right!");
-            }
-            else
-            {
-              /*
-               * Decrease Score by one
-               */
-              set_correct.setText("Wrong :(");
-            }
-            
-          } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-          } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-          }
-          
-        }
+        submit_cards(center_pane, set_correct, outToServer, inFromServer);
       }
     });
     
