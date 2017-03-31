@@ -54,7 +54,7 @@ public class Server {
     static Map<Player, ObjectOutputStream> connected_playerOutput = null;
 	static Map<Integer, GameThread> connected_games = null;
 	static int portNumber;
-
+	
     /**
      * Main method that spawns a Daemon thread to add new clients.
      * What the method will do after is undecided as of now.

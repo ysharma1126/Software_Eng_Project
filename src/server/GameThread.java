@@ -29,8 +29,6 @@ public class GameThread implements Runnable {
     private ObjectOutputStream hostOutput = null;
     int gid;
     
-    private volatile boolean shutdown = false;
-    
     public GameThread(Player p, Socket s, int id) throws IOException {
     	hostp = p;
     	hosts = s;
@@ -45,9 +43,22 @@ public class GameThread implements Runnable {
     }
 
 	public void run() {
-		while(!shutdown) {
+		while(true) {
 			Object obj;
 			try {
+				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
+					obj = (Object) entry.getValue().readObject();
+					if (obj instanceof LeaveRoomMessage) {
+						this.connected_playerInput.remove(entry.getKey());
+						this.connected_playerOutput.remove(entry.getKey());
+						
+						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
+						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
+		    				lrr.send(value);
+		    			}
+					}
+				}
+				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
 					StartGameResponse sgr = new StartGameResponse(gid);
@@ -71,12 +82,16 @@ public class GameThread implements Runnable {
 							}
 						}
 					}
-					while (!shutdown) {
+					while (true) {
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
 								
-								TableResponse tr1 = new TableResponse(table);
+								ArrayList <Card> newcards = new ArrayList<Card>();
+								newcards.add(table.get(table.size()-1));
+								newcards.add(table.get(table.size()-2));
+								newcards.add(table.get(table.size()-3));
+								NewCardsResponse tr1 = new NewCardsResponse(newcards);
 								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
 									if (entry.getKey().setcount != -1) {
 										tr1.send(entry.getValue());
@@ -101,10 +116,14 @@ public class GameThread implements Runnable {
 										if (table.size() < 12 && !deck.isEmpty()) {
 											game.dealCards(deck, table, 3);
 											
-											TableResponse tr2 = new TableResponse(table);
+											ArrayList <Card> newcards = new ArrayList<Card>();
+											newcards.add(table.get(table.size()-1));
+											newcards.add(table.get(table.size()-2));
+											newcards.add(table.get(table.size()-3));
+											NewCardsResponse tr1 = new NewCardsResponse(newcards);
 											for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 												if (entry1.getKey().setcount != -1) {
-													tr2.send(entry1.getValue());
+													tr1.send(entry1.getValue());
 												}
 							    			}
 										}
@@ -138,22 +157,9 @@ public class GameThread implements Runnable {
 								eg.send(entry.getValue());
 							}
 		    			}
-						Server.connected_games.remove(gid);
+						this.terminate();
 						//Push Stats to DB
-						
-						//Interrupt thread?
-					}
-				}
-				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-					obj = (Object) entry.getValue().readObject();
-					if (obj instanceof LeaveRoomMessage) {
-						this.connected_playerInput.remove(entry.getKey());
-						this.connected_playerOutput.remove(entry.getKey());
-						
-						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
-						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
-		    				lrr.send(value);
-		    			}
+						return;
 					}
 				}
 			} catch (ClassNotFoundException | IOException e) {
@@ -163,5 +169,11 @@ public class GameThread implements Runnable {
 		}
 		// TODO Auto-generated method stub
 	}
+	
+	private void terminate() throws IOException {
+		Server.connected_games.remove(gid);
+    }
 
 }
+
+

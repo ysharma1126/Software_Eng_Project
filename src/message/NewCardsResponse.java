@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 import gamelogic.*;
 
-public class TableResponse implements Sendable, Serializable{
+public class NewCardsResponse implements Sendable, Serializable{
 	
 	public ArrayList<Card> table;
 	
-	public TableResponse(ArrayList <Card> t) {
+	public NewCardsResponse(ArrayList <Card> t) {
 		table = t;
 	}
 	
