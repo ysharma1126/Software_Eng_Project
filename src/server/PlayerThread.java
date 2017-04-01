@@ -78,7 +78,7 @@ public class PlayerThread implements Runnable {
 	        			Server.connected_playerInput.put(player, clientInput);
 	        			Server.connected_playerOutput.put(player, clientOutput);
 	        			
-	        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games);
+	        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
 	        			gur.send(clientOutput);
 	        			
 	        			while (true) {
@@ -119,6 +119,10 @@ public class PlayerThread implements Runnable {
 	        					else if (obj instanceof LogOutMessage) {
 	        						this.terminate();
 	        			            return;
+	        					}
+	        					else if (obj instanceof RefreshMessage) {
+	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	        	        			gur1.send(clientOutput);
 	        					}
 	        					else {
 	        						//Handle request we don't understand
