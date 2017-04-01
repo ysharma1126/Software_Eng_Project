@@ -3,6 +3,7 @@ package message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.HashSet;
 import server.*;
 import gamelogic.*;
 
-public class GamesUpdateResponse implements Sendable {
+public class GamesUpdateResponse implements Sendable, Serializable {
 	
 	public Map <Integer, Set<Player>> gameusernames;
 	public Map <Integer, Player> gamehost;

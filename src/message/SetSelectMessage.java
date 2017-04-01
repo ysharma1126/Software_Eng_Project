@@ -12,7 +12,7 @@ import gamelogic.Card;
  * That a certain client picked.
  */
 
-public class SetSelectMessage implements Sendable {
+public class SetSelectMessage implements Sendable, Serializable {
 	
   //Change to public ArrayList <Card> cards;
   public ArrayList <Card> cards;

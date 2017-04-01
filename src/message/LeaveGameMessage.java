@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
  * Contains the username of the client that surrendered
  */
 
-public class LeaveGameMessage implements Sendable {
+public class LeaveGameMessage implements Sendable, Serializable {
   
   public String username;
   
