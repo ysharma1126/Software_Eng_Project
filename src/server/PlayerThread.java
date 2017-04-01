@@ -78,64 +78,69 @@ public class PlayerThread implements Runnable {
 	        			Server.connected_playerInput.put(player, clientInput);
 	        			Server.connected_playerOutput.put(player, clientOutput);
 	        			
-	        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
-	        			gur.send(clientOutput);
-	        			
-	        			while (true) {
-	        	        	try {
-	        					obj = (Object) clientInput.readObject();
-	        					//if (obj instanceof StatsRequest) {
-	        					//	Stats stat = new Stats(this.getStats());
-	        					//}
-	        					if (obj instanceof CreateRoomMessage) {
-	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
-	        		    			Thread t = new Thread(gt);
-	        		    			t.start();
-	        		    			
-	        		    			Server.connected_games.put(Server.gamesize, gt);
-	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
-	        		    			
-	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
-	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-	        		    				cgr.send(value);
-	        		    			}
-	        		    			Server.gamesize++;
-	        		    			t.join();
-	        					}
-	        					else if (obj instanceof JoinRoomMessage) {
-	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
-	        						GameThread gt = Server.connected_games.get(resp2.gid);
-	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-	        						gt.connected_playerInput.put(player, clientInput);
-	        						gt.connected_playerOutput.put(player, clientOutput);
-	        						
-	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
-	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-	        		    				jgr.send(value);
-	        		    			}
-	        		    			
-	        		    			t.join();
-	        					}
-	        					else if (obj instanceof LogOutMessage) {
-	        						this.terminate();
-	        			            return;
-	        					}
-	        					else if (obj instanceof RefreshMessage) {
-	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
-	        	        			gur1.send(clientOutput);
-	        					}
-	        					else {
-	        						//Handle request we don't understand
-	        					}
-	        				} catch (ClassNotFoundException e) {
-	        					// TODO Auto-generated catch block
-	        					e.printStackTrace();
-	        				} catch (IOException e) {
-	        					e.printStackTrace();
-	        				}
-	        	        	catch (InterruptedException e) {
-	        					// TODO Auto-generated catch block
-	        					e.printStackTrace();
+	        			while(true) {
+	        				obj = (Object) clientInput.readObject();
+	        				if (obj instanceof GamesUpdateMessage) {
+	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        			gur.send(clientOutput);
+	    	        			
+	    	        			while (true) {
+	    	        	        	try {
+	    	        					obj = (Object) clientInput.readObject();
+	    	        					//if (obj instanceof StatsRequest) {
+	    	        					//	Stats stat = new Stats(this.getStats());
+	    	        					//}
+	    	        					if (obj instanceof CreateRoomMessage) {
+	    	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
+	    	        		    			Thread t = new Thread(gt);
+	    	        		    			t.start();
+	    	        		    			
+	    	        		    			Server.connected_games.put(Server.gamesize, gt);
+	    	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
+	    	        		    			
+	    	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
+	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	    	        		    				cgr.send(value);
+	    	        		    			}
+	    	        		    			Server.gamesize++;
+	    	        		    			t.join();
+	    	        					}
+	    	        					else if (obj instanceof JoinRoomMessage) {
+	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
+	    	        						GameThread gt = Server.connected_games.get(resp2.gid);
+	    	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
+	    	        						gt.connected_playerInput.put(player, clientInput);
+	    	        						gt.connected_playerOutput.put(player, clientOutput);
+	    	        						
+	    	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
+	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	    	        		    				jgr.send(value);
+	    	        		    			}
+	    	        		    			
+	    	        		    			t.join();
+	    	        					}
+	    	        					else if (obj instanceof LogOutMessage) {
+	    	        						this.terminate();
+	    	        			            return;
+	    	        					}
+	    	        					else if (obj instanceof RefreshMessage) {
+	    	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        	        			gur1.send(clientOutput);
+	    	        					}
+	    	        					else {
+	    	        						//Handle request we don't understand
+	    	        					}
+	    	        				} catch (ClassNotFoundException e) {
+	    	        					// TODO Auto-generated catch block
+	    	        					e.printStackTrace();
+	    	        				} catch (IOException e) {
+	    	        					e.printStackTrace();
+	    	        				}
+	    	        	        	catch (InterruptedException e) {
+	    	        					// TODO Auto-generated catch block
+	    	        					e.printStackTrace();
+	    	        				}
+	    	        			}
 	        				}
 	        			}
 	    			}
