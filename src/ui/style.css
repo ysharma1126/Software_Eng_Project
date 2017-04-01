@@ -24,6 +24,23 @@
 	-fx-background-color: #ff5722;
 }
 
+.btn-refresh {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f4511e;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+
+.btn-refresh: hover {
+	-fx-background-color: #ff5722;
+}
+
 .tbl-game {
 	-fx-background-color: #424242;
 }
