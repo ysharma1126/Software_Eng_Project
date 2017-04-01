@@ -72,7 +72,6 @@ public class Launcher extends Application {
     int portnumber = 8080;
     
     try {
-      
       Socket connectSocket = new Socket(hostname, portnumber);
       ObjectOutputStream outToServer = new ObjectOutputStream(connectSocket.getOutputStream());
       ObjectInputStream inFromServer = new ObjectInputStream(connectSocket.getInputStream());

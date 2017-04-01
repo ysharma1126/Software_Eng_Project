@@ -58,13 +58,12 @@ public class Login extends GridPane {
     HBox hbSignUpBtn = new HBox(10);
     hbSignUpBtn.setAlignment(Pos.BOTTOM_LEFT);
     hbSignUpBtn.getChildren().add(sign_up_btn);
-    this.add(hbSignUpBtn, 1, 4);
+    this.add(hbSignUpBtn, 0, 4);
     
     Button sign_in_btn = new Button("Sign in");
     HBox hbBtn = new HBox(10);
     hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
     hbBtn.getChildren().add(sign_in_btn);
-    
     this.add(hbBtn, 1, 4);
     //this.setthisLinesVisible(true);
       
@@ -78,15 +77,19 @@ public class Login extends GridPane {
         System.out.println("In event handler.");
         Sendable send_msg = new SignUpMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
-        
+        System.out.println("Sent signup");
         try {
           SignUpResponse response = (SignUpResponse)inFromServer.readObject();
           
           if (response.is_valid)
           {
-            System.out.println("Correct bitch!");
-            Launcher.username = userTextField.getText();
-            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+            System.out.println("Signed up!");
+//            Launcher.username = userTextField.getText();
+//            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+          }
+          else
+          {
+            System.out.println("another user with that username.");
           }
         
         } catch (ClassNotFoundException e1) {
