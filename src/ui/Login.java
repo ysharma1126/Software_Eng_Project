@@ -135,8 +135,9 @@ public class Login extends GridPane {
           System.out.println("Kevin");
           CreateRoomMessage create_message = new CreateRoomMessage(Launcher.username);
           create_message.send(outToServer);
-          
+          System.out.println("c_message");
           CreateRoomResponse resp = (CreateRoomResponse) inFromServer.readObject();
+          System.out.println("c response");
           StartGameMessage start_message = new StartGameMessage();
           start_message.send(outToServer);
           StartGameResponse s_resp = (StartGameResponse) inFromServer.readObject();

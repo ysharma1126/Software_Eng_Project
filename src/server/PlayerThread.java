@@ -91,6 +91,7 @@ public class PlayerThread implements Runnable {
 	    	        					//	Stats stat = new Stats(this.getStats());
 	    	        					//}
 	    	        					if (obj instanceof CreateRoomMessage) {
+	    	        					    System.out.println("Got create room message");
 	    	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
 	    	        		    			Thread t = new Thread(gt);
 	    	        		    			t.start();
@@ -99,6 +100,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
 	    	        		    			
 	    	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
+	    	        		    			System.out.println("sent create room response");
 	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    	        		    				cgr.send(value);
 	    	        		    			}
