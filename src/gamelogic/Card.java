@@ -20,6 +20,12 @@ public class Card {
 	 * @param	shde	Shading feature
 	 *
 	 */
+	
+	/*
+	 * Cards get translated to:
+	 * fill, shape, color, num, 
+	 */
+	
 	public Card(int shpe, int num, int col, int shde, boolean hle) {
 		shape = shpe;
 		number = num;
@@ -27,6 +33,14 @@ public class Card {
 		shading = shde;
 		hole = hle;
 	}
+	
+	public String toImageFile()
+	{
+	  String image = "";
+	  image = image + this.shading + this.shape + this.color + this.number + ".png";
+	  return image;
+	}
+	
 	
 	@Override
 	public String toString()

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 /*
@@ -173,10 +174,13 @@ public class Login extends GridPane {
     actiontarget.setId("actiontarget");
     this.add(actiontarget, 1, 6);
     
+    ArrayList<String> users = new ArrayList<String>();
+    users.add("Sahil");
+    
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        Launcher.openBrowser(primaryStage);
+        Launcher.openGame(primaryStage, users);
       }
     });
   }

@@ -23,11 +23,13 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
@@ -60,11 +62,16 @@ public class Game extends BorderPane {
     {
       for (int rowindex = 0; rowindex < 3; ++rowindex)
       {
-        Card card = new Card(colindex, rowindex, 0, 0, true);
+        Card card = new Card(colindex % 3, rowindex % 3, 0, 0, true);
+        String imagesrc = card.toImageFile();
+        imagesrc = "ui/resources/images/cards/" + imagesrc;
+        System.out.println(imagesrc);
+        Image image = new Image(imagesrc);
+        ImagePattern imagePattern = new ImagePattern(image);
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
-        setCard.setFill(Color.WHITE);
+        setCard.setFill(imagePattern);
         setCard.setArcHeight(20);
         setCard.setArcWidth(20);
         setCard.setStrokeType(StrokeType.INSIDE);
@@ -110,6 +117,11 @@ public class Game extends BorderPane {
       for (int rowindex = 0; rowindex < 3; ++rowindex)
       {
         Card card = start_response.table.get(colindex*3 + rowindex);
+        String imagesrc = card.toImageFile();
+        imagesrc = "ui/resources/images/cards/" + imagesrc;
+        System.out.println(imagesrc);
+        Image image = new Image(imagesrc);
+        ImagePattern imagePattern = new ImagePattern(image);
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
