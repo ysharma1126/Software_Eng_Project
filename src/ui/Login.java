@@ -107,6 +107,7 @@ public class Login extends GridPane {
       @Override
       public void handle(ActionEvent e) {
         System.out.println("In sign in event handler.");
+        System.out.println("username: " + userTextField.getText() + " password: " + pwBox.getText());
         Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
         System.out.println("Sent message!");
@@ -116,7 +117,7 @@ public class Login extends GridPane {
         if (response.is_valid)
         {
           Launcher.username = userTextField.getText();
-          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+          //Launcher.openBrowser(primaryStage, outToServer, inFromServer);
         }
         
         } catch (ClassNotFoundException e1) {
