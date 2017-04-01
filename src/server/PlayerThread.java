@@ -101,13 +101,13 @@ public class PlayerThread implements Runnable {
         		    			t.join();
         					}
         					else if (obj instanceof JoinRoomMessage) {
-        						JoinRoomMessage resp = (JoinRoomMessage) obj;
-        						GameThread gt = Server.connected_games.get(resp.gid);
-        						Thread t = Server.connected_gamethreads.get(resp.gid);
+        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
+        						GameThread gt = Server.connected_games.get(resp2.gid);
+        						Thread t = Server.connected_gamethreads.get(resp2.gid);
         						gt.connected_playerInput.put(player, clientInput);
         						gt.connected_playerOutput.put(player, clientOutput);
         						
-        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp.gid);
+        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
         		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
         		    				jgr.send(value);
         		    			}
@@ -121,10 +121,14 @@ public class PlayerThread implements Runnable {
         					else {
         						//Handle request we don't understand
         					}
-        				} catch (ClassNotFoundException | IOException e) {
+        				} catch (ClassNotFoundException e) {
         					// TODO Auto-generated catch block
         					e.printStackTrace();
-        				} catch (InterruptedException e) {
+        				} catch (IOException e) {
+        					// DISCONNECT
+        					e.printStackTrace();
+        				}
+        	        	catch (InterruptedException e) {
         					// TODO Auto-generated catch block
         					e.printStackTrace();
         				}
@@ -137,10 +141,15 @@ public class PlayerThread implements Runnable {
     				
     		}		
     	}
-    	catch (ClassNotFoundException | IOException e) {
+    	catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SQLException e) {
+    	}	
+    	catch (IOException e) {
+			// DISCONNECT
+			e.printStackTrace();
+    	}
+		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
