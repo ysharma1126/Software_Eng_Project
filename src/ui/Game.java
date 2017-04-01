@@ -310,7 +310,6 @@ public class Game extends BorderPane {
     set_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        
         submit_cards(center_pane, set_correct, outToServer, inFromServer);
       }
     });

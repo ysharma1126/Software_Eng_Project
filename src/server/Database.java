@@ -1,5 +1,6 @@
 package server;
 import java.sql.*;
+
 /**
  * Handles connections to the Mysql database.
  * Each thread should request its own DatabaseConnection to use and close it promptly after use.
@@ -18,9 +19,11 @@ public class Database {
 	 * Returns a DatabaseConnection object with a Connection already initialized
 	 * @author		Shalin
 	 * @return 		DatabaseConnection object with an open Connection
+	 * @throws ClassNotFoundException 
 	 */
-	public static DatabaseConnection getConnection() throws SQLException{
-		Class.forName("com.mysql.jdbc.Driver");
+	
+	public static DatabaseConnection getConnection() throws SQLException, ClassNotFoundException{
+	    Class.forName("com.mysql.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		return new DatabaseConnection(conn);
 	}

@@ -13,6 +13,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import message.Sendable;
+import message.SignUpMessage;
+import message.SignUpResponse;
 import message.LoginMessage;
 import message.LoginResponse;
 import java.io.IOException;
@@ -73,17 +75,19 @@ public class Login extends GridPane {
     sign_up_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
+        System.out.println("In event handler.");
         Sendable send_msg = new SignUpMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
         
         try {
-        SignUpResponse response = (SignUpResponse)inFromServer.readObject();
-        
-        if (response.is_valid)
-        {
-          Launcher.username = userTextField.getText();
-          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-        }
+          SignUpResponse response = (SignUpResponse)inFromServer.readObject();
+          
+          if (response.is_valid)
+          {
+            System.out.println("Correct bitch!");
+            Launcher.username = userTextField.getText();
+            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+          }
         
         } catch (ClassNotFoundException e1) {
             // TODO Auto-generated catch block
@@ -99,12 +103,13 @@ public class Login extends GridPane {
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
+        System.out.println("In event handler.");
         Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
-        
+        System.out.println("Sent message!");
         try {
         LoginResponse response = (LoginResponse)inFromServer.readObject();
-        
+        System.out.println("Received response!");
         if (response.is_valid)
         {
           Launcher.username = userTextField.getText();
@@ -167,7 +172,7 @@ public class Login extends GridPane {
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        Launcher.openGame(primaryStage);
+        Launcher.openBrowser(primaryStage);
       }
     });
   }
