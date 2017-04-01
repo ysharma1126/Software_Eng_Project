@@ -1,12 +1,14 @@
 package gamelogic;
 
+import java.io.Serializable;
+
 /**
  * Player class, contains attributes of a player object
  * @author ysharma1126
  * 
  *
  */
-public class Player {
+public class Player implements Serializable {
 	public String username;
 	public int setcount;
 	/**
