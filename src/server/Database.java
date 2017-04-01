@@ -10,7 +10,7 @@ import java.sql.*;
  */
 public class Database {
 	
-	static final String DB_URL = "jdbc:mysql://localhost/set_game";
+	static final String DB_URL = "jdbc:mysql://localhost:3306/set_game";
 	static final String USER = "root";
 	static final String PASS = "vishnu1";
 	
@@ -20,6 +20,7 @@ public class Database {
 	 * @return 		DatabaseConnection object with an open Connection
 	 */
 	public static DatabaseConnection getConnection() throws SQLException{
+		Class.forName("com.mysql.jdbc.Driver");
 		Connection conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		return new DatabaseConnection(conn);
 	}
