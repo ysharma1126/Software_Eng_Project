@@ -55,7 +55,12 @@ public class DatabaseConnection {
 		PreparedStatement preparedStmt = conn.prepareStatement(querystring);
 		preparedStmt.setString(1, username);
 		preparedStmt.setString(2, password);
-		
-		return(preparedStmt.execute());
+		int count = preparedStmt.executeUpdate();
+		if (count > 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

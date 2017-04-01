@@ -61,7 +61,6 @@ public class PlayerThread implements Runnable {
     				SignUpResponse sr = new SignUpResponse(false, resp.username);
         			sr.send(clientOutput);
     			}
-    			
     		}
     		else if (obj instanceof LoginMessage) {
     			LoginMessage resp = (LoginMessage) obj;
@@ -125,7 +124,6 @@ public class PlayerThread implements Runnable {
         					// TODO Auto-generated catch block
         					e.printStackTrace();
         				} catch (IOException e) {
-        					// DISCONNECT
         					e.printStackTrace();
         				}
         	        	catch (InterruptedException e) {
