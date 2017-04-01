@@ -2,13 +2,14 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /*
  * SurrenderRoomMessage
  * Contains the username of the client that surrendered
  */
 
-public class LeaveRoomMessage implements Sendable {
+public class LeaveRoomMessage implements Sendable, Serializable {
   
   public String username;
   

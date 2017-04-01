@@ -5,19 +5,19 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /*
- * SurrenderMessage
- * Contains the username of the client that surrendered
+ * LoginMessage
+ * A Client sends a login message to the server
+ * that contains the username and password that the user
+ * Is trying to login with
  */
 
-public class LeaveGameMessage implements Sendable, Serializable {
+public class GamesUpdateMessage implements Sendable, Serializable {
   
-  public String username;
-  
-  public LeaveGameMessage(String username)
+  public GamesUpdateMessage()
   {
-    this.username = username;
   }
   
+  @Override
   public void send(ObjectOutputStream outputstream)
   {
     try {
@@ -27,4 +27,5 @@ public class LeaveGameMessage implements Sendable, Serializable {
       e.printStackTrace();
     }
   }
+  
 }

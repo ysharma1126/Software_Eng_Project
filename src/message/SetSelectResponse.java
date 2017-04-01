@@ -2,11 +2,12 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import gamelogic.*;
 
-public class SetSelectResponse implements Sendable {
+public class SetSelectResponse implements Sendable, Serializable {
 	
 	public String username;
 	public int setcount;

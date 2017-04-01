@@ -2,6 +2,7 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import gamelogic.Card;
@@ -12,7 +13,7 @@ import gamelogic.Card;
  * That a certain client picked.
  */
 
-public class SetSelectMessage implements Sendable {
+public class SetSelectMessage implements Sendable, Serializable {
 	
   //Change to public ArrayList <Card> cards;
   public ArrayList <Card> cards;

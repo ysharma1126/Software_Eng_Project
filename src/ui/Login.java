@@ -15,8 +15,15 @@ import javafx.stage.Stage;
 import message.Sendable;
 import message.SignUpMessage;
 import message.SignUpResponse;
+import message.StartGameMessage;
+import message.StartGameResponse;
+import message.CreateRoomMessage;
 import message.LoginMessage;
 import message.LoginResponse;
+import message.CreateRoomResponse;
+import message.GamesUpdateMessage;
+import message.GamesUpdateResponse;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -117,8 +124,25 @@ public class Login extends GridPane {
         System.out.println("Received response!");
         if (response.is_valid)
         {
+          
           Launcher.username = userTextField.getText();
-          //Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+          ArrayList<String> users = new ArrayList<String>();
+          users.add(Launcher.username);
+          
+          GamesUpdateMessage games_msg = new GamesUpdateMessage();
+          games_msg.send(outToServer);
+          GamesUpdateResponse game_resp = (GamesUpdateResponse) inFromServer.readObject();
+          System.out.println("Kevin");
+          CreateRoomMessage create_message = new CreateRoomMessage(Launcher.username);
+          create_message.send(outToServer);
+          System.out.println("c_message");
+          CreateRoomResponse resp = (CreateRoomResponse) inFromServer.readObject();
+          System.out.println("c response");
+          StartGameMessage start_message = new StartGameMessage();
+          start_message.send(outToServer);
+          StartGameResponse s_resp = (StartGameResponse) inFromServer.readObject();
+          
+          Launcher.openGame(primaryStage, outToServer, inFromServer, users);
         }
         
         } catch (ClassNotFoundException e1) {
