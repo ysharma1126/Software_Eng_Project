@@ -2,3 +2,6 @@
 /PlayerThread.class
 /Server$clientListenerThread.class
 /Server.class
+/ClientTest.class
+/Database.class
+/DatabaseConnection.class

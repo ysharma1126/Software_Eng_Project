@@ -15,3 +15,13 @@
 /LogOutMessage.class
 /NewCardsResponse.class
 /TableResponse.class
+/GamesUpdateResponse.class
+/LeaveGameResponse.class
+/LoginMessage.class
+/LoginResponse.class
+/Sendable.class
+/SetSelectMessage.class
+/SetSelectResponse.class
+/SignUpMessage.class
+/SignUpResponse.class
+/StartGameResponse.class

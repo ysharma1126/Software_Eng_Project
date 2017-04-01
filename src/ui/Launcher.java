@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -47,17 +48,17 @@ public class Launcher extends Application {
     
   }
   
-  public static void openGame(Stage primaryStage)
+  public static void openGame(Stage primaryStage, ArrayList<String> users)
   {
-    Game game = new Game(primaryStage);
+    Game game = new Game(primaryStage, users);
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);
     primaryStage.show();
   }
   
-  public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
   {
-    Game game = new Game(primaryStage, socket, outToServer, inFromServer);
+    Game game = new Game(primaryStage, socket, outToServer, inFromServer, users);
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);
     primaryStage.show();

@@ -302,6 +302,7 @@ public class Game extends BorderPane {
       // TODO Auto-generated catch block
       e2.printStackTrace();
     }
+    
     server_response_handler.start();   
     
     load_initial_cards(outToServer, inFromServer, center_pane);
