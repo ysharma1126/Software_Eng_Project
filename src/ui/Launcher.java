@@ -19,6 +19,7 @@ public class Launcher extends Application {
   
   public static void main(String[] args) {
     // TODO Auto-generated method stub
+    System.out.println("Launched");
     launch(args);
   }
   
@@ -45,7 +46,7 @@ public class Launcher extends Application {
   
   public static void openBrowser(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
-    
+    System.out.println("Logged in!");
   }
   
   public static void openGame(Stage primaryStage, ArrayList<String> users)
@@ -58,7 +59,7 @@ public class Launcher extends Application {
   
   public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
   {
-    Game game = new Game(primaryStage, socket, outToServer, inFromServer, users);
+    Game game = new Game(primaryStage, outToServer, inFromServer, users);
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -67,30 +68,27 @@ public class Launcher extends Application {
   @Override
   public void start(Stage primaryStage)
   {
+    String hostname = "199.98.20.114";
+    int portnumber = 8080;
     
-//    String hostname = "";
-//    int portnumber = 0;
-//    
-//    try {
-//      Socket connectSocket = new Socket(hostname, portnumber);
-//      ObjectOutputStream outToServer = new ObjectOutputStream(connectSocket.getOutputStream());
-//      ObjectInputStream inFromServer = new ObjectInputStream(connectSocket.getInputStream());
-//      
-//      openLogin(primaryStage, outToServer, inFromServer);
-//           
-//    }
-//    
-//    catch (ConnectException e1) {
-//      System.err.println("Did not enter in proper server address/portnumber!");
-//    } catch (UnknownHostException e1) {
-//    // TODO Auto-generated catch block
-//      System.err.println("Did not enter in proper server address/portnumber!");
-//    } catch (IOException e1) {
-//      // TODO Auto-generated catch block
-//          e1.printStackTrace();
-//    }
+    try {
+      
+      Socket connectSocket = new Socket(hostname, portnumber);
+      ObjectOutputStream outToServer = new ObjectOutputStream(connectSocket.getOutputStream());
+      ObjectInputStream inFromServer = new ObjectInputStream(connectSocket.getInputStream());
+      System.out.println("Opening Login");
+      openLogin(primaryStage, outToServer, inFromServer);       
+    }
     
-    openLogin(primaryStage);
+    catch (ConnectException e1) {
+      System.err.println("Connect Did not enter in proper server address/portnumber!");
+    } catch (UnknownHostException e1) {
+    // TODO Auto-generated catch block
+      System.err.println("Did not enter in proper server address/portnumber!");
+    } catch (IOException e1) {
+      // TODO Auto-generated catch block
+          e1.printStackTrace();
+    }
   }
 }
 
