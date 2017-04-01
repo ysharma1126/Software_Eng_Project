@@ -2,6 +2,7 @@ package message;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 /*
  * LoginMessage
@@ -10,7 +11,7 @@ import java.io.ObjectOutputStream;
  * Is trying to login with
  */
 
-public class GamesUpdateMessage implements Sendable {
+public class GamesUpdateMessage implements Sendable, Serializable {
   
   public GamesUpdateMessage()
   {
