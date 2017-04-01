@@ -29,6 +29,8 @@ public class GameThread implements Runnable {
     int gid;
     
     public GameThread(Player p, Socket s, int id) throws IOException {
+		Server.gamesize++;
+		
     	hostp = p;
     	hosts = s;
     	gid = id;
