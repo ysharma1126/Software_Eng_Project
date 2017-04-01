@@ -63,10 +63,12 @@ public class PlayerThread implements Runnable {
     			}
     		}
     		else if (obj instanceof LoginMessage) {
+    		    System.out.println("Entered Login Message");
     			LoginMessage resp = (LoginMessage) obj;
     			DatabaseConnection conn = Database.getConnection();
     			Boolean authenticate_status = conn.authenticateUser(resp.username, resp.password);
     			conn.close();
+    			System.out.println(authenticate_status);
     			if(authenticate_status) {
     				player = new Player(resp.username);
     				

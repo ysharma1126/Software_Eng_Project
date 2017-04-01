@@ -106,7 +106,7 @@ public class Login extends GridPane {
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        System.out.println("In event handler.");
+        System.out.println("In sign in event handler.");
         Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
         System.out.println("Sent message!");
