@@ -57,9 +57,11 @@ public class DatabaseConnection {
 		preparedStmt.setString(2, password);
 		int count = preparedStmt.executeUpdate();
 		if (count > 0) {
+            System.out.println("True");
 			return true;
 		}
 		else {
+            System.out.println("False");
 			return false;
 		}
 	}
