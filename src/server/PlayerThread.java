@@ -42,117 +42,119 @@ public class PlayerThread implements Runnable {
     
   //Requests for checking stats, joining a game, logging out, etc
     public void run() {
-    	Object obj;
-        //try (
-        //    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        //) {
-    	try {
-    		obj = (Object) clientInput.readObject();
-    		if (obj instanceof SignUpMessage) {
-    			SignUpMessage resp = (SignUpMessage) obj;
-    			DatabaseConnection conn = Database.getConnection();
-    			Boolean signup_status = conn.addUser(resp.username, resp.password);
-    			conn.close();
-    			if(signup_status) {
-    				SignUpResponse sr = new SignUpResponse(true, resp.username);
-        			sr.send(clientOutput);
-    			}
-    			else {
-    				SignUpResponse sr = new SignUpResponse(false, resp.username);
-        			sr.send(clientOutput);
-    			}
-    		}
-    		else if (obj instanceof LoginMessage) {
-    		    System.out.println("Entered Login Message");
-    			LoginMessage resp = (LoginMessage) obj;
-    			DatabaseConnection conn = Database.getConnection();
-    			Boolean authenticate_status = conn.authenticateUser(resp.username, resp.password);
-    			conn.close();
-    			System.out.println(authenticate_status);
-    			if(authenticate_status) {
-    				player = new Player(resp.username);
-    				
-    				LoginResponse lr = new LoginResponse(true, player.username);
-        			lr.send(clientOutput);
-        			Server.connected_playerInput.put(player, clientInput);
-        			Server.connected_playerOutput.put(player, clientOutput);
-        			
-        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games);
-        			gur.send(clientOutput);
-        			
-        			while (true) {
-        	        	try {
-        					obj = (Object) clientInput.readObject();
-        					//if (obj instanceof StatsRequest) {
-        					//	Stats stat = new Stats(this.getStats());
-        					//}
-        					if (obj instanceof CreateRoomMessage) {
-        						GameThread gt = new GameThread(player, socket, Server.gamesize);
-        		    			Thread t = new Thread(gt);
-        		    			t.start();
-        		    			
-        		    			Server.connected_games.put(Server.gamesize, gt);
-        		    			Server.connected_gamethreads.put(Server.gamesize, t);
-        		    			
-        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
-        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-        		    				cgr.send(value);
-        		    			}
-        		    			Server.gamesize++;
-        		    			t.join();
-        					}
-        					else if (obj instanceof JoinRoomMessage) {
-        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
-        						GameThread gt = Server.connected_games.get(resp2.gid);
-        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-        						gt.connected_playerInput.put(player, clientInput);
-        						gt.connected_playerOutput.put(player, clientOutput);
-        						
-        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
-        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-        		    				jgr.send(value);
-        		    			}
-        		    			
-        		    			t.join();
-        					}
-        					else if (obj instanceof LogOutMessage) {
-        						this.terminate();
-        			            return;
-        					}
-        					else {
-        						//Handle request we don't understand
-        					}
-        				} catch (ClassNotFoundException e) {
-        					// TODO Auto-generated catch block
-        					e.printStackTrace();
-        				} catch (IOException e) {
-        					e.printStackTrace();
-        				}
-        	        	catch (InterruptedException e) {
-        					// TODO Auto-generated catch block
-        					e.printStackTrace();
-        				}
-        			}
-    			}
-    			else {
-    				LoginResponse lr = new LoginResponse(false, player.username);
-        			lr.send(clientOutput);
-    			}
-    				
-    		}		
+    	while (true) {
+	    	Object obj;
+	        //try (
+	        //    PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+	        //) {
+	    	try {
+	    		obj = (Object) clientInput.readObject();
+	    		if (obj instanceof SignUpMessage) {
+	    			SignUpMessage resp = (SignUpMessage) obj;
+	    			DatabaseConnection conn = Database.getConnection();
+	    			Boolean signup_status = conn.addUser(resp.username, resp.password);
+	    			conn.close();
+	    			if(signup_status) {
+	    				SignUpResponse sr = new SignUpResponse(true, resp.username);
+	        			sr.send(clientOutput);
+	    			}
+	    			else {
+	    				SignUpResponse sr = new SignUpResponse(false, resp.username);
+	        			sr.send(clientOutput);
+	    			}
+	    		}
+	    		else if (obj instanceof LoginMessage) {
+	    		    System.out.println("Entered Login Message");
+	    			LoginMessage resp = (LoginMessage) obj;
+	    			DatabaseConnection conn = Database.getConnection();
+	    			Boolean authenticate_status = conn.authenticateUser(resp.username, resp.password);
+	    			conn.close();
+	    			System.out.println(authenticate_status);
+	    			if(authenticate_status) {
+	    				player = new Player(resp.username);
+	    				
+	    				LoginResponse lr = new LoginResponse(true, player.username);
+	        			lr.send(clientOutput);
+	        			Server.connected_playerInput.put(player, clientInput);
+	        			Server.connected_playerOutput.put(player, clientOutput);
+	        			
+	        			GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games);
+	        			gur.send(clientOutput);
+	        			
+	        			while (true) {
+	        	        	try {
+	        					obj = (Object) clientInput.readObject();
+	        					//if (obj instanceof StatsRequest) {
+	        					//	Stats stat = new Stats(this.getStats());
+	        					//}
+	        					if (obj instanceof CreateRoomMessage) {
+	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
+	        		    			Thread t = new Thread(gt);
+	        		    			t.start();
+	        		    			
+	        		    			Server.connected_games.put(Server.gamesize, gt);
+	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
+	        		    			
+	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
+	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	        		    				cgr.send(value);
+	        		    			}
+	        		    			Server.gamesize++;
+	        		    			t.join();
+	        					}
+	        					else if (obj instanceof JoinRoomMessage) {
+	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
+	        						GameThread gt = Server.connected_games.get(resp2.gid);
+	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
+	        						gt.connected_playerInput.put(player, clientInput);
+	        						gt.connected_playerOutput.put(player, clientOutput);
+	        						
+	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
+	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+	        		    				jgr.send(value);
+	        		    			}
+	        		    			
+	        		    			t.join();
+	        					}
+	        					else if (obj instanceof LogOutMessage) {
+	        						this.terminate();
+	        			            return;
+	        					}
+	        					else {
+	        						//Handle request we don't understand
+	        					}
+	        				} catch (ClassNotFoundException e) {
+	        					// TODO Auto-generated catch block
+	        					e.printStackTrace();
+	        				} catch (IOException e) {
+	        					e.printStackTrace();
+	        				}
+	        	        	catch (InterruptedException e) {
+	        					// TODO Auto-generated catch block
+	        					e.printStackTrace();
+	        				}
+	        			}
+	    			}
+	    			else {
+	    				LoginResponse lr = new LoginResponse(false, player.username);
+	        			lr.send(clientOutput);
+	    			}
+	    				
+	    		}		
+	    	}
+	    	catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+	    	}	
+	    	catch (IOException e) {
+				// DISCONNECT
+				e.printStackTrace();
+	    	}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
     	}
-    	catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-    	}	
-    	catch (IOException e) {
-			// DISCONNECT
-			e.printStackTrace();
-    	}
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
     } 
     
     /**
