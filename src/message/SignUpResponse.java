@@ -5,24 +5,23 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /*
- * SignUp Message
- * A Client sends a login message to the server
- * that contains the username and password that the user
- * Is trying to login with
+ * LoginResponse
+ * Should be sent only to the client that sent a 
+ * LoginMessage to the server.
+ * LoginResponse should say whether the login was valid or not
  */
 
-public class SignUpMessage implements Sendable, Serializable {
-  
+public class SignUpResponse implements Sendable, Serializable {
+
+  public boolean is_valid;
   public String username;
-  public String password;
   
-  public SignUpMessage(String username, String password)
+  public SignUpResponse(boolean is_valid, String username)
   {
+    this.is_valid = is_valid;
     this.username = username;
-    this.password = password;
   }
   
-  @Override
   public void send(ObjectOutputStream outputstream)
   {
     try {
@@ -32,5 +31,5 @@ public class SignUpMessage implements Sendable, Serializable {
       e.printStackTrace();
     }
   }
-  
+   
 }

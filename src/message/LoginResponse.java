@@ -14,10 +14,12 @@ import java.io.Serializable;
 public class LoginResponse implements Sendable, Serializable {
 
   public boolean is_valid;
+  public String username;
   
-  public LoginResponse(boolean is_valid)
+  public LoginResponse(boolean is_valid, String username)
   {
     this.is_valid = is_valid;
+    this.username = username;
   }
   
   public void send(ObjectOutputStream outputstream)

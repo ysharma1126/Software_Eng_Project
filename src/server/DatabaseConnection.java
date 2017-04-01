@@ -49,4 +49,13 @@ public class DatabaseConnection {
 		stmt.close();
 		return result;
 	}
+	
+	public boolean addUser(String username, String password) throws SQLException {
+		String querystring = "INSERT INTO user(username, password) " + "VALUES(?,?)";
+		PreparedStatement preparedStmt = conn.prepareStatement(querystring);
+		preparedStmt.setString(1, username);
+		preparedStmt.setString(2, password);
+		
+		return(preparedStmt.execute());
+	}
 }
