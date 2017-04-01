@@ -25,3 +25,5 @@
 /SignUpMessage.class
 /SignUpResponse.class
 /StartGameResponse.class
+/RefreshMessage.class
+/GamesUpdateMessage.class
