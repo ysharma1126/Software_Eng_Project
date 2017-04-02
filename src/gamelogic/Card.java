@@ -39,9 +39,14 @@ public class Card implements Serializable{
 	
 	public String toImageFile()
 	{
-	  String image = "";
-	  image = image + this.shading + this.shape + this.color + this.number + ".png";
-	  return image;
+	  if(!this.hole) {
+		  String image = "";
+		  image = image + this.shading + this.shape + this.color + this.number + ".png";
+		  return image;
+	  }
+	  else {
+		  return("hole");
+	  }
 	}
 	
 	
