@@ -89,7 +89,7 @@ public class GameThread implements Runnable {
          * Increase the score in the GUI for the
          * corresponding user
          */
-        username_to_score_field.get(resp.username).setText(Integer.toString(resp.setcount));
+        //username_to_score_field.get(resp.username).setText(Integer.toString(resp.setcount));
       }
     }
     
@@ -200,6 +200,7 @@ public class GameThread implements Runnable {
         if (obj instanceof TableResponse)
         {
           TableResponse resp = (TableResponse) obj;
+          System.out.println("Got table response.");
           handleTableResponse(resp);
         }
         

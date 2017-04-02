@@ -9,12 +9,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -35,11 +37,14 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import message.EndGameResponse;
 import message.InitialCardsMessage;
 import message.InitialCardsResponse;
+import message.LeaveGameResponse;
 import message.Sendable;
 import message.SetSelectMessage;
 import message.SetSelectResponse;
+import message.TableResponse;
 import server.PlayerThread;
 import gamelogic.Card;
 
@@ -56,6 +61,106 @@ public class Game extends BorderPane {
   private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
   private volatile HashMap<String, Text> username_to_score_field = new HashMap<String, Text>();
     
+  private void handleSetResponse(SetSelectResponse resp, Text set_correct)
+  {
+    if (!resp.is_valid)
+    {
+      set_correct.setText("Incorrect");
+    }
+    else
+    {
+      String username = resp.username;
+      /*
+       * Corresponds to current client
+       */
+      if (username == Launcher.username)
+      {
+        /*
+         * Display correct
+         */
+        set_correct.setText("Correct");
+      }
+      /*
+       * Increase the score in the GUI for the
+       * corresponding user
+       */
+      //username_to_score_field.get(resp.username).setText(Integer.toString(resp.setcount));
+    }
+  }
+  
+  private void handleTableResponse(TableResponse resp, GridPane grid)
+  {
+    int colindex = 0;
+    int rowindex = 0;
+    
+    location_to_card.clear();
+    location_to_node.clear();
+    locations_clicked.clear();
+    grid.getChildren().clear();
+    
+    for (Card card : resp.table)
+    {
+      if (card.hole == false)
+      {
+        Rectangle setCard = new Rectangle();
+        String imagesrc = card.toImageFile();
+        imagesrc = "ui/resources/images/cards/" + imagesrc;
+        System.out.println(imagesrc);
+        Image image = new Image(imagesrc);
+        ImagePattern imagePattern = new ImagePattern(image);
+        setCard.setHeight(200);
+        setCard.setWidth(100);
+        setCard.setFill(imagePattern);
+        setCard.setArcHeight(20);
+        setCard.setArcWidth(20);
+        setCard.setStrokeType(StrokeType.INSIDE);
+        setCard.setStroke(Color.web("blue", 0.30));
+        setCard.setStrokeWidth(0);
+        //System.out.println("Colindex: " + colindex);
+        //System.out.println("Rowindex: " + rowindex);
+        //System.out.println("");
+        grid.add(setCard, colindex, rowindex);
+        Location location = new Location(rowindex, colindex);
+        location_to_card.put(location, card);
+        location_to_node.put(location, setCard);
+        
+        setCard.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+          @Override
+          public void handle(MouseEvent t) {
+            if (locations_clicked.contains(location) == false)
+            {
+              setCard.setStrokeWidth(4);
+              locations_clicked.add(location);
+            }
+            else if (locations_clicked.contains(location) == true)
+            {
+              setCard.setStrokeWidth(0);
+              locations_clicked.remove(location);
+            }
+            
+          }
+        });       
+      }
+      /*
+       * Update row and column index
+       */
+      rowindex = rowindex + 1;
+      if ((rowindex % 3) == 0)
+      {
+        colindex = colindex + 1;
+        rowindex = 0;
+      }
+    }
+  }
+  
+  private void handleLeaveGameResponse(LeaveGameResponse resp)
+  {
+    username_to_score_field.get(resp.uname).setText("Surrendered");
+  }
+  
+  
+  
   private void load_initial_cards(GridPane grid)
   {
     for (int colindex = 0; colindex < 5; ++colindex)
@@ -109,8 +214,11 @@ public class Game extends BorderPane {
   {
    InitialCardsMessage start_msg = new InitialCardsMessage(Launcher.username);
    start_msg.send(outToServer);
+   System.out.println("Sent initial cards message");
+   
    try {
     InitialCardsResponse start_response = (InitialCardsResponse)inFromServer.readObject();
+    System.out.println("Received card response");
     
     for (int colindex = 0; colindex < 4; ++colindex)
     {
@@ -125,7 +233,7 @@ public class Game extends BorderPane {
         Rectangle setCard = new Rectangle();
         setCard.setHeight(200);
         setCard.setWidth(100);
-        setCard.setFill(Color.WHITE);
+        setCard.setFill(imagePattern);
         setCard.setArcHeight(20);
         setCard.setArcWidth(20);
         setCard.setStrokeType(StrokeType.INSIDE);
@@ -148,14 +256,14 @@ public class Game extends BorderPane {
             else if (locations_clicked.contains(location) == true)
             {
               setCard.setStrokeWidth(0);
-              locations_clicked.add(location);
+              locations_clicked.remove(location);
             }
             
           }
         });
         
       }
-    }
+    }   
     
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
@@ -306,17 +414,6 @@ public class Game extends BorderPane {
     left_detail_pane.getChildren().add(set_correct);
     left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
     
-    Thread server_response_handler = null;
-    try {
-      server_response_handler = new Thread(new GameThread(primaryStage, outToServer, inFromServer, set_correct, center_pane,
-          location_to_card, location_to_node, location_to_click_status, locations_clicked, username_to_score_field));
-    } catch (IOException e2) {
-      // TODO Auto-generated catch block
-      e2.printStackTrace();
-    }
-    
-    server_response_handler.start();   
-    
     load_initial_cards(outToServer, inFromServer, center_pane);
     
     set_btn.setOnAction(new EventHandler<ActionEvent>(){
@@ -332,5 +429,115 @@ public class Game extends BorderPane {
     this.setRight(right_detail_pane);
     this.setMargin(center_pane, new Insets(10, 10, 10, 10));
     
+    Task task = new Task<Void>() {
+      @Override
+      public Void call() throws Exception {
+        
+        while (true)
+        {
+          Object obj = null;
+          try {
+            obj = inFromServer.readObject();
+          } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          
+          if (obj instanceof SetSelectResponse)
+          {
+            /*
+             * SetSelectResponse Message
+             * Client sends SetSelectMessage to server
+             * If its invalid, server only sends response to client
+             * If its valid, server sends response to all clients, with the username
+             * Of the user that got it right
+             * Users all update guis
+             */
+            
+            SetSelectResponse resp = (SetSelectResponse) obj;
+            System.out.println("Got set select response.");
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                handleSetResponse(resp, set_correct);
+              }
+            });
+                
+          }
+          /*
+           * Handle other server responses.
+           */
+          
+          if (obj instanceof TableResponse)
+          {
+            TableResponse resp = (TableResponse) obj;
+            System.out.println("Got table response.");
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                handleTableResponse(resp, center_pane);
+              }
+            });
+          }
+      
+          if (obj instanceof EndGameResponse)
+          {
+            EndGameResponse resp = (EndGameResponse) obj;
+            System.out.println("Got end game response.");
+            /*
+             * Maybe display scores of all users at end
+             */
+            
+            center_pane.getChildren().clear();
+            Button go_back = new Button("Back to Lobby");
+            go_back.setOnAction(new EventHandler<ActionEvent>(){
+              @Override
+              public void handle(ActionEvent e) {
+                Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+              }
+            });
+            break;
+          }
+          
+          if (obj instanceof LeaveGameResponse)
+          {
+            /*
+             * SurrenderResponse Message
+             * Client sends SurrenderMessage to server
+             * Server sends response to all clients, with the username
+             * That is surrendering
+             * Users all update guis
+             */
+            System.out.println("Got leave game response.");
+            LeaveGameResponse resp = (LeaveGameResponse) obj;
+            handleLeaveGameResponse(resp);
+            break;        
+          }
+        }
+        
+        return null;
+        
+      }
+    };
+    
+    Thread th = new Thread(task);
+    th.setDaemon(true);
+    th.start();
+    
+    
+//    Thread server_response_handler = null;
+//    try {
+//      server_response_handler = new Thread(new GameThread(primaryStage, outToServer, inFromServer, set_correct, center_pane,
+//          location_to_card, location_to_node, location_to_click_status, locations_clicked, username_to_score_field));
+//    } catch (IOException e2) {
+//      // TODO Auto-generated catch block
+//      e2.printStackTrace();
+//    }
+//    
+//    server_response_handler.start();   
+//    
   }     
 }

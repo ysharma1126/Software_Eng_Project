@@ -15,8 +15,6 @@ import javafx.stage.Stage;
 public class Launcher extends Application {
 
   public static String username = null;
-  
-  
   public static void main(String[] args) {
     // TODO Auto-generated method stub
     System.out.println("Launched");
@@ -68,7 +66,7 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
+  public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
   {
     Game game = new Game(primaryStage, outToServer, inFromServer, users);
     Scene scene = new Scene(game, 1200, 900);

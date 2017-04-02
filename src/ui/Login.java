@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import message.Sendable;
+import message.SetSelectResponse;
 import message.SignUpMessage;
 import message.SignUpResponse;
 import message.StartGameMessage;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
  * before you start the client.  It won't work otherwise.
  */
 public class Login extends GridPane {
-    
+  
   public Login(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
     this.setAlignment(Pos.CENTER);
@@ -139,9 +140,10 @@ public class Login extends GridPane {
           CreateRoomResponse resp = (CreateRoomResponse) inFromServer.readObject();
           System.out.println("c response");
           StartGameMessage start_message = new StartGameMessage();
+          System.out.println("s message");
           start_message.send(outToServer);
           StartGameResponse s_resp = (StartGameResponse) inFromServer.readObject();
-          
+          System.out.println("Got start response");
           Launcher.openGame(primaryStage, outToServer, inFromServer, users);
         }
         
@@ -156,6 +158,9 @@ public class Login extends GridPane {
       }
     });
   }
+  
+  
+  
   
   public Login(Stage primaryStage)
   {
