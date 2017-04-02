@@ -41,6 +41,7 @@ import message.EndGameResponse;
 import message.InitialCardsMessage;
 import message.InitialCardsResponse;
 import message.LeaveGameResponse;
+import message.NewCardsResponse;
 import message.Sendable;
 import message.SetSelectMessage;
 import message.SetSelectResponse;
@@ -65,11 +66,13 @@ public class Game extends BorderPane {
   {
     if (!resp.is_valid)
     {
+      System.out.println("Incorrect");
       set_correct.setText("Incorrect");
     }
     else
     {
       String username = resp.username;
+      System.out.println(resp.username + " Got a set correct");
       /*
        * Corresponds to current client
        */
@@ -84,12 +87,22 @@ public class Game extends BorderPane {
        * Increase the score in the GUI for the
        * corresponding user
        */
-      //username_to_score_field.get(resp.username).setText(Integer.toString(resp.setcount));
+      username_to_score_field.get(resp.username).setText(resp.username + ": " + Integer.toString(resp.setcount));
     }
   }
   
-  private void handleTableResponse(TableResponse resp, GridPane grid)
+  private void handleNewCardsResponse(NewCardsResponse n_resp, GridPane grid)
   {
+    for (Card card : n_resp.table1)
+    {
+      System.out.println(card.toImageFile());
+      System.out.println(card.randomnum);
+    }
+  }
+  
+  private void handleTableResponse(TableResponse t_resp, GridPane grid)
+  {
+    System.out.println("RESP num: " + t_resp.randomnum);
     int colindex = 0;
     int rowindex = 0;
     
@@ -98,14 +111,15 @@ public class Game extends BorderPane {
     locations_clicked.clear();
     grid.getChildren().clear();
     
-    for (Card card : resp.table)
+    for (Card card : t_resp.table1)
     {
       if (card.hole == false)
       {
         Rectangle setCard = new Rectangle();
         String imagesrc = card.toImageFile();
         imagesrc = "ui/resources/images/cards/" + imagesrc;
-        System.out.println(imagesrc);
+        //System.out.println(imagesrc);
+        System.out.println(card.randomnum);
         Image image = new Image(imagesrc);
         ImagePattern imagePattern = new ImagePattern(image);
         setCard.setHeight(200);
@@ -350,7 +364,7 @@ public class Game extends BorderPane {
     VBox right_detail_pane = new VBox();
     for (String user : users)
     {
-      Text text = new Text();
+      Text text = new Text(user);
       right_detail_pane.getChildren().add(text);
       username_to_score_field.put(user, text);
     }
@@ -391,12 +405,18 @@ public class Game extends BorderPane {
   public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
   {    
     ToolBar toolbar = new ToolBar(
-        new Button("Surrender"),
-        new Button("Change Password"),
-        new Button("Player Statistics")
+      new Button("Surrender"),
+      new Button("Change Password"),
+      new Button("Player Statistics")
         );
     
     VBox right_detail_pane = new VBox();
+    for (String user : users)
+    {
+      Text text = new Text();
+      right_detail_pane.getChildren().add(text);
+      username_to_score_field.put(user, text);
+    }
     /*
      * Add in user score boxes to right detail pane
      */
@@ -446,6 +466,18 @@ public class Game extends BorderPane {
             e.printStackTrace();
           }
           
+          if (obj instanceof NewCardsResponse)
+          {
+            NewCardsResponse n_resp = (NewCardsResponse) obj;
+            System.out.println("Got new cards response. ");
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                handleNewCardsResponse(n_resp, center_pane);
+              }
+            });
+          }
+          
           if (obj instanceof SetSelectResponse)
           {
             /*
@@ -473,12 +505,16 @@ public class Game extends BorderPane {
           
           if (obj instanceof TableResponse)
           {
-            TableResponse resp = (TableResponse) obj;
+            TableResponse t_resp = (TableResponse) obj;
             System.out.println("Got table response.");
+            for (Card card : t_resp.table1)
+            {
+             System.out.println(card.toImageFile());
+            }
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
-                handleTableResponse(resp, center_pane);
+                handleTableResponse(t_resp, center_pane);
               }
             });
           }
@@ -491,15 +527,21 @@ public class Game extends BorderPane {
              * Maybe display scores of all users at end
              */
             
-            center_pane.getChildren().clear();
-            Button go_back = new Button("Back to Lobby");
-            go_back.setOnAction(new EventHandler<ActionEvent>(){
+            Platform.runLater(new Runnable() {
               @Override
-              public void handle(ActionEvent e) {
-                Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+              public void run() {
+                center_pane.getChildren().clear();
+                Button go_back = new Button("Back to Lobby");
+                go_back.setOnAction(new EventHandler<ActionEvent>() {
+                  @Override
+                  public void handle(ActionEvent e){
+                    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+                  }
+                });
+                center_pane.add(go_back, 0, 0);
               }
             });
-            break;
+            return;
           }
           
           if (obj instanceof LeaveGameResponse)
@@ -538,6 +580,6 @@ public class Game extends BorderPane {
 //    }
 //    
 //    server_response_handler.start();   
-//    
+    
   }     
 }
