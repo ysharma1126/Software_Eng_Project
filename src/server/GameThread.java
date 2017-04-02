@@ -23,58 +23,56 @@ public class GameThread implements Runnable {
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
     public Player hostp = null;
-    public Socket hosts = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
     int gid;
     
-    public GameThread(Player p, Socket s, int id) throws IOException {
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, int id) throws IOException {
     	hostp = p;
-    	hosts = s;
     	gid = id;
-    	
-        hostInput = new ObjectInputStream(hosts.getInputStream());
-        hostOutput = new ObjectOutputStream(hosts.getOutputStream());
+    	System.out.println("1");
+        hostInput = i;
+        System.out.println("2");
+        hostOutput = o;
+        System.out.println("3");
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
+        System.out.println("4");
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
+        System.out.println("5");
 		connected_playerInput.put(p, hostInput);
+        System.out.println("6");
 		connected_playerOutput.put(p, hostOutput);
+        System.out.println("end");
     }
 
 	public void run() {
+		System.out.println("wtf");
 		while(true) {
+			System.out.println("In while loop");
 			Object obj;
 			try {
-				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-					obj = (Object) entry.getValue().readObject();
-					if (obj instanceof LeaveRoomMessage) {
-						this.connected_playerInput.remove(entry.getKey());
-						this.connected_playerOutput.remove(entry.getKey());
-						
-						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
-						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
-		    				lrr.send(value);
-		    			}
-					}
-				}
 				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
+					System.out.println("In StartGame");
 					StartGameResponse sgr = new StartGameResponse(gid);
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					
+					System.out.println("Sent Message");
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
 					game.initTable(deck, table, 12);
+					System.out.println("Setup Table");
 					//Send cards when Sahil asks
 					int check = 0;
-					while(!(check == this.connected_playerInput.size()-1)) {
+					System.out.println(this.connected_playerInput.size());
+					while(!(check == this.connected_playerInput.size())) {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
 							if (obj instanceof InitialCardsMessage) {
+								System.out.println("Sent Initial Cards Response");
 								check++;
 								InitialCardsResponse icr = new InitialCardsResponse(table);
 								icr.send(this.connected_playerOutput.get(entry.getKey()));
@@ -82,6 +80,7 @@ public class GameThread implements Runnable {
 						}
 					}
 					while (true) {
+						System.out.println("Starting Game");
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
@@ -152,6 +151,22 @@ public class GameThread implements Runnable {
 						return;
 					}
 				}
+				
+				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
+					System.out.println("In for loop");
+					obj = (Object) entry.getValue().readObject();
+					if (obj instanceof LeaveRoomMessage) {
+						System.out.println("In LeaveRoomMessage");
+						this.connected_playerInput.remove(entry.getKey());
+						this.connected_playerOutput.remove(entry.getKey());
+						
+						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
+						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
+		    				lrr.send(value);
+		    			}
+					}
+				}
+				System.out.println("Out of for loop");
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

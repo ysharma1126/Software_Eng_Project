@@ -215,7 +215,7 @@ public class GameThread implements Runnable {
           go_back.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent e) {
-              Launcher.openBrowser(primaryStage);
+              Launcher.openBrowser(primaryStage, outToServer, inFromServer);
             }
           });
           return;

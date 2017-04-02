@@ -92,10 +92,10 @@ public class PlayerThread implements Runnable {
 	    	        					//}
 	    	        					if (obj instanceof CreateRoomMessage) {
 	    	        					    System.out.println("Got create room message");
-	    	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
+	    	        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize);
 	    	        		    			Thread t = new Thread(gt);
-	    	        		    			t.start();
-	    	        		    			
+	    	        						t.start();
+	    	        		    			System.out.println("Continue Player Thread");
 	    	        		    			Server.connected_games.put(Server.gamesize, gt);
 	    	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
 	    	        		    			
