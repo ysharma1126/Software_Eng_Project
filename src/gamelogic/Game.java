@@ -162,7 +162,7 @@ public class Game {
 				break;
 			}
 			for (Card card1: table) {
-				if(card1 == card) {
+				if(this.equals(card1, card)) {
 					Card temp = deck.remove(deck.size()-1);
 					System.out.println(temp.toImageFile());
 					System.out.println(card1.toImageFile());
@@ -205,7 +205,20 @@ public class Game {
 				size++;
 			}
 		}
-		System.out.println(size);
+		//System.out.println(size);
 		return size;
+	}
+	
+	public boolean equals(Card card1, Card card2) {
+		if (card1.color == card2.color) {
+			if (card1.number == card2.number) {
+				if (card1.shading == card2.shading) {
+					if (card1.shape == card2.shape) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }
