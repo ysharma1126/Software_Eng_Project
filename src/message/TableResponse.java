@@ -18,13 +18,13 @@ public class TableResponse implements Sendable, Serializable{
 	
 	public void send(ObjectOutputStream outputstream)
 	  {
-		//this.randomnum = Math.random();
+		this.randomnum = Math.random();
 		for(Card card: this.table) {
 			card.randomnum = Math.random();
 			//System.out.println(card.toImageFile());
 			System.out.println(card.randomnum);
 		}
-		//System.out.println(this.randomnum);
+		System.out.println("Table" + this.randomnum);
 	    try {
 	      outputstream.writeObject(this);
 	    } catch (IOException e) {
