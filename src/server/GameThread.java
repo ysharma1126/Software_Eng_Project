@@ -82,7 +82,7 @@ public class GameThread implements Runnable {
 						System.out.println("Starting Game");
 						while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 							if (game.checkSetexists(table).size() == 0) {
-								System.out.println("Need more cards");
+								System.out.println("No Set on Table");
 								game.dealCards(deck, table, 3);
 								ArrayList <Card> table1 = new ArrayList <Card>();
 								for (Card card: table) {
@@ -96,17 +96,12 @@ public class GameThread implements Runnable {
 									}
 				    			}
 							}
-							System.out.println("Player Set Size");
-							System.out.println(this.connected_playerInput.size());
-							ArrayList <Card> temp = new ArrayList <Card>();
-							temp = game.checkSetexists(table);
-							if (temp.size() > 0) {
+							else {
+								ArrayList <Card> temp = new ArrayList <Card>();
+								temp = game.checkSetexists(table);
 								for (Card card: temp) {
 									System.out.println(card.toImageFile());
 								}
-							}
-							else {
-								System.out.println("No Set on Table");
 							}
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
