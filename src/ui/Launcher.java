@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import gamelogic.Player;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -42,7 +43,8 @@ public class Launcher extends Application {
 //  public static void openBrowser(Stage primaryStage)
 //  {
 //    Browser browser = new Browser(primaryStage);
-//    Scene scene = new  Scene(browser, 800, 600);-//    scene.getStylesheets().add("ui/style.css"); 
+//    Scene scene = new  Scene(browser, 800, 600); 
+//    scene.getStylesheets().add("ui/style.css"); 
 //    primaryStage.setTitle("SET");
 //    primaryStage.setResizable(false);
 //    primaryStage.setScene(scene);
@@ -60,6 +62,27 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
+  public static void openRoom(Stage primaryStage)
+  {
+    Room room = new Room(primaryStage);
+    Scene scene = new  Scene(room, 800, 600); 
+    scene.getStylesheets().add("ui/style.css"); 
+    primaryStage.setTitle("SET");
+    primaryStage.setResizable(false);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  }
+  
+//  public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+//    Room room = new Room(primaryStage, outToServer, inFromServer);
+//    Scene scene = new Scene(room, 800, 600);
+//    scene.getStylesheets().add("ui/style.css"); 
+//    primaryStage.setTitle("SET");
+//    primaryStage.setResizable(false);
+//    primaryStage.setScene(scene);
+//    primaryStage.show();
+//  }
+  
   public static void openGame(Stage primaryStage, ArrayList<String> users)
   {
     Game game = new Game(primaryStage, users);
@@ -68,36 +91,37 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openGame(Stage primaryStage, Socket socket, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
-  {
-    Game game = new Game(primaryStage, outToServer, inFromServer, users);
-    Scene scene = new Scene(game, 1200, 900);
-    primaryStage.setScene(scene);
-    primaryStage.show();
-  }
+//  public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<Player> users)
+//  {
+//    Game game = new Game(primaryStage, outToServer, inFromServer, users);
+//    Scene scene = new Scene(game, 1200, 900);
+//    primaryStage.setScene(scene);
+//    primaryStage.show();
+//  }
   
   @Override
   public void start(Stage primaryStage)
   {
-    String hostname = "199.98.20.114";
-    int portnumber = 8080;
-    
-    try {
-      Socket connectSocket = new Socket(hostname, portnumber);
-      ObjectOutputStream outToServer = new ObjectOutputStream(connectSocket.getOutputStream());
-      ObjectInputStream inFromServer = new ObjectInputStream(connectSocket.getInputStream());
-      System.out.println("Opening Login");
-      openLogin(primaryStage, outToServer, inFromServer);       
-    }
-    
-    catch (ConnectException e1) {
-      System.err.println("Connect Did not enter in proper server address/portnumber!");
-    } catch (UnknownHostException e1) {
-    // TODO Auto-generated catch block
-      System.err.println("Did not enter in proper server address/portnumber!");
-    } catch (IOException e1) {
-      // TODO Auto-generated catch block
-          e1.printStackTrace();
-    }
+    openRoom(primaryStage);
+//    String hostname = "199.98.20.114";
+//    int portnumber = 8080;
+//    
+//    try {
+//      Socket connectSocket = new Socket(hostname, portnumber);
+//      ObjectOutputStream outToServer = new ObjectOutputStream(connectSocket.getOutputStream());
+//      ObjectInputStream inFromServer = new ObjectInputStream(connectSocket.getInputStream());
+//      System.out.println("Opening Login");
+//      openLogin(primaryStage, outToServer, inFromServer);       
+//    }
+//    
+//    catch (ConnectException e1) {
+//      System.err.println("Connect Did not enter in proper server address/portnumber!");
+//    } catch (UnknownHostException e1) {
+//    // TODO Auto-generated catch block
+//      System.err.println("Did not enter in proper server address/portnumber!");
+//    } catch (IOException e1) {
+//      // TODO Auto-generated catch block
+//          e1.printStackTrace();
+//    }
   }
 }

@@ -26,6 +26,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -35,6 +36,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import message.CreateRoomMessage;
+import message.CreateRoomResponse;
 import message.GamesUpdateResponse;
 import message.InitialCardsResponse;
 import message.JoinRoomMessage;
@@ -80,7 +83,22 @@ public class Browser extends VBox {
     msg.send(outToServer);
     try {
       JoinRoomResponse response = (JoinRoomResponse) inFromServer.readObject();
-      // Launcher.openGame(Stage primaryStage);
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, gid);
+    } catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
+  private void create_room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, String name) {
+    CreateRoomMessage msg = new CreateRoomMessage(Launcher.username, name);
+    msg.send(outToServer);
+    try {
+      CreateRoomResponse response = (CreateRoomResponse) inFromServer.readObject();
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, response.gid);
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -90,7 +108,8 @@ public class Browser extends VBox {
     }
   }
 
-  public Browser(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer) {
+//  public Browser(Stage primaryStage) {
+public Browser(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer) {
     
     menubar = new MenuBar();
     content = new GridPane();
@@ -157,10 +176,24 @@ public class Browser extends VBox {
     
     content.add(game_tbl, 0, 0, 3, 2);
     
+    // Room name
+    TextField name_input = new TextField ();
+    content.add(name_input, 1, 2, 1, 1);
+    
     // Create game button
     Button newgame_btn = new Button("NEW GAME");
     newgame_btn.getStyleClass().add("btn-newgame");
+    newgame_btn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        if ((name_input.getText() != null && !name_input.getText().isEmpty())) {
+            create_room(primaryStage, outToServer, inFromServer, name_input.getText());
+        }
+      }
+    });
     content.add(newgame_btn, 0, 2, 1, 1);
+    
+
     
     // Create refresh button
     Button refresh_btn = new Button("*");

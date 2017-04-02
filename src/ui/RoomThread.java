@@ -34,12 +34,12 @@
 // * From the server.
 // */
 //
-//public class BrowserThread implements Runnable {
+//public class RoomThread implements Runnable {
 //    private Stage primaryStage = null;
 //    private ObjectOutputStream outToServer = null;
 //    private ObjectInputStream inFromServer = null;
 //    
-//    public BrowserThread(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws IOException{
+//    public RoomThread(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer) throws IOException{
 //      this.primaryStage = primaryStage;
 //      this.outToServer = outToServer;
 //      this.inFromServer = inFromServer;
@@ -52,7 +52,7 @@
 //    private void handleJoinRoomResponse(JoinRoomResponse resp)
 //    {
 //    }
-//
+//    
 //    
 //    public void run() {
 //      while (true)
