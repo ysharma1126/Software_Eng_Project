@@ -35,7 +35,7 @@ public class Game {
 	 * Checks to see if a card trio is a set
 	 * @author		ysharma1126
 	 * @param	set	card trio in question
-	 * @return		boolean representing whether the card trio is a set
+	 * x@return		boolean representing whether the card trio is a set
 	 *
 	 */
 	public boolean validateSet(ArrayList <Card> set) {
@@ -174,7 +174,11 @@ public class Game {
 	 */
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
-			table.get(table.indexOf(card)).hole = true;
+			for (Card card1: table) {
+				if (card == card1) {
+					table.get(table.indexOf(card1)).hole = true;
+				}
+			}
 		}
 	}
 	/**
