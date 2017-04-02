@@ -83,6 +83,7 @@ public class GameThread implements Runnable {
 						System.out.println("Starting Game");
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
+								System.out.println("Need more cards");
 								game.dealCards(deck, table, 3);
 								
 								TableResponse tr1 = new TableResponse(table);
