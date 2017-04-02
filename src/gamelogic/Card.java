@@ -14,6 +14,7 @@ public class Card implements Serializable{
 	public int color;
 	public int shading;
 	public boolean hole;
+	public double randomnum;
 	/**
 	 * Initializes a card
 	 * @author		ysharma1126

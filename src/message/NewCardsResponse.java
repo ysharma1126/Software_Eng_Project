@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 import gamelogic.*;
 
-public class TableResponse implements Sendable, Serializable{
+public class NewCardsResponse implements Sendable, Serializable{
 	
 	public ArrayList<Card> table1;
 	public double randomnum;
 	
-	public TableResponse(ArrayList <Card> t) {
+	public NewCardsResponse(ArrayList <Card> t) {
 		this.table1 = t;
 	}
 	
@@ -21,10 +21,10 @@ public class TableResponse implements Sendable, Serializable{
 		this.randomnum = Math.random();
 		for(Card card: this.table1) {
 			card.randomnum = Math.random();
-			System.out.println(card.toImageFile());
+			//System.out.println(card.toImageFile());
 			System.out.println(card.randomnum);
 		}
-		System.out.println("Table" + this.randomnum);
+		System.out.println("New Cards" + this.randomnum);
 	    try {
 	      outputstream.writeObject(this);
 	    } catch (IOException e) {

@@ -51,7 +51,6 @@ public class GameThread implements Runnable {
 			System.out.println("In while loop");
 			Object obj;
 			try {
-				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
 					System.out.println("In StartGame");
@@ -81,20 +80,28 @@ public class GameThread implements Runnable {
 					}
 					while (true) {
 						System.out.println("Starting Game");
-						while(!deck.isEmpty() || game.checkSetexists(table)) {
-							if (!game.checkSetexists(table)) {
-								System.out.println("Need more cards");
+						while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
+							if (game.checkSetexists(table).size() == 0) {
+								System.out.println("No Set on Table");
 								game.dealCards(deck, table, 3);
+								ArrayList <Card> table1 = new ArrayList <Card>();
+								for (Card card: table) {
+									table1.add(card);
+								}
 								
-								TableResponse tr1 = new TableResponse(table);
+								TableResponse tr1 = new TableResponse(table1);
 								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
 									if (entry.getKey().setcount != -1) {
 										tr1.send(entry.getValue());
 									}
 				    			}
+								continue;
 							}
-							System.out.println("Player Set Size");
-							System.out.println(this.connected_playerInput.size());
+							ArrayList <Card> temp = new ArrayList <Card>();	
+							temp = game.checkSetexists(table);
+							for (Card card: temp) {
+								System.out.println(card.toImageFile());
+							}
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
@@ -122,12 +129,17 @@ public class GameThread implements Runnable {
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
 										}
-										TableResponse tr2 = new TableResponse(table);
+										ArrayList <Card> table1 = new ArrayList<Card>();
+										for (Card card: table) {
+											table1.add(card);
+										}
+										TableResponse tr2 = new TableResponse(table1);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												tr2.send(entry1.getValue());
 											}
 						    			}
+						    			
 									}
 									else {
 										System.out.println("Set invalid");
