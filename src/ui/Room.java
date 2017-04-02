@@ -119,18 +119,18 @@ public class Room extends VBox {
       e.printStackTrace();
     }
   }
-
-public Room(Stage primaryStage) {
-//public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+  
+  public Room(Stage primaryStage, Integer gid) {
     this.gid = gid;
     // load_users(outToServer, inFromServer, gid);
+    
     //menubar = new MenuBar();
     content = new GridPane();
     
     content.setGridLinesVisible(true);
     content.setHgap(30);
     content.setVgap(30);
-    content.setPadding(new Insets(0, 10, 0, 10));
+    content.setPadding(new Insets(45, 10, 45, 10));
     
     // Active game browser        
     user_tbl.setEditable(false);
@@ -139,7 +139,7 @@ public Room(Stage primaryStage) {
     user_tbl.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     
     TableColumn<UserData, String> col_name = new TableColumn<>("PLAYER");
-    col_name.setPrefWidth(700);
+    col_name.setPrefWidth(685);
     col_name.setResizable(false);
     col_name.setCellValueFactory(
         new PropertyValueFactory<>("name"));
@@ -181,10 +181,114 @@ public Room(Stage primaryStage) {
     // Leave game button
     Button leavegame_btn = new Button("LEAVE");
     leavegame_btn.getStyleClass().add("btn-newgame");
+    leavegame_btn.setPrefHeight(60);
     leavegame_btn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent e) {
-    //    start_game(primaryStage, outToServer, inFromServer);
+//        leave_room(primaryStage, outToServer, inFromServer);
+      }
+    });
+    content.add(leavegame_btn, 0, 2, 1, 1);
+   
+    // Start game button
+    Button startgame_btn = new Button("START");
+    startgame_btn.setPrefWidth(120);
+    startgame_btn.setPrefHeight(60);
+    startgame_btn.getStyleClass().add("btn-newgame");
+    content.add(startgame_btn, 2, 2, 1, 1);
+    GridPane.setHalignment(startgame_btn, HPos.RIGHT);
+    startgame_btn.setOnAction(new EventHandler<ActionEvent>(){
+      @Override
+      public void handle(ActionEvent e) {
+//        start_game(primaryStage, outToServer, inFromServer);
+      }
+    });
+    
+    // Refresh button
+    Button refresh_btn = new Button("*");
+    refresh_btn.getStyleClass().add("btn-refresh");
+    refresh_btn.setPrefWidth(60);
+    refresh_btn.setPrefHeight(60);
+    content.add(refresh_btn, 1, 2, 1, 1);
+    refresh_btn.setOnAction(new EventHandler<ActionEvent>(){
+      @Override
+      public void handle(ActionEvent e) {
+//        load_users(outToServer, inFromServer, gid);
+      }
+    });
+    
+    
+    this.getChildren().addAll(content);
+    this.getStyleClass().add("browser");
+    this.setPadding(new Insets(0, 40, 0, 40));
+  }
+  
+public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+    this.gid = gid;
+    load_users(outToServer, inFromServer, gid);
+    
+    //menubar = new MenuBar();
+    content = new GridPane();
+    
+    content.setGridLinesVisible(true);
+    content.setHgap(30);
+    content.setVgap(30);
+    content.setPadding(new Insets(45, 10, 45, 10));
+    
+    // Active game browser        
+    user_tbl.setEditable(false);
+    user_tbl.setPrefWidth(700);
+    user_tbl.setPrefHeight(420);
+    user_tbl.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    
+    TableColumn<UserData, String> col_name = new TableColumn<>("PLAYER");
+    col_name.setPrefWidth(685);
+    col_name.setResizable(false);
+    col_name.setCellValueFactory(
+        new PropertyValueFactory<>("name"));
+    
+    
+//    Thread server_response_handler = null;
+//    try {
+//      //server_response_handler = new Thread(new RoomThread(primaryStage, outToServer, inFromServer));
+//    } catch (IOException e2) {
+//      // TODO Auto-generated catch block
+//      e2.printStackTrace();
+//    }
+//    server_response_handler.start();
+    
+    //load_users(outToServer, inFromServer, gid);
+    user_tbl.setItems(this.user_data);
+    user_tbl.getColumns().addAll(col_name);
+    
+    // Disable user reordering of columns at runtime
+    user_tbl.widthProperty().addListener(new ChangeListener<Number>()
+    {
+        @Override
+        public void changed(ObservableValue<? extends Number> source, Number oldWidth, Number newWidth)
+        {
+            TableHeaderRow header = (TableHeaderRow) user_tbl.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    header.setReordering(false);
+                }
+            });
+        }
+    });
+    
+    user_tbl.getStyleClass().add("tbl-user");
+    
+    content.add(user_tbl, 0, 0, 3, 2);
+    
+    // Leave game button
+    Button leavegame_btn = new Button("LEAVE");
+    leavegame_btn.getStyleClass().add("btn-newgame");
+    leavegame_btn.setPrefHeight(60);
+    leavegame_btn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        leave_room(primaryStage, outToServer, inFromServer);
       }
     });
     content.add(leavegame_btn, 0, 2, 1, 1);
@@ -192,23 +296,26 @@ public Room(Stage primaryStage) {
     // Start game button
     Button startgame_btn = new Button("START");
     startgame_btn.getStyleClass().add("btn-newgame");
+    startgame_btn.setPrefHeight(60);
     content.add(startgame_btn, 2, 2, 1, 1);
     GridPane.setHalignment(startgame_btn, HPos.RIGHT);
     startgame_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-     //   leave_room(primaryStage, outToServer, inFromServer);
+        start_game(primaryStage, outToServer, inFromServer);
       }
     });
     
     // Refresh button
     Button refresh_btn = new Button("*");
     refresh_btn.getStyleClass().add("btn-refresh");
+    refresh_btn.setPrefWidth(60);
+    refresh_btn.setPrefHeight(60);
     content.add(refresh_btn, 1, 2, 1, 1);
     refresh_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        //load_users(outToServer, inFromServer, gid);
+        load_users(outToServer, inFromServer, gid);
       }
     });
     

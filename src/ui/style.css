@@ -25,11 +25,11 @@
 }
 
 .btn-refresh {
-	-fx-font-family: "Montserrat";
-	-fx-font-size: 20;
-	-fx-font-weight: bold;
+	-fx-font-family: "Material Icons";
+	-fx-font-style: normal;
+	-fx-font-size: 24;
 	-fx-text-fill: #ffffff;
-	-fx-background-color: #f4511e;
+	-fx-background-color: #c5e1a5;
 	-fx-border-radius: 3;
 	-fx-background-radius: 3;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
@@ -38,19 +38,22 @@
 }
 
 .btn-refresh: hover {
-	-fx-background-color: #ff5722;
+	-fx-background-color: #ccff90;
 }
 
 .tbl-game {
 	-fx-background-color: #424242;
+	-fx-background-insets: 0;
 }
 
 .tbl-game: focused {
 	-fx-background-color: #424242;
+	-fx-background-insets: 0;
 }
 
 .tbl-game .filler {
-    -fx-background-color: #424242;
+    -fx-background-color: #212121;
+
 }
 	
 .tbl-game .column-header {
@@ -66,21 +69,21 @@
     -fx-background-color: transparent;
     -fx-alignment: center-left;
     -fx-font-family: "Montserrat";
-	-fx-font-size: 12;
-	-fx-font-weight: 500;
+	-fx-font-size: 16;
+	-fx-font-weight: 700;
     -fx-margin-bottom: 10px;
     -fx-text-fill: #ffffff;
-    -fx-padding: 0 4px;
+    -fx-padding: 8px 8px;
 }
 	
 .tbl-game .table-cell {
     -fx-alignment: center-left;
     -fx-font-family: "Montserrat";
-	-fx-font-size: 10;
+	-fx-font-size: 16;
 	-fx-font-weight: normal;
     -fx-margin-bottom: 10px;
     -fx-text-fill: #ffffff;
-    -fx-padding: 0 5px;
+    -fx-padding: 0 8px;
 }
 
 .tbl-game .table-row-cell {
@@ -94,6 +97,7 @@
 .tbl-game .table-row-cell: focused{
 	-fx-background-color: #78909c;
 }
+
 .tbl-game > .virtual-flow > .scroll-bar {
 	-fx-background-color: transparent;
 }
@@ -111,6 +115,96 @@
 .tbl-game > .virtual-flow > .scroll-bar > .increment-button, 
 .tbl-game > .virtual-flow > .scroll-bar > .decrement-button {
     -fx-opacity: 0;
+}
+
+.tbl-game > .virtual-flow > .scroll-bar:vertical > .thumb,
+.tbl-game > .virtual-flow > .scroll-bar:horizontal > .thumb {
+    -fx-background-color: derive(black,90%);
+    -fx-background-insets: 2px, 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.tbl-user {
+	-fx-background-color: #424242;
+	-fx-background-insets: 0;
+}
+
+.tbl-user: focused {
+	-fx-background-color: #424242;
+	-fx-background-insets: 0;
+}
+
+.tbl-user .filler {
+    -fx-background-color: #212121;
+
+}
+	
+.tbl-user .column-header {
+	-fx-background-color: #212121;
+    
+}
+
+.tbl-user .column-header-background {
+    -fx-background-color: #212121;
+    
+}
+
+.tbl-user .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-alignment: center-left;
+    -fx-font-family: "Montserrat";
+	-fx-font-size: 16;
+	-fx-font-weight: 700;
+    -fx-margin-bottom: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 8px 8px;
+}
+	
+.tbl-user .table-cell {
+    -fx-alignment: center-left;
+    -fx-font-family: "Montserrat";
+	-fx-font-size: 16;
+	-fx-font-weight: normal;
+    -fx-margin-bottom: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 8px;
+}
+
+.tbl-user .table-row-cell {
+	-fx-background-color: #424242;
+}
+
+.tbl-user .table-row-cell: hover{
+	-fx-background-color: #424242;
+}
+
+.tbl-user .table-row-cell: focused{
+	-fx-background-color: #424242;
+}
+.tbl-user > .virtual-flow > .scroll-bar {
+	
+	-fx-background-color: transparent;
+}
+.tbl-user > .virtual-flow > .scroll-bar:vertical,
+.tbl-user > .virtual-flow > .scroll-bar:vertical > .track,
+.tbl-user > .virtual-flow > .scroll-bar:vertical > .track-background, 
+.tbl-user > .virtual-flow > .scroll-bar:horizontal,
+.tbl-user > .virtual-flow > .scroll-bar:horizontal > .track,
+.tbl-user > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+
+.tbl-user > .virtual-flow > .scroll-bar > .increment-button, 
+.tbl-user > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
+}
+
+.tbl-user > .virtual-flow > .scroll-bar:vertical > .thumb,
+.tbl-user > .virtual-flow > .scroll-bar:horizontal > .thumb {
+    -fx-background-color: derive(black,90%);
+    -fx-background-insets: 2px, 0, 0, 0;
+    -fx-background-radius: 0em;
 }
 
 .user {
