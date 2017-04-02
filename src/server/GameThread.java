@@ -72,6 +72,7 @@ public class GameThread implements Runnable {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
 							if (obj instanceof InitialCardsMessage) {
+								System.out.println("Sent Initial Cards Response");
 								check++;
 								InitialCardsResponse icr = new InitialCardsResponse(table);
 								icr.send(this.connected_playerOutput.get(entry.getKey()));
@@ -79,8 +80,10 @@ public class GameThread implements Runnable {
 						}
 					}
 					while (true) {
+						System.out.println("Starting Game");
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
+								System.out.println("Need more cards");
 								game.dealCards(deck, table, 3);
 								
 								TableResponse tr1 = new TableResponse(table);
@@ -90,11 +93,15 @@ public class GameThread implements Runnable {
 									}
 				    			}
 							}
+							System.out.println("Player Set Size");
+							System.out.println(this.connected_playerInput.size());
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
+									System.out.println("Received a set");
 									SetSelectMessage resp = (SetSelectMessage) obj;
 									if(game.validateSet(resp.cards)) {
+										System.out.println("Set's valid!");
 										game.updateSetcount(entry.getKey());
 										
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
@@ -105,8 +112,20 @@ public class GameThread implements Runnable {
 						    			}
 										
 										game.removeCards(resp.cards, table);
+										for (Card card: resp.cards) {
+											for (Card card1: table) {
+												if (game.equals(card1,card)) {
+													System.out.println(table.get(table.indexOf(card1)).hole);
+												}
+											}
+										}
+										System.out.println("Table Size");
+										System.out.println(game.getsize(table));
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
+										}
+										for(Card card: table) {
+											System.out.println(card.toImageFile());
 										}
 										TableResponse tr2 = new TableResponse(table);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
@@ -116,6 +135,7 @@ public class GameThread implements Runnable {
 						    			}
 									}
 									else {
+										System.out.println("Set invalid");
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {

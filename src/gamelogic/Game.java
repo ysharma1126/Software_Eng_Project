@@ -35,7 +35,7 @@ public class Game {
 	 * Checks to see if a card trio is a set
 	 * @author		ysharma1126
 	 * @param	set	card trio in question
-	 * @return		boolean representing whether the card trio is a set
+	 * x@return		boolean representing whether the card trio is a set
 	 *
 	 */
 	public boolean validateSet(ArrayList <Card> set) {
@@ -161,9 +161,18 @@ public class Game {
 			if (deck.isEmpty()) {
 				break;
 			}
-			table.get(table.indexOf(card)).hole = false;
-			table.set(table.indexOf(card), deck.remove(deck.size()-1));
+			for (Card card1: table) {
+				if(this.equals(card1, card)) {
+					Card temp = deck.remove(deck.size()-1);
+					System.out.println(temp.toImageFile());
+					System.out.println(card1.toImageFile());
+					table.set(table.indexOf(card1), temp);
+				}
+			}
 		}
+		//for (Card card: table) {
+		//	System.out.println(card.toImageFile());
+		//}
 	}
 	/**
 	 * Removes the cards
@@ -174,7 +183,11 @@ public class Game {
 	 */
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
-			table.get(table.indexOf(card)).hole = true;
+			for (Card card1: table) {
+				if (this.equals(card, card1)) {
+					table.get(table.indexOf(card1)).hole = true;
+				}
+			}
 		}
 	}
 	/**
@@ -194,6 +207,20 @@ public class Game {
 				size++;
 			}
 		}
+		//System.out.println(size);
 		return size;
+	}
+	
+	public boolean equals(Card card1, Card card2) {
+		if (card1.color == card2.color) {
+			if (card1.number == card2.number) {
+				if (card1.shading == card2.shading) {
+					if (card1.shape == card2.shape) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

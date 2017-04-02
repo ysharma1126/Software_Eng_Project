@@ -144,7 +144,7 @@ public class Login extends GridPane {
           start_message.send(outToServer);
           StartGameResponse s_resp = (StartGameResponse) inFromServer.readObject();
           System.out.println("Got start response");
-          Launcher.openGame(primaryStage, outToServer, inFromServer, users);
+          Launcher.openGame(outToServer, inFromServer, users, primaryStage);
         }
         
         } catch (ClassNotFoundException e1) {

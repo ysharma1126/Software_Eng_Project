@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import gamelogic.Player;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -40,7 +41,8 @@ public class Launcher extends Application {
 //  public static void openBrowser(Stage primaryStage)
 //  {
 //    Browser browser = new Browser(primaryStage);
-//    Scene scene = new  Scene(browser, 800, 600);-//    scene.getStylesheets().add("ui/style.css"); 
+//    Scene scene = new  Scene(browser, 800, 600); 
+//    scene.getStylesheets().add("ui/style.css"); 
 //    primaryStage.setTitle("SET");
 //    primaryStage.setResizable(false);
 //    primaryStage.setScene(scene);
@@ -58,6 +60,27 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
+  public static void openRoom(Stage primaryStage)
+  {
+    Room room = new Room(primaryStage);
+    Scene scene = new  Scene(room, 800, 600); 
+    scene.getStylesheets().add("ui/style.css"); 
+    primaryStage.setTitle("SET");
+    primaryStage.setResizable(false);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  }
+  
+//  public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+//    Room room = new Room(primaryStage, outToServer, inFromServer);
+//    Scene scene = new Scene(room, 800, 600);
+//    scene.getStylesheets().add("ui/style.css"); 
+//    primaryStage.setTitle("SET");
+//    primaryStage.setResizable(false);
+//    primaryStage.setScene(scene);
+//    primaryStage.show();
+//  }
+  
   public static void openGame(Stage primaryStage, ArrayList<String> users)
   {
     Game game = new Game(primaryStage, users);
@@ -66,9 +89,23 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
+  public static void openGame(ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users, Stage primaryStage)
   {
+    
     Game game = new Game(primaryStage, outToServer, inFromServer, users);
+    Scene scene = new Scene(game, 1200, 900);
+    primaryStage.setScene(scene);
+    primaryStage.show();
+  }  
+  public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<Player> users)
+  {
+    ArrayList<String> usernames = new ArrayList<String>();
+    for (Player user : users)
+    {
+      usernames.add(user.username);
+    }
+    
+    Game game = new Game(primaryStage, outToServer, inFromServer, usernames);
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);
     primaryStage.show();
@@ -77,6 +114,7 @@ public class Launcher extends Application {
   @Override
   public void start(Stage primaryStage)
   {
+    openRoom(primaryStage);
     String hostname = "199.98.20.114";
     int portnumber = 8080;
     
