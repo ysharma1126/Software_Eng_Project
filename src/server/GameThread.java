@@ -18,26 +18,22 @@ import message.*;
  * @author Yash
  */
 
-public class GameThread {
+public class GameThread implements Runnable {
 	
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
     public Player hostp = null;
-    public Socket hosts = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
     int gid;
     
-    public GameThread(Player p, Socket s, int id) throws IOException {
-		Server.gamesize++;
-		
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, int id) throws IOException {
     	hostp = p;
-    	hosts = s;
     	gid = id;
     	System.out.println("1");
-        hostInput = new ObjectInputStream(hosts.getInputStream());
+        hostInput = i;
         System.out.println("2");
-        hostOutput = new ObjectOutputStream(hosts.getOutputStream());
+        hostOutput = o;
         System.out.println("3");
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
         System.out.println("4");
