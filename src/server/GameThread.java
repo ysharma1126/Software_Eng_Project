@@ -48,11 +48,14 @@ public class GameThread implements Runnable {
 	public void run() {
 		System.out.println("wtf");
 		while(true) {
+			System.out.println("In while loop");
 			Object obj;
 			try {
 				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
+					System.out.println("In for loop");
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveRoomMessage) {
+						System.out.println("In LeaveRoomMessage");
 						this.connected_playerInput.remove(entry.getKey());
 						this.connected_playerOutput.remove(entry.getKey());
 						
@@ -65,6 +68,7 @@ public class GameThread implements Runnable {
 				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
+					System.out.println("In StartGame");
 					StartGameResponse sgr = new StartGameResponse(gid);
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
