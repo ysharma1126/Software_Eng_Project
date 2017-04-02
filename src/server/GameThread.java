@@ -165,6 +165,17 @@ public class GameThread implements Runnable {
 							}
 						}
 						
+						ArrayList <Card> table1 = new ArrayList<Card>();
+						for (Card card: table) {
+							table1.add(card);
+						}
+						TableResponse tr2 = new TableResponse(table1);
+						for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+							if (entry1.getKey().setcount != -1) {
+								tr2.send(entry1.getValue());
+							}
+		    			}
+						
 						EndGameResponse eg = new EndGameResponse();
 						for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
 							if (entry.getKey().setcount != -1) {
