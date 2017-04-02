@@ -110,17 +110,15 @@ public class GameThread implements Runnable {
 												ssr.send(entry1.getValue());
 											}
 						    			}
-										
-										game.removeCards(resp.cards, table);
-										for (Card card: resp.cards) {
-											for (Card card1: table) {
-												if (game.equals(card1,card)) {
-													System.out.println(table.get(table.indexOf(card1)).hole);
-												}
-											}
+										for(Card card: table) {
+											System.out.println(card.toImageFile());
 										}
+										game.removeCards(resp.cards, table);
 										System.out.println("Table Size");
 										System.out.println(game.getsize(table));
+										for(Card card: table) {
+											System.out.println(card.toImageFile());
+										}
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
 										}
