@@ -119,8 +119,7 @@ public class GameThread implements Runnable {
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
 										}
-										ArrayList <Card> table1 = new ArrayList<Card>();
-										table1 = table;
+										ArrayList <Card> table1 = new ArrayList<Card>(table);
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											table1 = game.replaceCards(resp.cards, deck, table);
 										}

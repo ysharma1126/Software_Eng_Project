@@ -157,8 +157,7 @@ public class Game {
 	 *
 	 */
 	public ArrayList <Card> replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
-		ArrayList <Card> result = new ArrayList<Card>();
-		result = table;
+		ArrayList <Card> result = new ArrayList<Card>(table);
 		for (Card card: set) {
 			if (deck.isEmpty()) {
 				break;
