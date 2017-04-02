@@ -166,7 +166,7 @@ public class Game {
 					Card temp = deck.remove(deck.size()-1);
 					System.out.println(temp.toImageFile());
 					System.out.println(card1.toImageFile());
-					table.set(table.indexOf(card1), deck.remove(deck.size()-1));
+					table.set(table.indexOf(card1), temp);
 				}
 			}
 		}
