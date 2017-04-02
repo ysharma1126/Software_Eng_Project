@@ -95,7 +95,7 @@ public class GameThread implements Runnable {
 										tr1.send(entry.getValue());
 									}
 				    			}
-								break;
+								continue;
 							}
 							ArrayList <Card> temp = new ArrayList <Card>();	
 							temp = game.checkSetexists(table);
