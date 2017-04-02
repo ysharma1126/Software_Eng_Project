@@ -182,7 +182,7 @@ public class Game {
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
 			for (Card card1: table) {
-				if (card == card1) {
+				if (this.equals(card, card1)) {
 					table.get(table.indexOf(card1)).hole = true;
 				}
 			}
