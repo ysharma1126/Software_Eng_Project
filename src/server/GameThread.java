@@ -95,13 +95,12 @@ public class GameThread implements Runnable {
 										tr1.send(entry.getValue());
 									}
 				    			}
+								break;
 							}
-							else {
-								ArrayList <Card> temp = new ArrayList <Card>();
-								temp = game.checkSetexists(table);
-								for (Card card: temp) {
-									System.out.println(card.toImageFile());
-								}
+							ArrayList <Card> temp = new ArrayList <Card>();	
+							temp = game.checkSetexists(table);
+							for (Card card: temp) {
+								System.out.println(card.toImageFile());
 							}
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
