@@ -51,7 +51,6 @@ public class GameThread implements Runnable {
 			System.out.println("In while loop");
 			Object obj;
 			try {
-				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
 					System.out.println("In StartGame");
@@ -81,8 +80,8 @@ public class GameThread implements Runnable {
 					}
 					while (true) {
 						System.out.println("Starting Game");
-						while(!deck.isEmpty() || game.checkSetexists(table)) {
-							if (!game.checkSetexists(table)) {
+						while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
+							if (game.checkSetexists(table).size() == 0) {
 								System.out.println("Need more cards");
 								game.dealCards(deck, table, 3);
 								ArrayList <Card> table1 = new ArrayList <Card>();
@@ -99,6 +98,16 @@ public class GameThread implements Runnable {
 							}
 							System.out.println("Player Set Size");
 							System.out.println(this.connected_playerInput.size());
+							ArrayList <Card> temp = new ArrayList <Card>();
+							temp = game.checkSetexists(table);
+							if (temp.size() > 0) {
+								for (Card card: temp) {
+									System.out.println(card.toImageFile());
+								}
+							}
+							else {
+								System.out.println("No Set on Table");
+							}
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {

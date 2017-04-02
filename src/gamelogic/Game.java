@@ -2,6 +2,7 @@ package gamelogic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Game class, functions needed to control the Set game
@@ -65,9 +66,11 @@ public class Game {
 	 * @return		boolean representing whether there is a set on the table
 	 *
 	 */
-	public boolean checkSetexists(ArrayList <Card> cards) {
+	
+	public ArrayList <Card> checkSetexists(ArrayList <Card> cards) {
+		ArrayList <Card> result = new ArrayList <Card>();
 		if (cards == null) {
-			return false;
+			return result;
 		}
 		int size = cards.size();
 		boolean holecheck = false;
@@ -87,15 +90,20 @@ public class Game {
 						holecheck = true;
 					}
 					ArrayList <Card> temp = new ArrayList <Card>();
-					temp.addAll(Arrays.asList(a,b,c));
+                    temp.add(a);
+                    temp.add(b);
+                    temp.add(c);
 					if (validateSet(temp) && (!holecheck)) {
-						return true;
+						for (Card card: temp) {
+							result.add(card);
+						}
+						return result;
 					}
 					temp.clear();
 				}
 			}
 		}
-		return false;
+		return result;
 	}
 	/**
 	 * Init table
