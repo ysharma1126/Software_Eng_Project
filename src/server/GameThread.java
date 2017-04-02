@@ -59,13 +59,15 @@ public class GameThread implements Runnable {
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					
+					System.out.println("Sent Message");
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
 					game.initTable(deck, table, 12);
+					System.out.println("Setup Table");
 					//Send cards when Sahil asks
 					int check = 0;
+					System.out.println(this.connected_playerInput.size()-1);
 					while(!(check == this.connected_playerInput.size()-1)) {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
