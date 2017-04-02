@@ -12,7 +12,7 @@ public class InitialCardsResponse implements Sendable, Serializable{
 	public ArrayList<Card> table;
 	
 	public InitialCardsResponse(ArrayList <Card> t) {
-		table = t;
+		this.table = t;
 	}
 	
 	public void send(ObjectOutputStream outputstream)
