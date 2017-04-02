@@ -156,7 +156,7 @@ public class Game {
 	 * @param	numcards	Number of cards to be dealt
 	 *
 	 */
-	public ArrayList <Card> replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
+	public void replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
 		for (Card card: set) {
 			if (deck.isEmpty()) {
 				break;
@@ -175,7 +175,6 @@ public class Game {
 				}
 			}
 		}
-		return table;
 		//for (Card card: table) {
 		//	System.out.println(card.toImageFile());
 		//}
@@ -187,7 +186,7 @@ public class Game {
 	 * @param	table	The cards currently on the table
 	 *
 	 */
-	public ArrayList <Card> removeCards(ArrayList <Card> set, ArrayList <Card> table) {
+	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
 		for (Card card: set) {
 			for (Card card1: table) {
 				if (this.equals(card, card1)) {
@@ -195,7 +194,6 @@ public class Game {
 				}
 			}
 		}
-		return table;
 	}
 	/**
 	 * Updates the player's setcount

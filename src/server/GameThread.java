@@ -85,8 +85,12 @@ public class GameThread implements Runnable {
 							if (!game.checkSetexists(table)) {
 								System.out.println("Need more cards");
 								game.dealCards(deck, table, 3);
+								ArrayList <Card> table1 = new ArrayList <Card>();
+								for (Card card: table) {
+									table1.add(card);
+								}
 								
-								TableResponse tr1 = new TableResponse(table);
+								TableResponse tr1 = new TableResponse(table1);
 								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
 									if (entry.getKey().setcount != -1) {
 										tr1.send(entry.getValue());
@@ -113,27 +117,20 @@ public class GameThread implements Runnable {
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
 										}
-										/*
-										ArrayList <Card> table1 = new ArrayList<Card>();
-										for (Card card: resp.cards) {
-											for (Card card1: table) {
-												if (game.equals(card,card1)) {
-													card1.hole = true;
-												}
-												table1.add(card1);
-											}
-										}
-										*/
-										table = game.removeCards(resp.cards, table);
+										game.removeCards(resp.cards, table);
 										System.out.println("Table Size");
 										System.out.println(game.getsize(table));
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
 										}
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
-											table = game.replaceCards(resp.cards, deck, table);
+											game.replaceCards(resp.cards, deck, table);
 										}
-										TableResponse tr2 = new TableResponse(table);
+										ArrayList <Card> table1 = new ArrayList<Card>();
+										for (Card card: table) {
+											table1.add(card);
+										}
+										TableResponse tr2 = new TableResponse(table1);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												tr2.send(entry1.getValue());
