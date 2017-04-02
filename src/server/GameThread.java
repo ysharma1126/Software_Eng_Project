@@ -51,20 +51,6 @@ public class GameThread implements Runnable {
 			System.out.println("In while loop");
 			Object obj;
 			try {
-				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-					System.out.println("In for loop");
-					obj = (Object) entry.getValue().readObject();
-					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("In LeaveRoomMessage");
-						this.connected_playerInput.remove(entry.getKey());
-						this.connected_playerOutput.remove(entry.getKey());
-						
-						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
-						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
-		    				lrr.send(value);
-		    			}
-					}
-				}
 				
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
@@ -161,6 +147,22 @@ public class GameThread implements Runnable {
 						return;
 					}
 				}
+				
+				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
+					System.out.println("In for loop");
+					obj = (Object) entry.getValue().readObject();
+					if (obj instanceof LeaveRoomMessage) {
+						System.out.println("In LeaveRoomMessage");
+						this.connected_playerInput.remove(entry.getKey());
+						this.connected_playerOutput.remove(entry.getKey());
+						
+						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
+						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
+		    				lrr.send(value);
+		    			}
+					}
+				}
+				System.out.println("Out of for loop");
 			} catch (ClassNotFoundException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
