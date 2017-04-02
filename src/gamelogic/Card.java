@@ -1,11 +1,14 @@
 package gamelogic;
+
+import java.io.Serializable;
+
 /**
  * Card class, contains attributes of a card object
  * @author ysharma1126
  * 
  *
  */
-public class Card {
+public class Card implements Serializable{
 	public int shape;
 	public int number;
 	public int color;
