@@ -67,8 +67,8 @@ public class GameThread implements Runnable {
 					System.out.println("Setup Table");
 					//Send cards when Sahil asks
 					int check = 0;
-					System.out.println(this.connected_playerInput.size()-1);
-					while(!(check == this.connected_playerInput.size()-1)) {
+					System.out.println(this.connected_playerInput.size());
+					while(!(check == this.connected_playerInput.size())) {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
 							if (obj instanceof InitialCardsMessage) {
