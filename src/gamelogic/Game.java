@@ -205,6 +205,7 @@ public class Game {
 				size++;
 			}
 		}
+		System.out.println(size);
 		return size;
 	}
 }
