@@ -15,6 +15,10 @@ public class TableResponse implements Sendable, Serializable{
 	public TableResponse(ArrayList <Card> t) {
 		this.table = t;
 		this.randomnum = Math.random();
+		for(Card card: this.table) {
+			System.out.println(card.toImageFile());
+		}
+		System.out.println(this.randomnum);
 	}
 	
 	public void send(ObjectOutputStream outputstream)
