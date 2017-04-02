@@ -101,43 +101,47 @@ public class GameThread implements Runnable {
       location_to_card.clear();
       location_to_node.clear();
       locations_clicked.clear();
-      grid.getChildren().clear();
+      //grid.getChildren().clear();
       
+      System.out.println(resp.randomnum);
       for (Card card : resp.table)
       {
         if (card.hole == false)
         {
-          Rectangle setCard = new Rectangle();
-          setCard.setHeight(200);
-          setCard.setWidth(100);
-          setCard.setFill(Color.WHITE);
-          setCard.setArcHeight(20);
-          setCard.setArcWidth(20);
-          setCard.setStrokeType(StrokeType.INSIDE);
-          setCard.setStroke(Color.web("blue", 0.30));
-          setCard.setStrokeWidth(0);
-          grid.add(setCard, colindex, rowindex);
-          Location location = new Location(rowindex, colindex);
-          location_to_card.put(location, card);
-          location_to_node.put(location, setCard);
-          
-          setCard.setOnMouseClicked(new EventHandler<MouseEvent>()
-          {
-            @Override
-            public void handle(MouseEvent t) {
-              if (locations_clicked.contains(location) == false)
-              {
-                setCard.setStrokeWidth(4);
-                locations_clicked.add(location);
-              }
-              else if (locations_clicked.contains(location) == true)
-              {
-                setCard.setStrokeWidth(0);
-                locations_clicked.add(location);
-              }
-              
-            }
-          });       
+//         Rectangle setCard = new Rectangle();
+          String imagesrc = card.toImageFile();
+          imagesrc = "ui/resources/images/cards/" + imagesrc;
+          System.out.println(imagesrc);
+//          setCard.setHeight(200);
+//          setCard.setWidth(100);
+//          setCard.setFill(Color.WHITE);
+//          setCard.setArcHeight(20);
+//          setCard.setArcWidth(20);
+//          setCard.setStrokeType(StrokeType.INSIDE);
+//          setCard.setStroke(Color.web("blue", 0.30));
+//          setCard.setStrokeWidth(0);
+//          grid.add(setCard, colindex, rowindex);
+//          Location location = new Location(rowindex, colindex);
+//          location_to_card.put(location, card);
+//          location_to_node.put(location, setCard);
+//          
+//          setCard.setOnMouseClicked(new EventHandler<MouseEvent>()
+//          {
+//            @Override
+//            public void handle(MouseEvent t) {
+//              if (locations_clicked.contains(location) == false)
+//              {
+//                setCard.setStrokeWidth(4);
+//                locations_clicked.add(location);
+//              }
+//              else if (locations_clicked.contains(location) == true)
+//              {
+//                setCard.setStrokeWidth(0);
+//                locations_clicked.add(location);
+//              }
+//              
+//            }
+//          });       
         }
         /*
          * Update row and column index
