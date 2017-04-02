@@ -163,8 +163,11 @@ public class Game {
 			}
 			for (Card card1: table) {
 				if(card1 == card) {
-					table.get(table.indexOf(card1)).hole = false;
+					Card temp = deck.remove(deck.size()-1);
+					System.out.println(temp.toImageFile());
+					System.out.println(card1.toImageFile());
 					table.set(table.indexOf(card1), deck.remove(deck.size()-1));
+					
 				}
 			}
 		}
