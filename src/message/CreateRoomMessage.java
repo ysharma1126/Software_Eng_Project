@@ -14,12 +14,10 @@ import java.io.Serializable;
 public class CreateRoomMessage implements Sendable, Serializable {
   
   public String username;
-  public String roomname;
   
-  public CreateRoomMessage(String username, String roomname)
+  public CreateRoomMessage(String username)
   {
     this.username = username;
-    this.roomname = roomname;
   }
   
   @Override
