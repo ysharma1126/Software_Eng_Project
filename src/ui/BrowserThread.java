@@ -76,14 +76,14 @@ public class BrowserThread implements Runnable {
         {
           CreateRoomResponse resp = (CreateRoomResponse) obj;
           handleCreateRoomResponse(resp);
-          Launcher.openBrowser(primaryStage);
+          //Launcher.openBrowser(primaryStage);
         }
         
         if (obj instanceof JoinRoomResponse)
         {
           JoinRoomResponse resp = (JoinRoomResponse) obj;
           handleJoinRoomResponse(resp);
-          Launcher.openBrowser(primaryStage);
+          //Launcher.openBrowser(primaryStage);
         }
       }
     }
