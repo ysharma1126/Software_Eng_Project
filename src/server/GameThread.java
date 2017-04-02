@@ -96,8 +96,10 @@ public class GameThread implements Runnable {
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
+									System.out.println("Received a set");
 									SetSelectMessage resp = (SetSelectMessage) obj;
 									if(game.validateSet(resp.cards)) {
+										System.out.println("Set's valid!");
 										game.updateSetcount(entry.getKey());
 										
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
@@ -111,6 +113,9 @@ public class GameThread implements Runnable {
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
 										}
+										for(Card card: table) {
+											System.out.println(card.toImageFile());
+										}
 										TableResponse tr2 = new TableResponse(table);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
@@ -119,6 +124,7 @@ public class GameThread implements Runnable {
 						    			}
 									}
 									else {
+										System.out.println("Set invalid");
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {

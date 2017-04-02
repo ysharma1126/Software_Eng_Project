@@ -161,6 +161,12 @@ public class Game {
 			if (deck.isEmpty()) {
 				break;
 			}
+			for (Card card1: table) {
+				if(card1 == card) {
+					table.get(table.indexOf(card1)).hole = false;
+					table.set(table.indexOf(card1), deck.remove(deck.size()-1));
+				}
+			}
 			table.get(table.indexOf(card)).hole = false;
 			table.set(table.indexOf(card), deck.remove(deck.size()-1));
 		}
