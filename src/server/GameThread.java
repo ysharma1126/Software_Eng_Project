@@ -72,6 +72,7 @@ public class GameThread implements Runnable {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
 							if (obj instanceof InitialCardsMessage) {
+								System.out.println("Sent Initial Cards Response");
 								check++;
 								InitialCardsResponse icr = new InitialCardsResponse(table);
 								icr.send(this.connected_playerOutput.get(entry.getKey()));
@@ -79,6 +80,7 @@ public class GameThread implements Runnable {
 						}
 					}
 					while (true) {
+						System.out.println("Starting Game");
 						while(!deck.isEmpty() || game.checkSetexists(table)) {
 							if (!game.checkSetexists(table)) {
 								game.dealCards(deck, table, 3);
