@@ -93,6 +93,8 @@ public class GameThread implements Runnable {
 									}
 				    			}
 							}
+							System.out.println("Size");
+							System.out.println(this.connected_playerInput.size());
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
 								if (obj instanceof SetSelectMessage) {
