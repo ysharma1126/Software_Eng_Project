@@ -9,17 +9,17 @@ import gamelogic.*;
 
 public class TableResponse implements Sendable, Serializable{
 	
-	public ArrayList<Card> table;
+	public ArrayList<Card> table1;
 	public double randomnum;
 	
 	public TableResponse(ArrayList <Card> t) {
-		this.table = t;
+		this.table1 = t;
 	}
 	
 	public void send(ObjectOutputStream outputstream)
 	  {
 		this.randomnum = Math.random();
-		for(Card card: this.table) {
+		for(Card card: this.table1) {
 			card.randomnum = Math.random();
 			//System.out.println(card.toImageFile());
 			System.out.println(card.randomnum);
