@@ -119,24 +119,18 @@ public class GameThread implements Runnable {
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
 										}
-										ArrayList <Card> result = new ArrayList<Card>();
+										ArrayList <Card> table1 = new ArrayList<Card>();
+										table1 = table;
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
-											result = game.replaceCards(resp.cards, deck, table);
+											table1 = game.replaceCards(resp.cards, deck, table);
 										}
-										NewCardsResponse nr2 = new NewCardsResponse(result);
-										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											if (entry1.getKey().setcount != -1) {
-												nr2.send(entry1.getValue());
-											}
-						    			}
-										/*
-										TableResponse tr2 = new TableResponse(table);
+										TableResponse tr2 = new TableResponse(table1);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
 												tr2.send(entry1.getValue());
 											}
 						    			}
-						    			*/
+						    			
 									}
 									else {
 										System.out.println("Set invalid");

@@ -21,7 +21,7 @@ public class TableResponse implements Sendable, Serializable{
 		this.randomnum = Math.random();
 		for(Card card: this.table1) {
 			card.randomnum = Math.random();
-			//System.out.println(card.toImageFile());
+			System.out.println(card.toImageFile());
 			System.out.println(card.randomnum);
 		}
 		System.out.println("Table" + this.randomnum);

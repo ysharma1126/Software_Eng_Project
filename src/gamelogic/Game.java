@@ -158,6 +158,7 @@ public class Game {
 	 */
 	public ArrayList <Card> replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
 		ArrayList <Card> result = new ArrayList<Card>();
+		result = table;
 		for (Card card: set) {
 			if (deck.isEmpty()) {
 				break;
@@ -168,7 +169,8 @@ public class Game {
 					System.out.println(temp.toImageFile());
 					System.out.println(card1.toImageFile());
 					table.set(table.indexOf(card1), temp);
-					result.add(temp);
+					result.set(table.indexOf(card1), temp);
+					//result.add(temp);
 					//table.get(table.indexOf(card1)).color = temp.color;
 					//table.get(table.indexOf(card1)).number = temp.number;
 					//table.get(table.indexOf(card1)).shading = temp.shading;
@@ -177,9 +179,9 @@ public class Game {
 				}
 			}
 		}
-		for(Card card: result) {
-			System.out.println(card.toImageFile());
-		}
+		//for(Card card: result) {
+		//	System.out.println(card.toImageFile());
+		//}
 		return result;
 		//for (Card card: table) {
 		//	System.out.println(card.toImageFile());
