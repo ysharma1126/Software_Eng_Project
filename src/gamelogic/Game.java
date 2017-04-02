@@ -167,9 +167,11 @@ public class Game {
 					System.out.println(temp.toImageFile());
 					System.out.println(card1.toImageFile());
 					table.set(table.indexOf(card1), deck.remove(deck.size()-1));
-					
 				}
 			}
+		}
+		for (Card card: table) {
+			System.out.println(card.toImageFile());
 		}
 	}
 	/**
