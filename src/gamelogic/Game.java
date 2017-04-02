@@ -93,7 +93,7 @@ public class Game {
                     temp.add(a);
                     temp.add(b);
                     temp.add(c);
-					if (validateSet(temp) && (!holecheck)) {
+					if (validateSet(temp) && (!holecheck) && (!this.equals(a,b)) && (!this.equals(a,c)) && (!this.equals(b,c))) {
 						for (Card card: temp) {
 							result.add(card);
 						}
