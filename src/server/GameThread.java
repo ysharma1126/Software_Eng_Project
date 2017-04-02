@@ -93,7 +93,7 @@ public class GameThread implements Runnable {
 									}
 				    			}
 							}
-							System.out.println("Size");
+							System.out.println("Player Set Size");
 							System.out.println(this.connected_playerInput.size());
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
@@ -112,6 +112,8 @@ public class GameThread implements Runnable {
 						    			}
 										
 										game.removeCards(resp.cards, table);
+										System.out.println("Table Size");
+										System.out.println(game.getsize(table));
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
 										}
