@@ -170,9 +170,9 @@ public class Game {
 				}
 			}
 		}
-		for (Card card: table) {
-			System.out.println(card.toImageFile());
-		}
+		//for (Card card: table) {
+		//	System.out.println(card.toImageFile());
+		//}
 	}
 	/**
 	 * Removes the cards

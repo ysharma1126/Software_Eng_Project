@@ -124,9 +124,9 @@ public class GameThread implements Runnable {
 										if (game.getsize(table) < 12 && !deck.isEmpty()) {
 											game.replaceCards(resp.cards, deck, table);
 										}
-										//for(Card card: table) {
-										//	System.out.println(card.toImageFile());
-										//}
+										for(Card card: table) {
+											System.out.println(card.toImageFile());
+										}
 										TableResponse tr2 = new TableResponse(table);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											if (entry1.getKey().setcount != -1) {
