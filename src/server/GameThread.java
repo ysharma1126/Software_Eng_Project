@@ -18,7 +18,7 @@ import message.*;
  * @author Yash
  */
 
-public class GameThread implements Runnable {
+public class GameThread {
 	
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
@@ -34,16 +34,23 @@ public class GameThread implements Runnable {
     	hostp = p;
     	hosts = s;
     	gid = id;
-    	
+    	System.out.println("1");
         hostInput = new ObjectInputStream(hosts.getInputStream());
+        System.out.println("2");
         hostOutput = new ObjectOutputStream(hosts.getOutputStream());
+        System.out.println("3");
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
+        System.out.println("4");
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
+        System.out.println("5");
 		connected_playerInput.put(p, hostInput);
+        System.out.println("6");
 		connected_playerOutput.put(p, hostOutput);
+        System.out.println("end");
     }
 
 	public void run() {
+		System.out.println("wtf");
 		while(true) {
 			Object obj;
 			try {

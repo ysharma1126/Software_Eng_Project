@@ -93,10 +93,10 @@ public class PlayerThread implements Runnable {
 	    	        					if (obj instanceof CreateRoomMessage) {
 	    	        					    System.out.println("Got create room message");
 	    	        						GameThread gt = new GameThread(player, socket, Server.gamesize);
-	    	        		    			Thread t = new Thread(gt);
-	    	        		    			
-	    	        		    			Server.connected_games.put(Server.gamesize, gt);
-	    	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
+	    	        		    			//Thread t = new Thread(gt);
+	    	        		    			System.out.println("Continue Player Thread");
+	    	        		    			//Server.connected_games.put(Server.gamesize, gt);
+	    	        		    			//Server.connected_gamethreads.put(Server.gamesize, t);
 	    	        		    			
 	    	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
 	    	        		    			System.out.println("sent create room response");
@@ -104,8 +104,8 @@ public class PlayerThread implements Runnable {
 	    	        		    				cgr.send(value);
 	    	        		    			}
 	    	        		    			
-	    	        		    			t.start();
-	    	        		    			t.join();
+	    	        		    			//t.start();
+	    	        		    			//t.join();
 	    	        					}
 	    	        					else if (obj instanceof JoinRoomMessage) {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
