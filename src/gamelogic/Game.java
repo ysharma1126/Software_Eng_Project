@@ -166,7 +166,7 @@ public class Game {
 					Card temp = deck.remove(deck.size()-1);
 					System.out.println(temp.toImageFile());
 					System.out.println(card1.toImageFile());
-					//table.set(table.indexOf(card1), temp);
+					table.set(table.indexOf(card1), temp);
 					//table.get(table.indexOf(card1)).color = temp.color;
 					//table.get(table.indexOf(card1)).number = temp.number;
 					//table.get(table.indexOf(card1)).shading = temp.shading;
