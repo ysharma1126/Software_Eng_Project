@@ -8,9 +8,9 @@ import gamelogic.*;
 public class CreateRoomResponse implements Sendable, Serializable{
 	
 	public String uname;
-	public int gid;
+	public long gid;
 	
-	public CreateRoomResponse(Player p, int id) {
+	public CreateRoomResponse(Player p, long id) {
 		uname = p.username;
 		gid = id;
 	}

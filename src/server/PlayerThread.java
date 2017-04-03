@@ -144,8 +144,11 @@ public class PlayerThread implements Runnable {
 	    	        				} catch (IOException e) {
 	    	        					e.printStackTrace();
 	    	        				} catch (InterruptedException e) {
-	    	        					System.out.println("Interrupted Player Thread!");
+	    	        					System.out.println("Interrupted Player Thread");
 	    	        					// TODO Auto-generated catch block
+	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+    	        	        			gur1.send(clientOutput);
+    	        	        			System.out.println("Refresh Response");
 	    	        					e.printStackTrace();
 	    	        				}
 	    	        			}

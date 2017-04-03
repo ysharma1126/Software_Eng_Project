@@ -14,16 +14,16 @@ import gamelogic.*;
 
 public class GamesUpdateResponse implements Sendable, Serializable {
 	
-	public Map <Integer, Set<Player>> gameusernames;
-	public Map <Integer, Player> gamehost;
+	public Map <Long, Set<Player>> gameusernames;
+	public Map <Long, Player> gamehost;
 	public Set <Player> players;
 	
 	
-  public GamesUpdateResponse(Map <Integer, GameThread> games, Map <Player, ObjectInputStream> players) {
-    Map <Integer, Set<Player>> temp1 = new HashMap<Integer, Set<Player>>();
-    Map <Integer, Player> temp2 = new HashMap<Integer, Player>();
+  public GamesUpdateResponse(Map <Long, GameThread> games, Map <Player, ObjectInputStream> players) {
+    Map <Long, Set<Player>> temp1 = new HashMap<Long, Set<Player>>();
+    Map <Long, Player> temp2 = new HashMap<Long, Player>();
     Set <Player> temp3 = new HashSet<Player>();
-    for (Map.Entry<Integer, GameThread> entry: games.entrySet()) {
+    for (Map.Entry<Long, GameThread> entry: games.entrySet()) {
     	temp1.put(entry.getKey(), entry.getValue().connected_playerInput.keySet());
     	temp2.put(entry.getKey(), entry.getValue().hostp);
     }
