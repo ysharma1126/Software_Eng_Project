@@ -192,14 +192,15 @@ public class GameThread implements Runnable {
 					System.out.println("In for loop");
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("In LeaveRoomMessage");
-						this.connected_playerInput.remove(entry.getKey());
-						this.connected_playerOutput.remove(entry.getKey());
+						System.out.println("Recieved LeaveRoomMessage");
 						
 						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
 						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 		    				lrr.send(value);
 		    			}
+						System.out.println("Sent LeaveRoomResponse");
+						this.connected_playerInput.remove(entry.getKey());
+						this.connected_playerOutput.remove(entry.getKey());
 					}
 				}
 				System.out.println("Out of for loop");
