@@ -53,12 +53,12 @@ public class GameThread implements Runnable {
 			try {
 				obj = (Object) hostInput.readObject();
 				if (obj instanceof StartGameMessage) {
-					System.out.println("In StartGame");
+					System.out.println("Received Start Game Message");
 					StartGameResponse sgr = new StartGameResponse(gid);
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					System.out.println("Sent Message");
+					System.out.println("Sent Start Game Response");
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
@@ -71,10 +71,11 @@ public class GameThread implements Runnable {
 						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 							obj = (Object) entry.getValue().readObject();
 							if (obj instanceof InitialCardsMessage) {
-								System.out.println("Sent Initial Cards Response");
+								System.out.println("Received Initial Cards Message");
 								check++;
 								InitialCardsResponse icr = new InitialCardsResponse(table);
 								icr.send(this.connected_playerOutput.get(entry.getKey()));
+								System.out.println("Sent Initial Cards Response");
 							}
 						}
 					}
@@ -208,7 +209,7 @@ public class GameThread implements Runnable {
 					System.out.println("In for loop");
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("Recieved LeaveRoomMessage");
+						System.out.println("Received LeaveRoomMessage");
 						
 						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
 						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
@@ -232,7 +233,7 @@ public class GameThread implements Runnable {
 							}
 							
 							this.connected_playerInput.remove(entry.getKey());
-							this.connected_playerOutput.remove(entry.getKey());
+							this.connected_playerOutput.remove(entry.getKey());										
 							
 							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
 							for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
