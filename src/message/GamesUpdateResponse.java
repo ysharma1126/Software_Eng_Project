@@ -24,7 +24,8 @@ public class GamesUpdateResponse implements Sendable, Serializable {
     Map <Long, Player> temp2 = new HashMap<Long, Player>();
     Set <Player> temp3 = new HashSet<Player>();
     for (Map.Entry<Long, GameThread> entry: games.entrySet()) {
-    	temp1.put(entry.getKey(), entry.getValue().connected_playerInput.keySet());
+    	Set <Player> tempset = entry.getValue().connected_playerInput.keySet();
+    	temp1.put(entry.getKey(), tempset);
     	temp2.put(entry.getKey(), entry.getValue().hostp);
     }
     for (Map.Entry<Player, ObjectInputStream> entry: players.entrySet()) {
