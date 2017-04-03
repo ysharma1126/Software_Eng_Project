@@ -107,12 +107,16 @@ public class Launcher extends Application {
   
   public static void openGame(ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users, Stage primaryStage)
   {
-    
+    System.out.println("openGame 1");
     Game game = new Game(primaryStage, outToServer, inFromServer, users);
+    System.out.println("openGame 2");
     Scene scene = new Scene(game, 1200, 900);
+    System.out.println("openGame 3");
     primaryStage.setScene(scene);
+    System.out.println("openGame 4");
     primaryStage.show();
   }  
+  
   public static void openGame(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<Player> users)
   {
     ArrayList<String> usernames = new ArrayList<String>();

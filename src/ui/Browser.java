@@ -350,6 +350,7 @@ public class Browser extends VBox {
     init.send(outToServer);
     try {
       this.game_data.clear();
+      System.out.println("Initial update of browser");
       GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
       Iterator<Entry<Long, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
       Iterator<Entry<Long, Player>> it2 = response.gamehost.entrySet().iterator();

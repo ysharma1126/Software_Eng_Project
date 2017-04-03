@@ -160,6 +160,11 @@ public class Room extends VBox {
     user_tbl.setItems(this.user_data);
   }
   
+  private void handleStartGameResponse(Stage primaryStage,ObjectOutputStream outToServer, ObjectInputStream inFromServer, StartGameResponse resp) {
+    System.out.println("Game started");
+    Launcher.openGame(primaryStage, outToServer, inFromServer, new ArrayList<Player>(this.players));
+  }
+  
   public Room(Stage primaryStage, Long gid, Boolean isHost) {
     this.gid = gid;
     // load_users(outToServer, inFromServer, gid);
@@ -328,6 +333,19 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
             });
             break;        
           }
+          
+          if (obj instanceof StartGameResponse)
+          {
+            System.out.println("Got startgame response.");
+            StartGameResponse sg_resp = (StartGameResponse) obj;
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp);
+              }
+            });
+            break;        
+          }
         }
         
         return null;
@@ -414,18 +432,20 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
    
     // Start game button
     if (this.isHost) {
-    Button startgame_btn = new Button("START");
-      startgame_btn.getStyleClass().add("btn-newgame");
-      startgame_btn.setPrefHeight(60);
-      content.add(startgame_btn, 2, 2, 1, 1);
-      GridPane.setHalignment(startgame_btn, HPos.RIGHT);
-      startgame_btn.setOnAction(new EventHandler<ActionEvent>(){
-        @Override
-        public void handle(ActionEvent e) {
-          start_game(primaryStage, outToServer, inFromServer);
-          System.out.println("Game started");
-        }
-      });
+      Button startgame_btn = new Button("START");
+        startgame_btn.getStyleClass().add("btn-newgame");
+        startgame_btn.setPrefHeight(60);
+        content.add(startgame_btn, 2, 2, 1, 1);
+        GridPane.setHalignment(startgame_btn, HPos.RIGHT);
+        startgame_btn.setOnAction(new EventHandler<ActionEvent>(){
+          @Override
+          public void handle(ActionEvent e) {
+            StartGameMessage startmsg = new StartGameMessage();
+            startmsg.send(outToServer);
+            // start_game(primaryStage, outToServer, inFromServer);
+            System.out.println("Game started");
+          }
+        });
     };
     
 //    // Refresh button
