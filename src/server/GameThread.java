@@ -25,9 +25,9 @@ public class GameThread implements Runnable {
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
-    int gid;
+    long gid;
     
-    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, int id) throws IOException {
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id) throws IOException {
     	hostp = p;
     	gid = id;
     	System.out.println("1");
@@ -91,9 +91,7 @@ public class GameThread implements Runnable {
 								
 								TableResponse tr1 = new TableResponse(table1);
 								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
-									if (entry.getKey().setcount != -1) {
-										tr1.send(entry.getValue());
-									}
+									tr1.send(entry.getValue());
 				    			}
 								continue;
 							}
@@ -113,9 +111,7 @@ public class GameThread implements Runnable {
 										
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											if (entry1.getKey().setcount != -1) {
-												ssr.send(entry1.getValue());
-											}
+											ssr.send(entry1.getValue());
 						    			}
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
@@ -135,9 +131,7 @@ public class GameThread implements Runnable {
 										}
 										TableResponse tr2 = new TableResponse(table1);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											if (entry1.getKey().setcount != -1) {
-												tr2.send(entry1.getValue());
-											}
+											tr2.send(entry1.getValue());
 						    			}
 						    			
 									}
@@ -145,9 +139,7 @@ public class GameThread implements Runnable {
 										System.out.println("Set invalid");
 										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											if (entry1.getKey().setcount != -1) {
-												ssr.send(entry1.getValue());
-											}
+											ssr.send(entry1.getValue());
 						    			}
 									}
 								}
@@ -157,10 +149,34 @@ public class GameThread implements Runnable {
 									
 									LeaveGameResponse lgr = new LeaveGameResponse(entry.getKey());
 									for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-										if (entry1.getKey().setcount != -1) {
-											lgr.send(entry1.getValue());
-										}
+										lgr.send(entry1.getValue());
 					    			}
+									
+									if (entry.getKey() == this.hostp) {
+										for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
+											if (entryy.getKey() != entry.getKey()) {
+												this.hostp = entryy.getKey();
+												this.hostInput = entryy.getValue();
+												this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
+												break;
+											}
+										}
+										
+										this.connected_playerInput.remove(entry.getKey());
+										this.connected_playerOutput.remove(entry.getKey());
+										
+										ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
+										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+											chr.send(entry1.getValue());
+						    			}
+									}
+									else {
+										this.connected_playerInput.remove(entry.getKey());
+										this.connected_playerOutput.remove(entry.getKey());
+									}
+
+									
+									Server.connected_playerThread.get(entry.getKey()).interrupt();
 								}
 							}
 						}
@@ -192,14 +208,43 @@ public class GameThread implements Runnable {
 					System.out.println("In for loop");
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("In LeaveRoomMessage");
-						this.connected_playerInput.remove(entry.getKey());
-						this.connected_playerOutput.remove(entry.getKey());
+						System.out.println("Recieved LeaveRoomMessage");
 						
 						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
 						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 		    				lrr.send(value);
 		    			}
+						
+						System.out.println("Sent LeaveRoomResponse");
+						
+						if (this.connected_playerInput.size() == 1) {
+							this.terminate();
+							return;
+						}
+						if (entry.getKey() == this.hostp) {
+							for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
+								if (entryy.getKey() != entry.getKey()) {
+									this.hostp = entryy.getKey();
+									this.hostInput = entryy.getValue();
+									this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
+									break;
+								}
+							}
+							
+							this.connected_playerInput.remove(entry.getKey());
+							this.connected_playerOutput.remove(entry.getKey());
+							
+							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
+							for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+								chr.send(entry1.getValue());
+			    			}
+						}
+						else {
+							this.connected_playerInput.remove(entry.getKey());
+							this.connected_playerOutput.remove(entry.getKey());
+						}
+
+						Server.connected_playerThread.get(entry.getKey()).interrupt();
 					}
 				}
 				System.out.println("Out of for loop");

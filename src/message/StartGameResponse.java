@@ -7,9 +7,9 @@ import gamelogic.*;
 
 public class StartGameResponse implements Sendable, Serializable{
 	
-	public int gid;
+	public long gid;
 	
-	public StartGameResponse(int id) {
+	public StartGameResponse(long id) {
 		gid = id;
 	}
 	

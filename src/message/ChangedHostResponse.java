@@ -5,14 +5,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import gamelogic.*;
 
-public class CreateRoomResponse implements Sendable, Serializable{
+public class ChangedHostResponse implements Sendable, Serializable{
 	
-	public String uname;
-	public long gid;
+	public String currenthost;
 	
-	public CreateRoomResponse(Player p, long id) {
-		uname = p.username;
-		gid = id;
+	public ChangedHostResponse(Player p) {
+		currenthost = p.username;
 	}
 	
 	public void send(ObjectOutputStream outputstream)
