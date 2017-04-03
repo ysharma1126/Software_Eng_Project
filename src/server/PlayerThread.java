@@ -110,6 +110,10 @@ public class PlayerThread implements Runnable {
 	    	        		    			}
 	    	        		    			Server.gamesize++;
 	    	        		    			t.join();
+	    	        		    			
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        	        			gur1.send(clientOutput);
+	    	        	        			System.out.println("Refresh Response");
 	    	        					}
 	    	        					else if (obj instanceof JoinRoomMessage) {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
@@ -124,6 +128,10 @@ public class PlayerThread implements Runnable {
 	    	        		    			}
 	    	        		    			
 	    	        		    			t.join();
+	    	        		    			
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        	        			gur1.send(clientOutput);
+	    	        	        			System.out.println("Refresh Response");
 	    	        					}
 	    	        					else if (obj instanceof LogOutMessage) {
 	    	        						this.terminate();

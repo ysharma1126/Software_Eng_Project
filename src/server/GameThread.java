@@ -208,7 +208,7 @@ public class GameThread implements Runnable {
 					System.out.println("In for loop");
 					obj = (Object) entry.getValue().readObject();
 					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("Recieved LeaveRoomMessage");
+						System.out.println("Received LeaveRoomMessage");
 						
 						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
 						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
@@ -232,7 +232,7 @@ public class GameThread implements Runnable {
 							}
 							
 							this.connected_playerInput.remove(entry.getKey());
-							this.connected_playerOutput.remove(entry.getKey());
+							this.connected_playerOutput.remove(entry.getKey());										
 							
 							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
 							for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
