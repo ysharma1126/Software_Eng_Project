@@ -105,7 +105,7 @@ public class PlayerThread implements Runnable {
 	    	        		    				cgr.send(value);
 	    	        		    			}
 	    	        		    			Server.gamesize++;
-	    	        		    			t.join();
+	    	        		    			//t.join();
 	    	        					}
 	    	        					else if (obj instanceof JoinRoomMessage) {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
@@ -119,7 +119,7 @@ public class PlayerThread implements Runnable {
 	    	        		    				jgr.send(value);
 	    	        		    			}
 	    	        		    			
-	    	        		    			t.join();
+	    	        		    			//t.join();
 	    	        					}
 	    	        					else if (obj instanceof LogOutMessage) {
 	    	        						this.terminate();
@@ -138,10 +138,10 @@ public class PlayerThread implements Runnable {
 	    	        				} catch (IOException e) {
 	    	        					e.printStackTrace();
 	    	        				}
-	    	        	        	catch (InterruptedException e) {
+	    	        	        	/*catch (InterruptedException e) {
 	    	        					// TODO Auto-generated catch block
 	    	        					e.printStackTrace();
-	    	        				}
+	    	        				}*/
 	    	        			}
 	        				}
 	        			}
