@@ -161,6 +161,7 @@ public class GameThread implements Runnable {
 											lgr.send(entry1.getValue());
 										}
 					    			}
+									Server.connected_playerThread.get(entry.getKey()).interrupt();
 								}
 							}
 						}
@@ -198,7 +199,11 @@ public class GameThread implements Runnable {
 						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
 		    				lrr.send(value);
 		    			}
+						
 						System.out.println("Sent LeaveRoomResponse");
+						
+						Server.connected_playerThread.get(entry.getKey()).interrupt();
+						
 						this.connected_playerInput.remove(entry.getKey());
 						this.connected_playerOutput.remove(entry.getKey());
 					}

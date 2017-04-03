@@ -52,6 +52,7 @@ public class Server {
 	static int gamesize = 0;
     static Map<Player, ObjectInputStream> connected_playerInput = null;
     static Map<Player, ObjectOutputStream> connected_playerOutput = null;
+    static Map<Player, Thread> connected_playerThread = null;
 	static Map<Integer, GameThread> connected_games = null;
 	static Map<Integer, Thread> connected_gamethreads = null;
 	static int portNumber;
@@ -71,6 +72,7 @@ public class Server {
 		connected_gamethreads = Collections.synchronizedMap(new HashMap<Integer, Thread>());
 		connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
+		connected_playerThread = Collections.synchronizedMap(new HashMap<Player,Thread>());
 		portNumber = Integer.parseInt(args[0]);
         Thread clientListener = new Thread(new clientListenerThread(), "clientListener");
         clientListener.setDaemon(true);

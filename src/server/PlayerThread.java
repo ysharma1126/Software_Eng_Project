@@ -19,6 +19,7 @@ public class PlayerThread implements Runnable {
     public Player player = null;
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
+    public Thread thread = null;
     
     /**
      * Initializes the PlayerThread. Keeps track of the given socket and
@@ -77,12 +78,15 @@ public class PlayerThread implements Runnable {
 	        			lr.send(clientOutput);
 	        			Server.connected_playerInput.put(player, clientInput);
 	        			Server.connected_playerOutput.put(player, clientOutput);
+	        			Server.connected_playerThread.put(player,Thread.currentThread());
 	        			
 	        			while(true) {
 	        				obj = (Object) clientInput.readObject();
 	        				if (obj instanceof GamesUpdateMessage) {
+	        					System.out.println("Initial GamesUpdateMessage");
 	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
 	    	        			gur.send(clientOutput);
+	    	        			System.out.println("Initial GamesUpdateResponse");
 	    	        			
 	    	        			while (true) {
 	    	        	        	try {
@@ -105,7 +109,7 @@ public class PlayerThread implements Runnable {
 	    	        		    				cgr.send(value);
 	    	        		    			}
 	    	        		    			Server.gamesize++;
-	    	        		    			//t.join();
+	    	        		    			t.join();
 	    	        					}
 	    	        					else if (obj instanceof JoinRoomMessage) {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
@@ -119,15 +123,17 @@ public class PlayerThread implements Runnable {
 	    	        		    				jgr.send(value);
 	    	        		    			}
 	    	        		    			
-	    	        		    			//t.join();
+	    	        		    			t.join();
 	    	        					}
 	    	        					else if (obj instanceof LogOutMessage) {
 	    	        						this.terminate();
 	    	        			            return;
 	    	        					}
 	    	        					else if (obj instanceof RefreshMessage) {
+	    	        						System.out.println("Refresh Message");
 	    	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
 	    	        	        			gur1.send(clientOutput);
+	    	        	        			System.out.println("Refresh Response");
 	    	        					}
 	    	        					else {
 	    	        						//Handle request we don't understand
@@ -137,11 +143,11 @@ public class PlayerThread implements Runnable {
 	    	        					e.printStackTrace();
 	    	        				} catch (IOException e) {
 	    	        					e.printStackTrace();
-	    	        				}
-	    	        	        	/*catch (InterruptedException e) {
+	    	        				} catch (InterruptedException e) {
+	    	        					System.out.println("Interrupted Player Thread!");
 	    	        					// TODO Auto-generated catch block
 	    	        					e.printStackTrace();
-	    	        				}*/
+	    	        				}
 	    	        			}
 	        				}
 	        			}
