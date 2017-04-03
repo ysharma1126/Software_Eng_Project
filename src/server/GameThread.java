@@ -58,7 +58,7 @@ public class GameThread implements Runnable {
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					System.out.println("Sent Start Game Message");
+					System.out.println("Sent Start Game Response");
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
 					ArrayList <Card> table = new ArrayList <Card>();
