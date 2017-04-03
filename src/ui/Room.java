@@ -42,6 +42,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import message.ChangedHostResponse;
 import message.CreateRoomMessage;
 import message.CreateRoomResponse;
 import message.EndGameResponse;
@@ -61,7 +62,7 @@ import message.TableResponse;
 
 public class Room extends VBox {
   
-  private Integer gid;
+  private Long gid;
   private Boolean isHost;
   private Set<Player> players = new HashSet<Player>();
   // private MenuBar menubar;
@@ -69,7 +70,7 @@ public class Room extends VBox {
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList ();
   
-//  private void load_users(ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+//  private void load_users(ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long gid) {
 //    RefreshMessage msg = new RefreshMessage(Launcher.username);
 //    System.out.println("Refresh message sent in Room");
 //    msg.send(outToServer);
@@ -153,7 +154,13 @@ public class Room extends VBox {
     user_tbl.setItems(this.user_data);
   }
   
-  public Room(Stage primaryStage, Integer gid, Boolean isHost) {
+  private void handleChangedHostResponse(ChangedHostResponse resp) {
+    System.out.println("handling changed host");
+    this.user_data.get(0).setHost(true);
+    user_tbl.setItems(this.user_data);
+  }
+  
+  public Room(Stage primaryStage, Long gid, Boolean isHost) {
     this.gid = gid;
     // load_users(outToServer, inFromServer, gid);
     
@@ -256,7 +263,7 @@ public class Room extends VBox {
     this.setPadding(new Insets(0, 40, 0, 40));
   }
   
-public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid, Boolean isHost) {
+public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long gid, Boolean isHost) {
     System.out.println(gid);
     this.gid = gid;
     this.isHost = isHost;
@@ -304,6 +311,19 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
               @Override
               public void run() {
                 handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp);
+              }
+            });
+            break;        
+          }
+          
+          if (obj instanceof ChangedHostResponse)
+          {
+            System.out.println("Got changedhost response.");
+            ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                handleChangedHostResponse(ch_resp);
               }
             });
             break;        

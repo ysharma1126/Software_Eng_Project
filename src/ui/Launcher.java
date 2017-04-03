@@ -69,7 +69,7 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openRoom(Stage primaryStage, Integer gid, Boolean isHost)
+  public static void openRoom(Stage primaryStage, Long gid, Boolean isHost)
   {
     Room room = new Room(primaryStage, gid, isHost);
     Scene scene = new  Scene(room, 800, 600); 
@@ -82,7 +82,7 @@ public class Launcher extends Application {
     primaryStage.show();
   }
   
-  public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid, Boolean isHost) {
+  public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long gid, Boolean isHost) {
     System.out.println("openRoom");
     Room room = new Room(primaryStage, outToServer, inFromServer, gid, isHost);
     System.out.println("new room created");

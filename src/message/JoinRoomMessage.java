@@ -14,9 +14,9 @@ import java.io.Serializable;
 public class JoinRoomMessage implements Sendable, Serializable {
   
   public String username;
-  public int gid;
+  public Long gid;
   
-  public JoinRoomMessage(String username, int gid)
+  public JoinRoomMessage(String username, Long gid)
   {
     this.username = username;
     this.gid = gid;

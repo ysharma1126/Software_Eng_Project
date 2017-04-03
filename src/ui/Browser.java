@@ -14,6 +14,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
 import gamelogic.Player;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -64,12 +65,12 @@ public class Browser extends VBox {
       this.user_data.clear();
       GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
       
-      Iterator<Entry<Integer, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
-      Iterator<Entry<Integer, Player>> it2 = response.gamehost.entrySet().iterator();
+      Iterator<Entry<Long, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
+      Iterator<Entry<Long, Player>> it2 = response.gamehost.entrySet().iterator();
       while (it1.hasNext() && it2.hasNext()) {
-        Map.Entry<Integer, Set<Player>> room = (Map.Entry<Integer, Set<Player>>) it1.next();
-        Map.Entry<Integer, Player> host = (Map.Entry<Integer, Player>) it2.next();
-        Integer gid = room.getKey();
+        Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
+        Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
+        Long gid = room.getKey();
         String name = "Game " + room.getKey();
         String players = room.getValue().size() + "/10";
         String leader = host.getValue().username;
@@ -92,7 +93,7 @@ public class Browser extends VBox {
     }
   }
 
-  private void join_room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+  private void join_room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long gid) {
     JoinRoomMessage msg = new JoinRoomMessage(Launcher.username, gid);
     msg.send(outToServer);
     try {
@@ -133,26 +134,26 @@ public class Browser extends VBox {
       playerset.add(player1);
       playerset.add(player2);
       playerset.add(player3);
-      Map <Integer, Set<Player>> gameusernames = new HashMap<Integer, Set<Player>>();
-      gameusernames.put(1, playerset);
-      gameusernames.put(2, playerset);    
-      gameusernames.put(3, playerset);
-      Map <Integer, Player> gamehost = new HashMap<Integer, Player>();
-      gamehost.put(1, player1);
-      gamehost.put(2, player2);
-      gamehost.put(3, player3);
+      Map <Long, Set<Player>> gameusernames = new HashMap<Long, Set<Player>>();
+      gameusernames.put(1l, playerset);
+      gameusernames.put(2l, playerset);    
+      gameusernames.put(3l, playerset);
+      Map <Long, Player> gamehost = new HashMap<Long, Player>();
+      gamehost.put(1l, player1);
+      gamehost.put(2l, player2);
+      gamehost.put(3l, player3);
       Set<Player> onlineplayers = new HashSet<Player>();
       for (int i=1; i < 100; i++) {
         onlineplayers.add(new Player("Kevin"));
       }
       
       
-      Iterator<Entry<Integer, Set<Player>>> it1 = gameusernames.entrySet().iterator();
-      Iterator<Entry<Integer, Player>> it2 = gamehost.entrySet().iterator();
+      Iterator<Entry<Long, Set<Player>>> it1 = gameusernames.entrySet().iterator();
+      Iterator<Entry<Long, Player>> it2 = gamehost.entrySet().iterator();
       while (it1.hasNext() && it2.hasNext()) {
-        Map.Entry<Integer, Set<Player>> room = (Map.Entry<Integer, Set<Player>>) it1.next();
-        Map.Entry<Integer, Player> host = (Map.Entry<Integer, Player>) it2.next();
-        Integer gid = room.getKey();
+        Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
+        Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
+        Long gid = room.getKey();
         String name = "Game " + room.getKey();
         String players = room.getValue().size() + "/10";
         String leader = host.getValue().username;
@@ -350,12 +351,12 @@ public class Browser extends VBox {
     try {
       this.game_data.clear();
       GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
-      Iterator<Entry<Integer, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
-      Iterator<Entry<Integer, Player>> it2 = response.gamehost.entrySet().iterator();
+      Iterator<Entry<Long, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
+      Iterator<Entry<Long, Player>> it2 = response.gamehost.entrySet().iterator();
       while (it1.hasNext() && it2.hasNext()) {
-        Map.Entry<Integer, Set<Player>> room = (Map.Entry<Integer, Set<Player>>) it1.next();
-        Map.Entry<Integer, Player> host = (Map.Entry<Integer, Player>) it2.next();
-        Integer gid = room.getKey();
+        Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
+        Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
+        Long gid = room.getKey();
         String name = "Game " + room.getKey();
         String players = room.getValue().size() + "/10";
         String leader = host.getValue().username;
@@ -552,20 +553,20 @@ public class Browser extends VBox {
   }
 
   public static class GameData {
-    private final SimpleIntegerProperty game_id;
+    private final SimpleLongProperty game_id;
     private final SimpleStringProperty game_name;
     private final SimpleStringProperty game_players;
     private final SimpleStringProperty game_owner;
 
 
-    private GameData(Integer gid, String name, String players, String owner) {
-      this.game_id = new SimpleIntegerProperty(gid);
+    private GameData(Long gid, String name, String players, String owner) {
+      this.game_id = new SimpleLongProperty(gid);
       this.game_name = new SimpleStringProperty(name);
       this.game_players = new SimpleStringProperty(players);
       this.game_owner = new SimpleStringProperty(owner);
     }
-    public Integer getGid()                {return game_id.get();}
-    public void setGid(Integer id)         {game_id.set(id);}
+    public Long getGid()                {return game_id.get();}
+    public void setGid(Long id)         {game_id.set(id);}
     public String getName()                {return game_name.get();}
     public void setName(String name)       {game_name.set(name);}
     public String getPlayers()             {return game_players.get();}
