@@ -97,7 +97,7 @@ public class Browser extends VBox {
     msg.send(outToServer);
     try {
       JoinRoomResponse response = (JoinRoomResponse) inFromServer.readObject();
-      Launcher.openRoom(primaryStage, outToServer, inFromServer, gid);
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, gid, false);
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -113,7 +113,7 @@ public class Browser extends VBox {
     try {
       CreateRoomResponse response = (CreateRoomResponse) inFromServer.readObject();
       System.out.println(response.gid);
-      Launcher.openRoom(primaryStage, outToServer, inFromServer, response.gid);
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, response.gid, true);
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

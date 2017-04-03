@@ -125,6 +125,7 @@ public class Login extends GridPane {
         System.out.println("Received response!");
         if (response.is_valid)
         {
+          Launcher.username = userTextField.getText();
           Launcher.openBrowser(primaryStage, outToServer, inFromServer);
         }
         
