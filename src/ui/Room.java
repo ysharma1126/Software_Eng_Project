@@ -47,10 +47,12 @@ import message.JoinRoomResponse;
 import message.LeaveRoomMessage;
 import message.RefreshMessage;
 import message.StartGameMessage;
+import message.StartGameResponse;
 
 public class Room extends VBox {
   
   private Integer gid;
+  private Set<Player> players = new HashSet<Player>();
   // private MenuBar menubar;
   private GridPane content;
   private final TableView<UserData> user_tbl = new TableView<>();
@@ -58,10 +60,12 @@ public class Room extends VBox {
   
   private void load_users(ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
     RefreshMessage msg = new RefreshMessage(Launcher.username);
+    System.out.println("Refresh message sent in Room");
     msg.send(outToServer);
     try {
       this.user_data.clear();
       GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
+      System.out.println("GamesUpdateResponse received in Room");
       Set<Player> players = response.gameusernames.get(gid);
       Player owner = response.gamehost.get(gid);
       Iterator<Player> it = players.iterator();
@@ -76,6 +80,7 @@ public class Room extends VBox {
         this.user_data.add(new UserData(name));
         it.remove();
       }
+      System.out.println("user_data updated");
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -86,16 +91,17 @@ public class Room extends VBox {
   }
   
   private void start_game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer) {
-    RefreshMessage msg = new RefreshMessage(Launcher.username);
-    msg.send(outToServer);
+    // RefreshMessage msg = new RefreshMessage(Launcher.username);
+    // msg.send(outToServer);
     
     StartGameMessage msg2 = new StartGameMessage();
     msg2.send(outToServer);
 
     try {  
-      GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
-      Set<Player> players = response.gameusernames.get(gid);
-      //Launcher.openGame(primaryStage, outToServer, inFromServer, new ArrayList<Player>(players));
+      // GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
+      // Set<Player> players = response.gameusernames.get(gid);
+      StartGameResponse start = (StartGameResponse) inFromServer.readObject();
+      Launcher.openGame(primaryStage, outToServer, inFromServer, new ArrayList<Player>(players));
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -224,8 +230,12 @@ public class Room extends VBox {
   }
   
 public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+    System.out.println(gid);
     this.gid = gid;
-    load_users(outToServer, inFromServer, gid);
+    this.players.add(new Player(Launcher.username));
+    
+    //load_users(outToServer, inFromServer, gid);
+    System.out.println("Users loaded");
     
     //menubar = new MenuBar();
     content = new GridPane();
@@ -289,6 +299,7 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
       @Override
       public void handle(ActionEvent e) {
         leave_room(primaryStage, outToServer, inFromServer);
+        System.out.println("Left room");
       }
     });
     content.add(leavegame_btn, 0, 2, 1, 1);
@@ -303,6 +314,7 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
       @Override
       public void handle(ActionEvent e) {
         start_game(primaryStage, outToServer, inFromServer);
+        System.out.println("Game started");
       }
     });
     
@@ -316,6 +328,7 @@ public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStrea
       @Override
       public void handle(ActionEvent e) {
         load_users(outToServer, inFromServer, gid);
+        System.out.println("Users loaded");
       }
     });
     

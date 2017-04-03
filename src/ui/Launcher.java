@@ -78,7 +78,9 @@ public class Launcher extends Application {
   }
   
   public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Integer gid) {
+    System.out.println("openRoom");
     Room room = new Room(primaryStage, outToServer, inFromServer, gid);
+    System.out.println("new room created");
     Scene scene = new Scene(room, 800, 600);
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
@@ -86,6 +88,7 @@ public class Launcher extends Application {
     primaryStage.setTitle("SET");
     primaryStage.setResizable(false);
     primaryStage.setScene(scene);
+    System.out.println("scene set");
     primaryStage.show();
   }
   
@@ -122,7 +125,6 @@ public class Launcher extends Application {
   @Override
   public void start(Stage primaryStage)
   {
-    openRoom(primaryStage);
     String hostname = "199.98.20.114";
     int portnumber = 8080;
     

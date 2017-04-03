@@ -125,26 +125,7 @@ public class Login extends GridPane {
         System.out.println("Received response!");
         if (response.is_valid)
         {
-          
-          Launcher.username = userTextField.getText();
-          ArrayList<String> users = new ArrayList<String>();
-          users.add(Launcher.username);
-          
-          GamesUpdateMessage games_msg = new GamesUpdateMessage();
-          games_msg.send(outToServer);
-          GamesUpdateResponse game_resp = (GamesUpdateResponse) inFromServer.readObject();
-          System.out.println("Kevin");
-          CreateRoomMessage create_message = new CreateRoomMessage(Launcher.username);
-          create_message.send(outToServer);
-          System.out.println("c_message");
-          CreateRoomResponse resp = (CreateRoomResponse) inFromServer.readObject();
-          System.out.println("c response");
-          StartGameMessage start_message = new StartGameMessage();
-          System.out.println("s message");
-          start_message.send(outToServer);
-          StartGameResponse s_resp = (StartGameResponse) inFromServer.readObject();
-          System.out.println("Got start response");
-          Launcher.openGame(outToServer, inFromServer, users, primaryStage);
+          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
         }
         
         } catch (ClassNotFoundException e1) {

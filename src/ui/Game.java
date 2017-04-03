@@ -541,7 +541,7 @@ public class Game extends BorderPane {
                 center_pane.add(go_back, 0, 0);
               }
             });
-            return;
+            break;
           }
           
           if (obj instanceof LeaveGameResponse)

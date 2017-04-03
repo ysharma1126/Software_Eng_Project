@@ -112,6 +112,7 @@ public class Browser extends VBox {
     msg.send(outToServer);
     try {
       CreateRoomResponse response = (CreateRoomResponse) inFromServer.readObject();
+      System.out.println(response.gid);
       Launcher.openRoom(primaryStage, outToServer, inFromServer, response.gid);
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
@@ -361,6 +362,11 @@ public class Browser extends VBox {
         this.game_data.add(new GameData(gid, name, players, leader));
         it1.remove();
         it2.remove();
+      }
+      Iterator<Player> it3 = response.players.iterator();
+      while (it3.hasNext()) {
+        this.user_data.add(new UserData(it3.next().username));
+        it3.remove();
       }
     } catch (ClassNotFoundException e) {
       // TODO Auto-generated catch block
