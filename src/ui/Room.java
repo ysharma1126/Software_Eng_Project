@@ -63,7 +63,7 @@ import message.TableResponse;
 public class Room extends VBox {
 
   private Long gid;
-  private Boolean isHost;
+  private Boolean is_host;
   private Set<Player> players = new HashSet<Player>();
   private Task task;
   // private MenuBar menubar;
@@ -74,7 +74,7 @@ public class Room extends VBox {
   public void handleJoinRoomResponse(JoinRoomResponse resp) {
     players.add(new Player(resp.uname));
     user_data.add(new UserData(resp.uname));
-    user_tbl.setItems(this.user_data);
+    user_tbl.setItems(user_data);
   }
 
   public void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -89,12 +89,12 @@ public class Room extends VBox {
       //task.cancel();
       Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     }
-    user_tbl.setItems(this.user_data);
+    user_tbl.setItems(user_data);
   }
 
   public void handleChangedHostResponse(ChangedHostResponse resp) {
     user_data.get(0).setHost(true);
-    user_tbl.setItems(this.user_data);
+    user_tbl.setItems(user_data);
   }
 
   public void handleStartGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -109,7 +109,7 @@ public class Room extends VBox {
     }
   }
 
-  public Room(Stage primaryStage, Long gid, Boolean isHost) {
+  public Room(Stage primaryStage, Long gid, Boolean is_host) {
     this.gid = gid;
     // load_users(outToServer, inFromServer, gid);
 
@@ -132,7 +132,7 @@ public class Room extends VBox {
     col_name.setResizable(false);
     col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-    user_tbl.setItems(this.user_data);
+    user_tbl.setItems(user_data);
     user_tbl.getColumns().addAll(col_name);
 
     // Disable user reordering of columns at runtime
@@ -201,11 +201,11 @@ public class Room extends VBox {
   }
 
   public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer,
-      Long gid, Boolean isHost) {
+      Long gid, Boolean is_host) {
 
     this.gid = gid;
-    this.isHost = isHost;
-    if (isHost) {
+    this.is_host = is_host;
+    if (is_host) {
       players.add(new Player(Launcher.username));
       UserData host = new UserData(Launcher.username);
       host.setHost(true);
@@ -233,7 +233,7 @@ public class Room extends VBox {
     col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
     // load_users(outToServer, inFromServer, gid);
-    user_tbl.setItems(this.user_data);
+    user_tbl.setItems(user_data);
     user_tbl.getColumns().addAll(col_name);
 
     // Disable user reordering of columns at runtime
@@ -270,7 +270,7 @@ public class Room extends VBox {
     content.add(leavegame_btn, 0, 2, 1, 1);
 
     // Start game button
-    if (this.isHost) {
+    if (is_host) {
       Button startgame_btn = new Button("START");
       startgame_btn.getStyleClass().add("btn-newgame");
       startgame_btn.setPrefHeight(60);

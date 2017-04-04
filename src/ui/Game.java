@@ -55,14 +55,18 @@ import java.util.HashSet;
 
 
 public class Game extends BorderPane {
-
+  
+  private GridPane center_pane;
+  private Text set_correct;
+  
   private volatile HashMap<Location, Card> location_to_card = new HashMap<Location, Card>();
   private volatile HashMap<Location, Node> location_to_node = new HashMap<Location, Node>();
   private volatile HashMap<Location, Boolean> location_to_click_status = new HashMap<Location, Boolean>();
   private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
   private volatile HashMap<String, Text> username_to_score_field = new HashMap<String, Text>();
+  
     
-  private void handleSetResponse(SetSelectResponse resp, Text set_correct)
+  public void handleSetResponse(SetSelectResponse resp)
   {
     if (!resp.is_valid)
     {
@@ -91,7 +95,7 @@ public class Game extends BorderPane {
     }
   }
   
-  private void handleNewCardsResponse(NewCardsResponse n_resp, GridPane grid)
+  public void handleNewCardsResponse(NewCardsResponse n_resp)
   {
     for (Card card : n_resp.table1)
     {
@@ -100,7 +104,7 @@ public class Game extends BorderPane {
     }
   }
   
-  private void handleTableResponse(TableResponse t_resp, GridPane grid)
+  public void handleTableResponse(TableResponse t_resp)
   {
     System.out.println("RESP num: " + t_resp.randomnum);
     int colindex = 0;
@@ -109,7 +113,7 @@ public class Game extends BorderPane {
     location_to_card.clear();
     location_to_node.clear();
     locations_clicked.clear();
-    grid.getChildren().clear();
+    center_pane.getChildren().clear();
     
     for (Card card : t_resp.table1)
     {
@@ -133,7 +137,7 @@ public class Game extends BorderPane {
         //System.out.println("Colindex: " + colindex);
         //System.out.println("Rowindex: " + rowindex);
         //System.out.println("");
-        grid.add(setCard, colindex, rowindex);
+        center_pane.add(setCard, colindex, rowindex);
         Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
@@ -168,14 +172,25 @@ public class Game extends BorderPane {
     }
   }
   
-  private void handleLeaveGameResponse(LeaveGameResponse resp)
+  public void handleLeaveGameResponse(LeaveGameResponse resp)
   {
     username_to_score_field.get(resp.uname).setText("Surrendered");
   }
   
+  public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
+      ObjectInputStream inFromServer, EndGameResponse resp) {
+    center_pane.getChildren().clear();
+    Button go_back = new Button("Back to Lobby");
+    go_back.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+      }
+    });
+    center_pane.add(go_back, 0, 0);
+  }
   
-  
-  private void load_initial_cards(GridPane grid)
+  private void load_initial_cards()
   {
     for (int colindex = 0; colindex < 5; ++colindex)
     {
@@ -196,7 +211,7 @@ public class Game extends BorderPane {
         setCard.setStrokeType(StrokeType.INSIDE);
         setCard.setStroke(Color.web("blue", 0.30));
         setCard.setStrokeWidth(0);
-        grid.add(setCard, colindex, rowindex);
+        center_pane.add(setCard, colindex, rowindex);
         Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
@@ -224,7 +239,7 @@ public class Game extends BorderPane {
     }
   }
   
-  private void load_initial_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer, GridPane grid)
+  private void load_initial_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
    InitialCardsMessage start_msg = new InitialCardsMessage(Launcher.username);
    start_msg.send(outToServer);
@@ -253,7 +268,7 @@ public class Game extends BorderPane {
         setCard.setStrokeType(StrokeType.INSIDE);
         setCard.setStroke(Color.web("blue", 0.30));
         setCard.setStrokeWidth(0);
-        grid.add(setCard, colindex, rowindex);
+        center_pane.add(setCard, colindex, rowindex);
         Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
         location_to_node.put(location, setCard);
@@ -293,7 +308,7 @@ public class Game extends BorderPane {
    * Gets response from the server
    * Returns whether valid set or not
    */
-  private boolean submit_cards(GridPane grid, Text set_correct)
+  private boolean submit_cards()
   {
     if (locations_clicked.size() != 3)
     {
@@ -319,7 +334,7 @@ public class Game extends BorderPane {
    * Submit cards to server
    * GameThread will handle the response
    */
-  private void submit_cards(GridPane grid, Text set_correct, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
+  private void submit_cards(ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
     if (locations_clicked.size() != 3)
     {
@@ -341,11 +356,11 @@ public class Game extends BorderPane {
   /*
    * Only for test code
    */
-  private void delete_cards(GridPane grid)
+  private void delete_cards()
   {
     for (Location location : locations_clicked)
     {
-      grid.getChildren().remove(location_to_node.get(location));
+      center_pane.getChildren().remove(location_to_node.get(location));
       location_to_node.remove(location);
       location_to_card.remove(location);
       location_to_click_status.remove(location);
@@ -355,51 +370,51 @@ public class Game extends BorderPane {
   
   public Game(Stage primaryStage, ArrayList<String> users)
   {
-    ToolBar toolbar = new ToolBar(
-        new Button("Surrender"),
-        new Button("Change Password"),
-        new Button("Player Statistics")
-        );
-    
-    VBox right_detail_pane = new VBox();
-    for (String user : users)
-    {
-      Text text = new Text(user);
-      right_detail_pane.getChildren().add(text);
-      username_to_score_field.put(user, text);
-    }
-    
-    GridPane center_pane = new GridPane();
-    center_pane.setAlignment(Pos.CENTER);
-//    center_pane.setHgap(20);
-//    center_pane.setVgap(20);
-    
-    VBox left_detail_pane = new VBox();
-    Button set_btn = new Button("Set!");
-    Text set_correct = new Text("");
-    
-    left_detail_pane.getChildren().add(set_btn);
-    left_detail_pane.getChildren().add(set_correct);
-    left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
-    
-    load_initial_cards(center_pane);
-    
-    set_btn.setOnAction(new EventHandler<ActionEvent>(){
-      @Override
-      public void handle(ActionEvent e) {
-        boolean valid_set = submit_cards(center_pane, set_correct);
-        if (valid_set)
-        {
-          delete_cards(center_pane);
-        }
-      }
-    });
-    
-    this.setTop(toolbar);
-    this.setCenter(center_pane);
-    this.setLeft(left_detail_pane);
-    this.setRight(right_detail_pane);
-    this.setMargin(center_pane, new Insets(10, 10, 10, 10));
+//    ToolBar toolbar = new ToolBar(
+//        new Button("Surrender"),
+//        new Button("Change Password"),
+//        new Button("Player Statistics")
+//        );
+//    
+//    VBox right_detail_pane = new VBox();
+//    for (String user : users)
+//    {
+//      Text text = new Text(user);
+//      right_detail_pane.getChildren().add(text);
+//      username_to_score_field.put(user, text);
+//    }
+//    
+//    GridPane center_pane = new GridPane();
+//    center_pane.setAlignment(Pos.CENTER);
+////    center_pane.setHgap(20);
+////    center_pane.setVgap(20);
+//    
+//    VBox left_detail_pane = new VBox();
+//    Button set_btn = new Button("Set!");
+//    Text set_correct = new Text("");
+//    
+//    left_detail_pane.getChildren().add(set_btn);
+//    left_detail_pane.getChildren().add(set_correct);
+//    left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
+//    
+//    load_initial_cards();
+//    
+//    set_btn.setOnAction(new EventHandler<ActionEvent>(){
+//      @Override
+//      public void handle(ActionEvent e) {
+//        boolean valid_set = submit_cards(center_pane, set_correct);
+//        if (valid_set)
+//        {
+//          delete_cards(center_pane);
+//        }
+//      }
+//    });
+//    
+//    this.setTop(toolbar);
+//    this.setCenter(center_pane);
+//    this.setLeft(left_detail_pane);
+//    this.setRight(right_detail_pane);
+//    this.setMargin(center_pane, new Insets(10, 10, 10, 10));
   }
   
   public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, ArrayList<String> users)
@@ -434,12 +449,12 @@ public class Game extends BorderPane {
     left_detail_pane.getChildren().add(set_correct);
     left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
     
-    load_initial_cards(outToServer, inFromServer, center_pane);
+    load_initial_cards(outToServer, inFromServer);
     
     set_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        submit_cards(center_pane, set_correct, outToServer, inFromServer);
+        submit_cards(outToServer, inFromServer);
       }
     });
     
@@ -449,125 +464,125 @@ public class Game extends BorderPane {
     this.setRight(right_detail_pane);
     this.setMargin(center_pane, new Insets(10, 10, 10, 10));
     
-    Task task = new Task<Void>() {
-      @Override
-      public Void call() throws Exception {
-        
-        while (true)
-        {
-          Object obj = null;
-          try {
-            obj = inFromServer.readObject();
-          } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-          
-          if (obj instanceof NewCardsResponse)
-          {
-            NewCardsResponse n_resp = (NewCardsResponse) obj;
-            System.out.println("Got new cards response. ");
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                handleNewCardsResponse(n_resp, center_pane);
-              }
-            });
-          }
-          
-          if (obj instanceof SetSelectResponse)
-          {
-            /*
-             * SetSelectResponse Message
-             * Client sends SetSelectMessage to server
-             * If its invalid, server only sends response to client
-             * If its valid, server sends response to all clients, with the username
-             * Of the user that got it right
-             * Users all update guis
-             */
-            
-            SetSelectResponse resp = (SetSelectResponse) obj;
-            System.out.println("Got set select response.");
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                handleSetResponse(resp, set_correct);
-              }
-            });
-                
-          }
-          /*
-           * Handle other server responses.
-           */
-          
-          if (obj instanceof TableResponse)
-          {
-            TableResponse t_resp = (TableResponse) obj;
-            System.out.println("Got table response.");
-            for (Card card : t_resp.table1)
-            {
-             System.out.println(card.toImageFile());
-            }
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                handleTableResponse(t_resp, center_pane);
-              }
-            });
-          }
-      
-          if (obj instanceof EndGameResponse)
-          {
-            EndGameResponse resp = (EndGameResponse) obj;
-            System.out.println("Got end game response.");
-            /*
-             * Maybe display scores of all users at end
-             */
-            
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                center_pane.getChildren().clear();
-                Button go_back = new Button("Back to Lobby");
-                go_back.setOnAction(new EventHandler<ActionEvent>() {
-                  @Override
-                  public void handle(ActionEvent e){
-                    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-                  }
-                });
-                center_pane.add(go_back, 0, 0);
-              }
-            });
-            break;
-          }
-          
-          if (obj instanceof LeaveGameResponse)
-          {
-            /*
-             * SurrenderResponse Message
-             * Client sends SurrenderMessage to server
-             * Server sends response to all clients, with the username
-             * That is surrendering
-             * Users all update guis
-             */
-            System.out.println("Got leave game response.");
-            LeaveGameResponse resp = (LeaveGameResponse) obj;
-            handleLeaveGameResponse(resp);
-            break;        
-          }
-        }
-        
-        return null;
-        
-      }
-    };
-    
-    Thread th = new Thread(task);
-    th.setDaemon(true);
-    th.start();
+//    Task task = new Task<Void>() {
+//      @Override
+//      public Void call() throws Exception {
+//        
+//        while (true)
+//        {
+//          Object obj = null;
+//          try {
+//            obj = inFromServer.readObject();
+//          } catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          }
+//          
+//          if (obj instanceof NewCardsResponse)
+//          {
+//            NewCardsResponse n_resp = (NewCardsResponse) obj;
+//            System.out.println("Got new cards response. ");
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                handleNewCardsResponse(n_resp);
+//              }
+//            });
+//          }
+//          
+//          if (obj instanceof SetSelectResponse)
+//          {
+//            /*
+//             * SetSelectResponse Message
+//             * Client sends SetSelectMessage to server
+//             * If its invalid, server only sends response to client
+//             * If its valid, server sends response to all clients, with the username
+//             * Of the user that got it right
+//             * Users all update guis
+//             */
+//            
+//            SetSelectResponse resp = (SetSelectResponse) obj;
+//            System.out.println("Got set select response.");
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                handleSetResponse(resp);
+//              }
+//            });
+//                
+//          }
+//          /*
+//           * Handle other server responses.
+//           */
+//          
+//          if (obj instanceof TableResponse)
+//          {
+//            TableResponse t_resp = (TableResponse) obj;
+//            System.out.println("Got table response.");
+//            for (Card card : t_resp.table1)
+//            {
+//             System.out.println(card.toImageFile());
+//            }
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                handleTableResponse(t_resp);
+//              }
+//            });
+//          }
+//      
+//          if (obj instanceof EndGameResponse)
+//          {
+//            EndGameResponse resp = (EndGameResponse) obj;
+//            System.out.println("Got end game response.");
+//            /*
+//             * Maybe display scores of all users at end
+//             */
+//            
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                center_pane.getChildren().clear();
+//                Button go_back = new Button("Back to Lobby");
+//                go_back.setOnAction(new EventHandler<ActionEvent>() {
+//                  @Override
+//                  public void handle(ActionEvent e){
+//                    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//                  }
+//                });
+//                center_pane.add(go_back, 0, 0);
+//              }
+//            });
+//            break;
+//          }
+//          
+//          if (obj instanceof LeaveGameResponse)
+//          {
+//            /*
+//             * SurrenderResponse Message
+//             * Client sends SurrenderMessage to server
+//             * Server sends response to all clients, with the username
+//             * That is surrendering
+//             * Users all update guis
+//             */
+//            System.out.println("Got leave game response.");
+//            LeaveGameResponse resp = (LeaveGameResponse) obj;
+//            handleLeaveGameResponse(resp);
+//            break;        
+//          }
+//        }
+//        
+//        return null;
+//        
+//      }
+//    };
+//    
+//    Thread th = new Thread(task);
+//    th.setDaemon(true);
+//    th.start();
     
     
 //    Thread server_response_handler = null;

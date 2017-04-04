@@ -8,19 +8,28 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import gamelogic.Card;
 import gamelogic.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import message.ChangedHostResponse;
 import message.CreateRoomResponse;
+import message.EndGameResponse;
 import message.GamesUpdateResponse;
 import message.JoinRoomResponse;
+import message.LeaveGameResponse;
 import message.LeaveRoomResponse;
 import message.LoginResponse;
+import message.NewCardsResponse;
+import message.SetSelectResponse;
 import message.StartGameResponse;
+import message.TableResponse;
 
 public class Launcher extends Application {
 
@@ -227,6 +236,33 @@ public class Launcher extends Application {
               }
             }
             
+            /*** Handle responses as Game ***/
+            if (current_page instanceof Game) {
+              if (obj instanceof NewCardsResponse) {
+                NewCardsResponse n_resp = (NewCardsResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleNewCardsResponse(n_resp));
+              }
+
+              if (obj instanceof SetSelectResponse) {
+                SetSelectResponse s_resp = (SetSelectResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleSetResponse(s_resp));
+              }
+
+              if (obj instanceof TableResponse) {
+                TableResponse t_resp = (TableResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleTableResponse(t_resp));
+              }
+
+              if (obj instanceof EndGameResponse) {
+                EndGameResponse eg_resp = (EndGameResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleEndGameResponse(primaryStage, outToServer, inFromServer, eg_resp));
+              }
+
+              if(obj instanceof LeaveGameResponse) {
+                LeaveGameResponse lg_resp = (LeaveGameResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleLeaveGameResponse(lg_resp));    
+              }
+            }
           }
           
           return null;
@@ -236,9 +272,7 @@ public class Launcher extends Application {
       Thread th = new Thread(task);
       th.setDaemon(true);
       th.start();
-    }
-
-    catch (ConnectException e1) {
+    } catch (ConnectException e1) {
       System.err.println("Connect Did not enter in proper server address/portnumber!");
     } catch (UnknownHostException e1) {
       // TODO Auto-generated catch block
@@ -247,7 +281,6 @@ public class Launcher extends Application {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
-    
 
   }
 }
