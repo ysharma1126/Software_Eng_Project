@@ -64,116 +64,48 @@ public class Room extends VBox {
 
   private Long gid;
   private Boolean isHost;
-  private Task task;
   private Set<Player> players = new HashSet<Player>();
+  private Task task;
   // private MenuBar menubar;
   private GridPane content;
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
-  // private void load_users(ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long
-  // gid) {
-  // RefreshMessage msg = new RefreshMessage(Launcher.username);
-  // System.out.println("Refresh message sent in Room");
-  // msg.send(outToServer);
-  // try {
-  // this.user_data.clear();
-  // GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
-  // System.out.println("GamesUpdateResponse received in Room");
-  // Set<Player> players = response.gameusernames.get(gid);
-  // Player owner = response.gamehost.get(gid);
-  // Iterator<Player> it = players.iterator();
-  // while (it.hasNext()) {
-  // String name = new String();
-  // Player player = it.next();
-  // if (player.username.equals(owner.username)) {
-  // name = player.username + "*";
-  // } else {
-  // name = player.username;
-  // }
-  // this.user_data.add(new UserData(name));
-  // it.remove();
-  // }
-  // System.out.println("user_data updated");
-  // } catch (ClassNotFoundException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-
-  // private void start_game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream
-  // inFromServer) {
-  // StartGameMessage msg = new StartGameMessage();
-  // msg.send(outToServer);
-  // try {
-  // StartGameResponse start = (StartGameResponse) inFromServer.readObject();
-  // System.out.println("Game started");
-  // Launcher.openGame(primaryStage, outToServer, inFromServer, new
-  // ArrayList<Player>(this.players));
-  // } catch (ClassNotFoundException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-
-  // private void leave_room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream
-  // inFromServer) {
-  // LeaveRoomMessage msg = new LeaveRoomMessage(Launcher.username);
-  // msg.send(outToServer);
-  // try {
-  // CreateRoomResponse response = (CreateRoomResponse) inFromServer.readObject();
-  // Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-  // } catch (ClassNotFoundException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-
   private void handleJoinRoomResponse(JoinRoomResponse resp) {
-    this.players.add(new Player(resp.uname));
-    this.user_data.add(new UserData(resp.uname));
+    players.add(new Player(resp.uname));
+    user_data.add(new UserData(resp.uname));
     user_tbl.setItems(this.user_data);
   }
 
   private void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveRoomResponse resp) {
-    System.out.println("left room");
-    this.players.remove(new Player(resp.uname));
-    this.user_data.remove(new UserData(resp.uname));
+    players.remove(new Player(resp.uname));
+    user_data.remove(new UserData(resp.uname));
+    System.out.println("Room: Player leaving room");
     System.out.println(resp.uname);
     System.out.println(Launcher.username);
     if (resp.uname.equals(Launcher.username)) {
       System.out.println("returning to launcher");
-      this.task.cancel();
+      //task.cancel();
       Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     }
     user_tbl.setItems(this.user_data);
   }
 
   private void handleChangedHostResponse(ChangedHostResponse resp) {
-    System.out.println("handling changed host");
-    this.user_data.get(0).setHost(true);
+    user_data.get(0).setHost(true);
     user_tbl.setItems(this.user_data);
   }
 
   private void handleStartGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, StartGameResponse resp) {
-    System.out.println("Game started");
+    System.out.println("Room: Game started");
     System.out.println(resp.gid);
     System.out.println(this.gid);
     if (resp.gid == this.gid) {
-      this.task.cancel();
+      //task.cancel();
       Launcher.openGame(primaryStage, outToServer, inFromServer,
-          new ArrayList<Player>(this.players));
+          new ArrayList<Player>(players));
     }
   }
 
@@ -282,18 +214,15 @@ public class Room extends VBox {
 
   public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer,
       Long gid, Boolean isHost) {
-    System.out.println(gid);
+
     this.gid = gid;
     this.isHost = isHost;
     if (isHost) {
-      this.players.add(new Player(Launcher.username));
+      players.add(new Player(Launcher.username));
       UserData host = new UserData(Launcher.username);
       host.setHost(true);
-      this.user_data.add(host);
+      user_data.add(host);
     }
-
-    // load_users(outToServer, inFromServer, gid);
-    System.out.println("Users loaded");
 
     // menubar = new MenuBar();
     content = new GridPane();
@@ -314,17 +243,6 @@ public class Room extends VBox {
     col_name.setPrefWidth(685);
     col_name.setResizable(false);
     col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-
-    // Thread server_response_handler = null;
-    // try {
-    // //server_response_handler = new Thread(new RoomThread(primaryStage, outToServer,
-    // inFromServer));
-    // } catch (IOException e2) {
-    // // TODO Auto-generated catch block
-    // e2.printStackTrace();
-    // }
-    // server_response_handler.start();
 
     // load_users(outToServer, inFromServer, gid);
     user_tbl.setItems(this.user_data);
@@ -347,7 +265,6 @@ public class Room extends VBox {
     });
 
     user_tbl.getStyleClass().add("tbl-user");
-
     content.add(user_tbl, 0, 0, 3, 2);
 
     // Leave game button
@@ -359,8 +276,7 @@ public class Room extends VBox {
       public void handle(ActionEvent e) {
         LeaveRoomMessage msg = new LeaveRoomMessage(Launcher.username);
         msg.send(outToServer);
-        // leave_room(primaryStage, outToServer, inFromServer);
-        System.out.println("Left room");
+        System.out.println("Room: Leave room button pressed.");
       }
     });
     content.add(leavegame_btn, 0, 2, 1, 1);
@@ -377,26 +293,10 @@ public class Room extends VBox {
         public void handle(ActionEvent e) {
           StartGameMessage startmsg = new StartGameMessage();
           startmsg.send(outToServer);
-          // start_game(primaryStage, outToServer, inFromServer);
-          System.out.println("start game message sent");
+          System.out.println("Room: Start game button pressed.");
         }
       });
-    } ;
-
-    // // Refresh button
-    // Button refresh_btn = new Button("*");
-    // refresh_btn.getStyleClass().add("btn-refresh");
-    // refresh_btn.setPrefWidth(60);
-    // refresh_btn.setPrefHeight(60);
-    // content.add(refresh_btn, 1, 2, 1, 1);
-    // refresh_btn.setOnAction(new EventHandler<ActionEvent>(){
-    // @Override
-    // public void handle(ActionEvent e) {
-    // load_users(outToServer, inFromServer, gid);
-    // System.out.println("Users loaded");
-    // }
-    // });
-
+    };
 
     this.getChildren().addAll(content);
     this.getStyleClass().add("browser");
@@ -405,25 +305,33 @@ public class Room extends VBox {
     task = new Task<Void>() {
       @Override
       public Void call() throws Exception {
-        System.out.println("Room task created");
+        System.out.println("Room: Task started.");
         while (true) {
-          if (isCancelled()) break;
+          System.out.println("Room: Task looped.");
+          if (isCancelled()) {
+            System.out.println("Room: Task cancelled.");
+            break;
+          }
           
           Object obj = null;
           try {
             obj = inFromServer.readObject();
-            System.out.println(obj);
+            System.out.println("Room: Object read: " + obj);
           } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
           }
+          System.out.println("Browser: Object read " + obj);
 
           if (obj instanceof JoinRoomResponse) {
             JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
-            System.out.println("Got join room");
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Room: handling " + jr_resp);
                 handleJoinRoomResponse(jr_resp);
               }
             });
@@ -435,28 +343,29 @@ public class Room extends VBox {
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Room: handling " + lr_resp);
                 handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp);
               }
             });
           }
 
           if (obj instanceof ChangedHostResponse) {
-            System.out.println("Got changedhost response.");
             ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Room: handling " + ch_resp);
                 handleChangedHostResponse(ch_resp);
               }
             });
           }
 
           if (obj instanceof StartGameResponse) {
-            System.out.println("Got startgame response.");
             StartGameResponse sg_resp = (StartGameResponse) obj;
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Room: handling " + sg_resp);
                 handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp);
               }
             });

@@ -53,26 +53,21 @@ public class Launcher extends Application {
   
   public static void openBrowser(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
-    System.out.println("in open browser");
     Browser browser = new Browser(primaryStage, outToServer, inFromServer);
-    System.out.println("1");
     Scene scene = new  Scene(browser, 800, 600);
-    System.out.println("2");
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
     scene.getStylesheets().add("ui/style.css"); 
-    primaryStage.setTitle("SET");
     primaryStage.setResizable(false);
-    System.out.println("3");
     primaryStage.setScene(scene);
-    System.out.println("4");
+    System.out.println(primaryStage.getScene());
     primaryStage.show();
   }
   
   public static void openRoom(Stage primaryStage, Long gid, Boolean isHost)
   {
     Room room = new Room(primaryStage, gid, isHost);
-    Scene scene = new  Scene(room, 800, 600); 
+    Scene scene = new Scene(room, 800, 600); 
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
     scene.getStylesheets().add("ui/style.css"); 
@@ -83,9 +78,7 @@ public class Launcher extends Application {
   }
   
   public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer, Long gid, Boolean isHost) {
-    System.out.println("openRoom");
     Room room = new Room(primaryStage, outToServer, inFromServer, gid, isHost);
-    System.out.println("new room created");
     Scene scene = new Scene(room, 800, 600);
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add("https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
@@ -93,7 +86,6 @@ public class Launcher extends Application {
     primaryStage.setTitle("SET");
     primaryStage.setResizable(false);
     primaryStage.setScene(scene);
-    System.out.println("scene set");
     primaryStage.show();
   }
   

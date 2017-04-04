@@ -62,52 +62,14 @@ public class Browser extends VBox {
   private MenuBar menubar;
   private GridPane content;
   private Task task;
-  private Boolean active = true;
   private final TableView<GameData> game_tbl = new TableView<>();
   private final ObservableList<GameData> game_data = FXCollections.observableArrayList();
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
-  //
-  // private void load_available_rooms(ObjectOutputStream outToServer, ObjectInputStream
-  // inFromServer) {
-  // RefreshMessage msg = new RefreshMessage(Launcher.username);
-  // msg.send(outToServer);
-  // try {
-  // this.game_data.clear();
-  // this.user_data.clear();
-  // GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
-  //
-  // Iterator<Entry<Long, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
-  // Iterator<Entry<Long, Player>> it2 = response.gamehost.entrySet().iterator();
-  // while (it1.hasNext() && it2.hasNext()) {
-  // Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
-  // Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
-  // Long gid = room.getKey();
-  // String name = "Game " + room.getKey();
-  // String players = room.getValue().size() + "/10";
-  // String leader = host.getValue().username;
-  // this.game_data.add(new GameData(gid, name, players, leader));
-  // it1.remove();
-  // it2.remove();
-  // }
-  //
-  // Iterator<Player> it3 = response.players.iterator();
-  // while (it3.hasNext()) {
-  // this.user_data.add(new UserData(it3.next().username));
-  // it3.remove();
-  // }
-  // } catch (ClassNotFoundException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
 
   private void handleGamesUpdateResponse(GamesUpdateResponse resp) {
-    this.game_data.clear();
-    this.user_data.clear();
+    game_data.clear();
+    user_data.clear();
 
     Iterator<Entry<Long, Set<Player>>> it1 = resp.gameusernames.entrySet().iterator();
     Iterator<Entry<Long, Player>> it2 = resp.gamehost.entrySet().iterator();
@@ -118,14 +80,14 @@ public class Browser extends VBox {
       String name = "Game " + room.getKey();
       String players = room.getValue().size() + "/10";
       String leader = host.getValue().username;
-      this.game_data.add(new GameData(gid, name, players, leader));
+      game_data.add(new GameData(gid, name, players, leader));
       it1.remove();
       it2.remove();
     }
 
     Iterator<Player> it3 = resp.players.iterator();
     while (it3.hasNext()) {
-      this.user_data.add(new UserData(it3.next().username));
+      user_data.add(new UserData(it3.next().username));
       it3.remove();
     }
   }
@@ -133,30 +95,11 @@ public class Browser extends VBox {
   private void handleJoinRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, JoinRoomResponse resp) {
     if (resp.uname.equals(Launcher.username)) {
-      active = false;
+      //task.cancel();
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, false);
     }
   }
-  
-  
 
-  // private void create_room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream
-  // inFromServer) {
-  // CreateRoomMessage msg = new CreateRoomMessage(Launcher.username);
-  // msg.send(outToServer);
-  // try {
-  // CreateRoomResponse response = (CreateRoomResponse) inFromServer.readObject();
-  // System.out.println(response.gid);
-  // Launcher.openRoom(primaryStage, outToServer, inFromServer, response.gid, true);
-  // } catch (ClassNotFoundException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-  //
   private void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, CreateRoomResponse resp) {
     System.out.println("Created Room");
@@ -164,7 +107,7 @@ public class Browser extends VBox {
     System.out.println(resp.uname);
     System.out.println(Launcher.username);
     if (resp.uname.equals(Launcher.username)) {
-      active = false;
+      //task.cancel();
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, true);
     }
   }
@@ -218,7 +161,7 @@ public class Browser extends VBox {
       @Override
       public void handle(MouseEvent event) {
         System.out
-            .println("clicked on " + game_tbl.getSelectionModel().getSelectedItem().game_id.get());
+        .println("clicked on " + game_tbl.getSelectionModel().getSelectedItem().game_id.get());
         // join_room(primaryStage, outToServer, inFromServer,
         // game_tbl.getSelectionModel().getSelectedItem().game_id.get());
       }
@@ -393,38 +336,8 @@ public class Browser extends VBox {
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);
-    // try {
-    // this.game_data.clear();
-    // System.out.println("Initial update of browser");
-    // GamesUpdateResponse response = (GamesUpdateResponse) inFromServer.readObject();
-    // Iterator<Entry<Long, Set<Player>>> it1 = response.gameusernames.entrySet().iterator();
-    // Iterator<Entry<Long, Player>> it2 = response.gamehost.entrySet().iterator();
-    // while (it1.hasNext() && it2.hasNext()) {
-    // Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
-    // Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
-    // Long gid = room.getKey();
-    // String name = "Game " + room.getKey();
-    // String players = room.getValue().size() + "/10";
-    // String leader = host.getValue().username;
-    // this.game_data.add(new GameData(gid, name, players, leader));
-    // it1.remove();
-    // it2.remove();
-    // }
-    // Iterator<Player> it3 = response.players.iterator();
-    // while (it3.hasNext()) {
-    // this.user_data.add(new UserData(it3.next().username));
-    // it3.remove();
-    // }
-    // } catch (ClassNotFoundException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // } catch (IOException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
 
     game_tbl.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
       @Override
       public void handle(MouseEvent event) {
         // System.out.println("clicked on " +
@@ -466,17 +379,6 @@ public class Browser extends VBox {
     col_owner.setResizable(false);
     col_owner.setCellValueFactory(new PropertyValueFactory<>("Owner"));
 
-
-
-    // Thread server_response_handler = null;
-    // try {
-    // server_response_handler = new Thread(new BrowserThread(primaryStage, outToServer,
-    // inFromServer));
-    // } catch (IOException e2) {
-    // // TODO Auto-generated catch block
-    // e2.printStackTrace();
-    // }
-    // server_response_handler.start();
 
     // Added retrieved room data to columns
     game_tbl.setItems(this.game_data);
@@ -601,22 +503,22 @@ public class Browser extends VBox {
     this.getChildren().addAll(content);
     this.getStyleClass().add("browser");
     this.setPadding(new Insets(0, 40, 0, 40));
-    
+
 
     task = new Task<Void>() {
-      
       @Override
       public Void call() throws Exception {
+        System.out.println("Browser: Task started.");
         while (true) {
-          if (isCancelled()) {
+          System.out.println("Browser: Task looped.");
+          if (this.isCancelled()) {
             System.out.println("Browser: Task cancelled.");
             break;
           }
-          if (active) {
           Object obj = null;
           try {
             obj = inFromServer.readObject();
-            System.out.println("Browser: Response received " + obj);
+            System.out.println("Browser: Object read " + obj);
           } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -624,15 +526,15 @@ public class Browser extends VBox {
             // TODO Auto-generated catch block
             e.printStackTrace();
           }
+          System.out.println("Browser: Object read " + obj);
 
           if (obj instanceof GamesUpdateResponse) {
             GamesUpdateResponse gu_resp = (GamesUpdateResponse) obj;
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
-                System.out.println("Browser: handleGamesUpdateResponse started.");
+                System.out.println("Browser: handling " + gu_resp);
                 handleGamesUpdateResponse(gu_resp);
-                System.out.println("Browser: handleGamesUpdateResponse finished.");
               }
             });
           }
@@ -642,6 +544,7 @@ public class Browser extends VBox {
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Browser: handling " + cr_resp);
                 handleCreateRoomResponse(primaryStage, outToServer, inFromServer, cr_resp);
               }
             });
@@ -652,11 +555,10 @@ public class Browser extends VBox {
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                System.out.println("Browser: handling " + jr_resp);
                 handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp);
               }
             });
-          }
-          System.out.println("waiting for next inFromServer");
           }
         }
         return null;
