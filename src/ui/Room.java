@@ -71,13 +71,13 @@ public class Room extends VBox {
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
-  private void handleJoinRoomResponse(JoinRoomResponse resp) {
+  public void handleJoinRoomResponse(JoinRoomResponse resp) {
     players.add(new Player(resp.uname));
     user_data.add(new UserData(resp.uname));
     user_tbl.setItems(this.user_data);
   }
 
-  private void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
+  public void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveRoomResponse resp) {
     players.remove(new Player(resp.uname));
     user_data.remove(new UserData(resp.uname));
@@ -92,12 +92,12 @@ public class Room extends VBox {
     user_tbl.setItems(this.user_data);
   }
 
-  private void handleChangedHostResponse(ChangedHostResponse resp) {
+  public void handleChangedHostResponse(ChangedHostResponse resp) {
     user_data.get(0).setHost(true);
     user_tbl.setItems(this.user_data);
   }
 
-  private void handleStartGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
+  public void handleStartGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, StartGameResponse resp) {
     System.out.println("Room: Game started");
     System.out.println(resp.gid);
@@ -132,18 +132,6 @@ public class Room extends VBox {
     col_name.setResizable(false);
     col_name.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-
-    // Thread server_response_handler = null;
-    // try {
-    // //server_response_handler = new Thread(new RoomThread(primaryStage, outToServer,
-    // inFromServer));
-    // } catch (IOException e2) {
-    // // TODO Auto-generated catch block
-    // e2.printStackTrace();
-    // }
-    // server_response_handler.start();
-
-    // load_users(outToServer, inFromServer, gid);
     user_tbl.setItems(this.user_data);
     user_tbl.getColumns().addAll(col_name);
 
@@ -302,80 +290,80 @@ public class Room extends VBox {
     this.getStyleClass().add("browser");
     this.setPadding(new Insets(0, 40, 0, 40));
 
-    task = new Task<Void>() {
-      @Override
-      public Void call() throws Exception {
-        System.out.println("Room: Task started.");
-        while (true) {
-          System.out.println("Room: Task looped.");
-          if (isCancelled()) {
-            System.out.println("Room: Task cancelled.");
-            break;
-          }
-          
-          Object obj = null;
-          try {
-            obj = inFromServer.readObject();
-            System.out.println("Room: Object read: " + obj);
-          } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-          System.out.println("Browser: Object read " + obj);
-
-          if (obj instanceof JoinRoomResponse) {
-            JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Room: handling " + jr_resp);
-                handleJoinRoomResponse(jr_resp);
-              }
-            });
-          }
-
-          if (obj instanceof LeaveRoomResponse) {
-            System.out.println("Got leave room response.");
-            LeaveRoomResponse lr_resp = (LeaveRoomResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Room: handling " + lr_resp);
-                handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp);
-              }
-            });
-          }
-
-          if (obj instanceof ChangedHostResponse) {
-            ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Room: handling " + ch_resp);
-                handleChangedHostResponse(ch_resp);
-              }
-            });
-          }
-
-          if (obj instanceof StartGameResponse) {
-            StartGameResponse sg_resp = (StartGameResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Room: handling " + sg_resp);
-                handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp);
-              }
-            });
-          }
-        }
-
-        return null;
-
-      }
-    };
+//    task = new Task<Void>() {
+//      @Override
+//      public Void call() throws Exception {
+//        System.out.println("Room: Task started.");
+//        while (true) {
+//          System.out.println("Room: Task looped.");
+//          if (isCancelled()) {
+//            System.out.println("Room: Task cancelled.");
+//            break;
+//          }
+//          
+//          Object obj = null;
+//          try {
+//            obj = inFromServer.readObject();
+//            System.out.println("Room: Object read: " + obj);
+//          } catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          }
+//          System.out.println("Browser: Object read " + obj);
+//
+//          if (obj instanceof JoinRoomResponse) {
+//            JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Room: handling " + jr_resp);
+//                handleJoinRoomResponse(jr_resp);
+//              }
+//            });
+//          }
+//
+//          if (obj instanceof LeaveRoomResponse) {
+//            System.out.println("Got leave room response.");
+//            LeaveRoomResponse lr_resp = (LeaveRoomResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Room: handling " + lr_resp);
+//                handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp);
+//              }
+//            });
+//          }
+//
+//          if (obj instanceof ChangedHostResponse) {
+//            ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Room: handling " + ch_resp);
+//                handleChangedHostResponse(ch_resp);
+//              }
+//            });
+//          }
+//
+//          if (obj instanceof StartGameResponse) {
+//            StartGameResponse sg_resp = (StartGameResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Room: handling " + sg_resp);
+//                handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp);
+//              }
+//            });
+//          }
+//        }
+//
+//        return null;
+//
+//      }
+//    };
 
     Thread th = new Thread(task);
     th.setDaemon(true);

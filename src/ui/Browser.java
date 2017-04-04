@@ -67,7 +67,7 @@ public class Browser extends VBox {
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
-  private void handleGamesUpdateResponse(GamesUpdateResponse resp) {
+  public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
     game_data.clear();
     user_data.clear();
 
@@ -92,7 +92,7 @@ public class Browser extends VBox {
     }
   }
 
-  private void handleJoinRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
+  public void handleJoinRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, JoinRoomResponse resp) {
     if (resp.uname.equals(Launcher.username)) {
       //task.cancel();
@@ -100,7 +100,7 @@ public class Browser extends VBox {
     }
   }
 
-  private void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
+  public void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, CreateRoomResponse resp) {
     System.out.println("Created Room");
     System.out.println(resp.gid);
@@ -505,69 +505,69 @@ public class Browser extends VBox {
     this.setPadding(new Insets(0, 40, 0, 40));
 
 
-    task = new Task<Void>() {
-      @Override
-      public Void call() throws Exception {
-        System.out.println("Browser: Task started.");
-        while (true) {
-          System.out.println("Browser: Task looped.");
-          if (this.isCancelled()) {
-            System.out.println("Browser: Task cancelled.");
-            break;
-          }
-          Object obj = null;
-          try {
-            obj = inFromServer.readObject();
-            System.out.println("Browser: Object read " + obj);
-          } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
-          System.out.println("Browser: Object read " + obj);
-
-          if (obj instanceof GamesUpdateResponse) {
-            GamesUpdateResponse gu_resp = (GamesUpdateResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Browser: handling " + gu_resp);
-                handleGamesUpdateResponse(gu_resp);
-              }
-            });
-          }
-
-          if (obj instanceof CreateRoomResponse) {
-            CreateRoomResponse cr_resp = (CreateRoomResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Browser: handling " + cr_resp);
-                handleCreateRoomResponse(primaryStage, outToServer, inFromServer, cr_resp);
-              }
-            });
-          }
-
-          if (obj instanceof JoinRoomResponse) {
-            JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                System.out.println("Browser: handling " + jr_resp);
-                handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp);
-              }
-            });
-          }
-        }
-        return null;
-      }
-    };
-
-    Thread th = new Thread(task);
-    th.setDaemon(true);
-    th.start();
+//    task = new Task<Void>() {
+//      @Override
+//      public Void call() throws Exception {
+//        System.out.println("Browser: Task started.");
+//        while (true) {
+//          System.out.println("Browser: Task looped.");
+//          if (this.isCancelled()) {
+//            System.out.println("Browser: Task cancelled.");
+//            break;
+//          }
+//          Object obj = null;
+//          try {
+//            obj = inFromServer.readObject();
+//            System.out.println("Browser: Object read " + obj);
+//          } catch (ClassNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//          }
+//          System.out.println("Browser: Object read " + obj);
+//
+//          if (obj instanceof GamesUpdateResponse) {
+//            GamesUpdateResponse gu_resp = (GamesUpdateResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Browser: handling " + gu_resp);
+//                handleGamesUpdateResponse(gu_resp);
+//              }
+//            });
+//          }
+//
+//          if (obj instanceof CreateRoomResponse) {
+//            CreateRoomResponse cr_resp = (CreateRoomResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Browser: handling " + cr_resp);
+//                handleCreateRoomResponse(primaryStage, outToServer, inFromServer, cr_resp);
+//              }
+//            });
+//          }
+//
+//          if (obj instanceof JoinRoomResponse) {
+//            JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
+//            Platform.runLater(new Runnable() {
+//              @Override
+//              public void run() {
+//                System.out.println("Browser: handling " + jr_resp);
+//                handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp);
+//              }
+//            });
+//          }
+//        }
+//        return null;
+//      }
+//    };
+//
+//    Thread th = new Thread(task);
+//    th.setDaemon(true);
+//    th.start();
   }
 
   public static class GameData {

@@ -39,6 +39,7 @@ import java.util.ArrayList;
  * before you start the client.  It won't work otherwise.
  */
 public class Login extends GridPane {
+  public TextField userTextField;
   
   public Login(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
@@ -53,7 +54,7 @@ public class Login extends GridPane {
     Label userName = new Label("User Name:");
     this.add(userName, 0, 1);
     
-    TextField userTextField = new TextField();
+    userTextField = new TextField();
     this.add(userTextField, 1, 1);
     
     Label pw = new Label("Password:");
@@ -117,26 +118,26 @@ public class Login extends GridPane {
       public void handle(ActionEvent e) {
         System.out.println("In sign in event handler.");
         System.out.println("username: " + userTextField.getText() + " password: " + pwBox.getText());
-        Sendable send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
+        LoginMessage send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
-        System.out.println("Sent message!");
-        try {
-        LoginResponse response = (LoginResponse)inFromServer.readObject();
-        System.out.println("Received response!");
-        if (response.is_valid)
-        {
-          Launcher.username = userTextField.getText();
-          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-        }
-        
-        } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-  
+//        System.out.println("Sent message!");
+//        try {
+//        LoginResponse response = (LoginResponse)inFromServer.readObject();
+//        System.out.println("Received response!");
+//        if (response.is_valid)
+//        {
+//          Launcher.username = userTextField.getText();
+//          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//        }
+//        
+//        } catch (ClassNotFoundException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        } catch (IOException e1) {
+//            // TODO Auto-generated catch block
+//            e1.printStackTrace();
+//        }
+//  
       }
     });
   }
