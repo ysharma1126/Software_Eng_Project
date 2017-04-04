@@ -136,12 +136,8 @@ public class Launcher extends Application {
   }
 
   public static void openGame(Stage primaryStage, ObjectOutputStream outToServer,
-      ObjectInputStream inFromServer, ArrayList<Player> users) {
-    ArrayList<String> usernames = new ArrayList<String>();
-    for (Player user : users) {
-      usernames.add(user.username);
-    }
-    Game game = new Game(primaryStage, outToServer, inFromServer, usernames);
+      ObjectInputStream inFromServer, ArrayList<String> users) {
+    Game game = new Game(primaryStage, outToServer, inFromServer, users);
     current_page = game;
     Scene scene = new Scene(game, 1200, 900);
     primaryStage.setScene(scene);

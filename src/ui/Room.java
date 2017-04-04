@@ -64,7 +64,7 @@ public class Room extends VBox {
 
   private Long gid;
   private Boolean is_host;
-  private Set<Player> players = new HashSet<Player>();
+  private Set<String> players = new HashSet<String>();
   private Task task;
   // private MenuBar menubar;
   private GridPane content;
@@ -72,14 +72,14 @@ public class Room extends VBox {
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
   public void handleJoinRoomResponse(JoinRoomResponse resp) {
-    players.add(new Player(resp.uname));
+    players.add(resp.uname);
     user_data.add(new UserData(resp.uname));
     user_tbl.setItems(user_data);
   }
 
   public void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveRoomResponse resp) {
-    players.remove(new Player(resp.uname));
+    players.remove(resp.uname);
     user_data.remove(new UserData(resp.uname));
     System.out.println("Room: Player leaving room");
     System.out.println(resp.uname);
@@ -105,7 +105,7 @@ public class Room extends VBox {
     if (resp.gid == this.gid) {
       //task.cancel();
       Launcher.openGame(primaryStage, outToServer, inFromServer,
-          new ArrayList<Player>(players));
+          new ArrayList<String>(players));
     }
   }
 
@@ -206,7 +206,7 @@ public class Room extends VBox {
     this.gid = gid;
     this.is_host = is_host;
     if (is_host) {
-      players.add(new Player(Launcher.username));
+      players.add(Launcher.username);
       UserData host = new UserData(Launcher.username);
       host.setHost(true);
       user_data.add(host);
