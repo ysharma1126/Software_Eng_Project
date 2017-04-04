@@ -24,6 +24,7 @@ import message.LoginResponse;
 import message.CreateRoomResponse;
 import message.GamesUpdateMessage;
 import message.GamesUpdateResponse;
+import message.LeaveRoomResponse;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,7 +40,14 @@ import java.util.ArrayList;
  * before you start the client.  It won't work otherwise.
  */
 public class Login extends GridPane {
-  public TextField userTextField;
+  public void handleLoginResponse (Stage primaryStage, ObjectOutputStream outToServer,
+      ObjectInputStream inFromServer, LoginResponse resp) {
+    if (resp.is_valid)
+    {
+      Launcher.username = resp.username;
+      Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+    }
+  }
   
   public Login(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer)
   {
@@ -54,7 +62,7 @@ public class Login extends GridPane {
     Label userName = new Label("User Name:");
     this.add(userName, 0, 1);
     
-    userTextField = new TextField();
+    TextField userTextField = new TextField();
     this.add(userTextField, 1, 1);
     
     Label pw = new Label("Password:");

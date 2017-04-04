@@ -155,10 +155,10 @@ public class Launcher extends Application {
         @Override
         public Void call() throws Exception {
           while (true) {
-            if (this.isCancelled()) {
-              break;
-            }
             
+            if (this.isCancelled()) break;
+            
+            /*** Read one response from server ***/
             Object obj = null;
             try {
               obj = inFromServer.readObject();
@@ -169,103 +169,66 @@ public class Launcher extends Application {
             } 
             System.out.println("Browser: Object read " + obj);
             
+            /*** Handle responses as Login ***/
             if (current_page instanceof Login) {
               if (obj instanceof LoginResponse) {
                 LoginResponse lresp = (LoginResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    if (lresp.is_valid) {
-                      Launcher.username = ((Login) current_page).userTextField.getText();
-                      Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-                    }
-                  }
-                });
+                Platform.runLater(() ->
+                  ((Login) current_page).handleLoginResponse(primaryStage, outToServer, inFromServer, lresp));
               }
             }
             
+            /*** Handle responses as Browser ***/
             if (current_page instanceof Browser) {
               if (obj instanceof GamesUpdateResponse) {
                 GamesUpdateResponse gu_resp = (GamesUpdateResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Browser: handling " + gu_resp);
-                    ((Browser) current_page).handleGamesUpdateResponse(gu_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Browser) current_page).handleGamesUpdateResponse(gu_resp));
               }
 
               if (obj instanceof CreateRoomResponse) {
                 CreateRoomResponse cr_resp = (CreateRoomResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Browser: handling " + cr_resp);
-                    ((Browser) current_page).handleCreateRoomResponse(primaryStage, outToServer, inFromServer, cr_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Browser) current_page).handleCreateRoomResponse(primaryStage, outToServer, inFromServer, cr_resp));
               }
 
               if (obj instanceof JoinRoomResponse) {
                 JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Browser: handling " + jr_resp);
-                    ((Browser) current_page).handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Browser) current_page).handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp));
               }
             }
             
+            /*** Handle responses as Room ***/
             if (current_page instanceof Room) {
               if (obj instanceof JoinRoomResponse) {
                 JoinRoomResponse jr_resp = (JoinRoomResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Room: handling " + jr_resp);
-                    ((Room) current_page).handleJoinRoomResponse(jr_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Room) current_page).handleJoinRoomResponse(jr_resp));
               }
   
               if (obj instanceof LeaveRoomResponse) {
                 System.out.println("Got leave room response.");
                 LeaveRoomResponse lr_resp = (LeaveRoomResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Room: handling " + lr_resp);
-                    ((Room) current_page).handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Room) current_page).handleLeaveRoomResponse(primaryStage, outToServer, inFromServer, lr_resp));
               }
   
               if (obj instanceof ChangedHostResponse) {
                 ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Room: handling " + ch_resp);
-                    ((Room) current_page).handleChangedHostResponse(ch_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Room) current_page).handleChangedHostResponse(ch_resp));
               }
   
               if (obj instanceof StartGameResponse) {
                 StartGameResponse sg_resp = (StartGameResponse) obj;
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    System.out.println("Room: handling " + sg_resp);
-                    ((Room) current_page).handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp);
-                  }
-                });
+                Platform.runLater(() -> 
+                  ((Room) current_page).handleStartGameResponse(primaryStage, outToServer, inFromServer, sg_resp));
               }
             }
+            
           }
+          
           return null;
         }
       };
