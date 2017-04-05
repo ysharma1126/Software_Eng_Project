@@ -7,6 +7,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import gamelogic.Card;
 import gamelogic.Player;
@@ -22,6 +23,7 @@ import message.ChangedHostResponse;
 import message.CreateRoomResponse;
 import message.EndGameResponse;
 import message.GamesUpdateResponse;
+import message.InitialCardsResponse;
 import message.JoinRoomResponse;
 import message.LeaveGameResponse;
 import message.LeaveRoomResponse;
@@ -101,8 +103,8 @@ public class Launcher extends Application {
   }
 
   public static void openRoom(Stage primaryStage, ObjectOutputStream outToServer,
-      ObjectInputStream inFromServer, Long gid, Boolean isHost) {
-    Room room = new Room(primaryStage, outToServer, inFromServer, gid, isHost);
+      ObjectInputStream inFromServer, Long gid, Player host, Set<Player> players) {
+    Room room = new Room(primaryStage, outToServer, inFromServer, gid, host, players);
     current_page = room;
     Scene scene = new Scene(room, 800, 600);
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
@@ -167,12 +169,11 @@ public class Launcher extends Application {
             Object obj = null;
             try {
               obj = inFromServer.readObject();
-              System.out.println("Browser: Object read " + obj);
+              System.out.println(current_page + "Object read " + obj);
             } catch (ClassNotFoundException e) {
               // TODO Auto-generated catch block
               e.printStackTrace();
             } 
-            System.out.println("Browser: Object read " + obj);
             
             /*** Handle responses as Login ***/
             if (current_page instanceof Login) {
@@ -257,6 +258,11 @@ public class Launcher extends Application {
               if(obj instanceof LeaveGameResponse) {
                 LeaveGameResponse lg_resp = (LeaveGameResponse) obj;
                 Platform.runLater(() -> ((Game) current_page).handleLeaveGameResponse(lg_resp));    
+              }
+              
+              if (obj instanceof InitialCardsResponse) {
+                InitialCardsResponse ic_resp = (InitialCardsResponse) obj;
+                Platform.runLater(() -> ((Game) current_page).handleInitialCardsResponse(outToServer, inFromServer, ic_resp));
               }
             }
           }

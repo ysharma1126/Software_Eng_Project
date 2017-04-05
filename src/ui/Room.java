@@ -201,15 +201,31 @@ public class Room extends VBox {
   }
 
   public Room(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer,
-      Long gid, Boolean is_host) {
+      Long gid, Player owner, Set<Player> playerlist) {
 
     this.gid = gid;
-    this.is_host = is_host;
-    if (is_host) {
+    
+    /*** You're the room creator ***/
+    if (owner == null) {
       players.add(Launcher.username);
       UserData host = new UserData(Launcher.username);
       host.setHost(true);
       user_data.add(host);
+      this.is_host = true;
+    } else {
+      Iterator<Player> iter = playerlist.iterator();
+      String playername;
+      while (iter.hasNext()) {
+        playername = iter.next().username;
+        UserData player = new UserData(playername);
+        if (playername.equals(owner.username)) {
+          player.setHost(true);
+        }
+        user_data.add(player);
+      }
+      // Add yourself
+      user_data.add(new UserData(Launcher.username));
+      this.is_host = false;
     }
 
     // menubar = new MenuBar();

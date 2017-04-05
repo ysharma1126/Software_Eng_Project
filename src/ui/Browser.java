@@ -62,17 +62,26 @@ public class Browser extends VBox {
   private MenuBar menubar;
   private GridPane content;
   private Task task;
+  private Map<Long, Set<Player>> gameplayers;
+  private Map<Long, Player> gameowners;
+  
   private final TableView<GameData> game_tbl = new TableView<>();
   private final ObservableList<GameData> game_data = FXCollections.observableArrayList();
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
   public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
+    gameplayers.putAll(resp.gameusernames);
+    gameowners.putAll(resp.gamehost);
+    System.out.println(gameowners.size());
+    System.out.println(System.identityHashCode(gameowners));
+    System.out.println(System.identityHashCode(resp.gamehost));
+    
     game_data.clear();
     user_data.clear();
-
-    Iterator<Entry<Long, Set<Player>>> it1 = resp.gameusernames.entrySet().iterator();
-    Iterator<Entry<Long, Player>> it2 = resp.gamehost.entrySet().iterator();
+    
+    Iterator<Entry<Long, Set<Player>>> it1 = gameplayers.entrySet().iterator();
+    Iterator<Entry<Long, Player>> it2 = gameowners.entrySet().iterator();
     while (it1.hasNext() && it2.hasNext()) {
       Map.Entry<Long, Set<Player>> room = (Map.Entry<Long, Set<Player>>) it1.next();
       Map.Entry<Long, Player> host = (Map.Entry<Long, Player>) it2.next();
@@ -81,8 +90,6 @@ public class Browser extends VBox {
       String players = room.getValue().size() + "/10";
       String leader = host.getValue().username;
       game_data.add(new GameData(gid, name, players, leader));
-      it1.remove();
-      it2.remove();
     }
 
     Iterator<Player> it3 = resp.players.iterator();
@@ -95,8 +102,8 @@ public class Browser extends VBox {
   public void handleJoinRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, JoinRoomResponse resp) {
     if (resp.uname.equals(Launcher.username)) {
-      //task.cancel();
-      Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, false);
+      System.out.println("Joining room owned by " + gameowners.get(resp.gid));
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
     }
   }
 
@@ -108,7 +115,7 @@ public class Browser extends VBox {
     System.out.println(Launcher.username);
     if (resp.uname.equals(Launcher.username)) {
       //task.cancel();
-      Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, true);
+      Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
     }
   }
 
@@ -332,7 +339,9 @@ public class Browser extends VBox {
 
   public Browser(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer) {
-
+    
+    this.gameplayers = new HashMap<Long, Set<Player>>();
+    this.gameowners = new HashMap<Long, Player>();
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);
@@ -383,6 +392,7 @@ public class Browser extends VBox {
     // Added retrieved room data to columns
     game_tbl.setItems(this.game_data);
     game_tbl.getColumns().addAll(col_name, col_players, col_owner);
+    game_tbl.setPlaceholder(new Label("No open rooms"));
 
     // Disable user reordering of columns at runtime
     game_tbl.widthProperty().addListener(new ChangeListener<Number>() {
