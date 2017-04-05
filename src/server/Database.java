@@ -9,6 +9,8 @@ import java.sql.*;
  * @author Shalin
  *
  */
+
+//Only change is specifying the port and the Class.forname addition, gets it to work on server
 public class Database {
 	
 	static final String DB_URL = "jdbc:mysql://localhost:3306/set_game";

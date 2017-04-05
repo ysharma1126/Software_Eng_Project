@@ -52,6 +52,15 @@ public class DatabaseConnection {
 		return result;
 	}
 	
+	/**
+	 * Adds User to the Database
+	 * @author		Yash
+	 * @param	username	A String containing the client's username
+	 * @param	password	A String containing the client's password
+	 * @return 		true if addition was successful, otherwise false
+	 */
+	
+	//POSSIBLE DEBUG: Case might need to be handled when user already in database
 	public boolean addUser(String username, String password) throws SQLException {
 		String querystring = "INSERT INTO user(username, password) " + "VALUES(?,?)";
 		PreparedStatement preparedStmt = conn.prepareStatement(querystring);
