@@ -7,6 +7,7 @@ import message.*;
 import java.sql.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * A thread for a single player/client.
@@ -22,6 +23,7 @@ public class PlayerThread implements Runnable {
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
     public Thread thread = null;
+    public ArrayBlockingQueue<String> pipe = null;
     
     /**
      * Initializes the PlayerThread. Keeps track of the given socket and
@@ -33,6 +35,7 @@ public class PlayerThread implements Runnable {
         this.socket = socket;
         clientInput = new ObjectInputStream(socket.getInputStream());
         clientOutput = new ObjectOutputStream(socket.getOutputStream());
+        pipe = new ArrayBlockingQueue<String>(1);
     }
 
     /**
@@ -110,7 +113,7 @@ public class PlayerThread implements Runnable {
 	    	        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
 	    	        					if (obj instanceof CreateRoomMessage) {
 	    	        					    System.out.println("Got create room message");
-	    	        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize);
+	    	        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize, pipe);
 	    	        		    			Thread t = new Thread(gt);
 	    	        						t.start();
 	    	        						
@@ -126,7 +129,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			Server.gamesize++;
 	    	        		    			//Once client in game, put this thread to sleep until game finishes
 	    	        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-	    	        		    			t.join();
+	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
 		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
@@ -211,7 +214,19 @@ public class PlayerThread implements Runnable {
 				e.printStackTrace();
 			}
     	}
-    } 
+    }
+    
+    void gameMessageHandler(){
+    	String pipe_message;
+    	while(true){
+	    	while(pipe.peek() == null){
+	    		// do nothing
+			}
+	    	pipe_message = pipe.poll();
+	    	System.out.print(pipe_message);
+	    	
+    	}
+    }
     
     /**
      * Authenticates the user by checking if the credentials are valid according to the database.

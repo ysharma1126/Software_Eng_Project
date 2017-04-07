@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import gamelogic.*;
 import message.*;
@@ -22,6 +23,7 @@ public class GameThread implements Runnable {
 	
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
+    public Map<Player, ArrayBlockingQueue<String> > connected_playerPipe = null;
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
@@ -35,15 +37,17 @@ public class GameThread implements Runnable {
      * @param	id	gid
      * @author Yash
      */
-    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id) throws IOException {
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<String> pipe) throws IOException {
     	hostp = p;
     	gid = id;
         hostInput = i;
         hostOutput = o;
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
+		connected_playerPipe = Collections.synchronizedMap(new HashMap<Player, ArrayBlockingQueue<String>>());
 		connected_playerInput.put(p, hostInput);
 		connected_playerOutput.put(p, hostOutput);
+		connected_playerPipe.put(p, pipe);
     }
 
 	public void run() {
@@ -118,6 +122,9 @@ public class GameThread implements Runnable {
 							//Check for messages from each player
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
 								obj = (Object) entry.getValue().readObject();
+								Player player = entry.getKey();
+								ArrayBlockingQueue<String> pipe = connected_playerPipe.get(player);
+								pipe.add("HELLO WORLD!");
 								if (obj instanceof SetSelectMessage) {
 									System.out.println("Received a set");
 									SetSelectMessage resp = (SetSelectMessage) obj;
