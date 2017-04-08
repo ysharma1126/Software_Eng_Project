@@ -233,12 +233,13 @@ public class PlayerThread implements Runnable {
 		    	while(gameToPlayerPipe.peek() == null){
 		    		// do nothing
 				}
-		    	pipe_message = gameToPlayerPipe.poll();
+		    	pipe_message = gameToPlayerPipe.peek();
 		    	if (pipe_message == "leave"){
 		    		break;
 		    	}
 		    	obj = (Object) clientInput.readObject();
 		    	playerToGamePipe.put(obj);
+		    	gameToPlayerPipe.clear(); // clear pipe at end to avoid repeat instructions
 	    	}
     	} catch (IOException e){
     		e.printStackTrace();

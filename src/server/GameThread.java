@@ -251,8 +251,12 @@ public class GameThread implements Runnable {
 				}
 				//In Room, check with all the players if they want to leave
 				for (PlayerCom playercom: this.connected_players) {
-					//System.out.println("In for loop");
-					obj = (Object) playercom.input.readObject();
+					
+					if (playercom.gameToPlayerPipe.peek() == null){
+						playercom.gameToPlayerPipe.put("readObject");
+					}
+					obj = playercom.playerToGamePipe.poll();
+					
 					if (obj instanceof LeaveRoomMessage) {
 						System.out.println("Received LeaveRoomMessage");
 						//Tell all players client leaving
