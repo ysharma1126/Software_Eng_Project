@@ -23,7 +23,8 @@ public class GameThread implements Runnable {
 	
     public Map<Player, ObjectInputStream> connected_playerInput = null;
     public Map<Player, ObjectOutputStream> connected_playerOutput = null;
-    public Map<Player, ArrayBlockingQueue<String> > connected_playerPipe = null;
+    public Map<Player, ArrayBlockingQueue<Object> > playerToGamePipes = null;
+    public Map<Player, ArrayBlockingQueue<String> > gameToPlayerPipes = null;
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
@@ -37,17 +38,19 @@ public class GameThread implements Runnable {
      * @param	id	gid
      * @author Yash
      */
-    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<String> pipe) throws IOException {
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<Object> playerToGamePipe, ArrayBlockingQueue<String> gameToPlayerPipe) throws IOException {
     	hostp = p;
     	gid = id;
         hostInput = i;
         hostOutput = o;
         connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
-		connected_playerPipe = Collections.synchronizedMap(new HashMap<Player, ArrayBlockingQueue<String>>());
+		playerToGamePipes = Collections.synchronizedMap(new HashMap<Player, ArrayBlockingQueue<Object>>());
+		gameToPlayerPipes = Collections.synchronizedMap(new HashMap<Player, ArrayBlockingQueue<String>>());
 		connected_playerInput.put(p, hostInput);
 		connected_playerOutput.put(p, hostOutput);
-		connected_playerPipe.put(p, pipe);
+		playerToGamePipes.put(p, playerToGamePipe);
+		gameToPlayerPipes.put(p, gameToPlayerPipe);
     }
 
 	public void run() {
@@ -121,10 +124,14 @@ public class GameThread implements Runnable {
 							}
 							//Check for messages from each player
 							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-								obj = (Object) entry.getValue().readObject();
 								Player player = entry.getKey();
-								ArrayBlockingQueue<String> pipe = connected_playerPipe.get(player);
-								pipe.add("HELLO WORLD!");
+								ArrayBlockingQueue<Object> playerToGamePipe = playerToGamePipes.get(player);
+								ArrayBlockingQueue<String> gameToPlayerPipe = gameToPlayerPipes.get(player);
+								if (gameToPlayerPipe.peek() == null){
+									gameToPlayerPipe.put("readObject");
+								}
+								obj = playerToGamePipe.poll();
+								
 								if (obj instanceof SetSelectMessage) {
 									System.out.println("Received a set");
 									SetSelectMessage resp = (SetSelectMessage) obj;
@@ -308,6 +315,9 @@ public class GameThread implements Runnable {
 				//System.out.println("Out of for loop");
 			}
 			  catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
