@@ -144,10 +144,7 @@ public class PlayerThread implements Runnable {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
 	    	        						GameThread gt = Server.connected_games.get(resp2.gid);
 	    	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-	    	        						gt.connected_playerInput.put(player, clientInput);
-	    	        						gt.connected_playerOutput.put(player, clientOutput);
-	    	        						gt.playerToGamePipes.put(player, playerToGamePipe);
-	    	        						gt.gameToPlayerPipes.put(player, gameToPlayerPipe);
+	    	        						gt.addNewPlayer(player, clientInput, clientOutput, playerToGamePipe, gameToPlayerPipe);
 	    	        						
 	    	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
 	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
@@ -223,6 +220,11 @@ public class PlayerThread implements Runnable {
     	}
     }
     
+    /**
+     * Handles communication between player thread and game thread
+     * using the pipes
+     * @author Shalin
+     */
     void gameMessageHandler(){
     	String pipe_message; // holds recieved messages
     	Object obj = null; // holds messaged to be sent
