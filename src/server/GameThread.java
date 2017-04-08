@@ -97,6 +97,7 @@ public class GameThread implements Runnable {
 					while (true) {
 						System.out.println("Starting Game");
 						//Game only ends when deck is empty and no set exists on the table
+						ArrayList <Card> temp1 = new ArrayList <Card>();
 						while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 							//No set on table, if there's no set on table, must be at least 3 cards in deck
 							if (game.checkSetexists(table).size() == 0) {
@@ -120,9 +121,12 @@ public class GameThread implements Runnable {
 							//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
 							//optimizes testing out game, finding a set is hard
 							temp = game.checkSetexists(table);
-							for (Card card: temp) {
-								System.out.println(card.toImageFile());
+							if (temp1 != temp) {
+								for (Card card: temp) {
+									System.out.println(card.toImageFile());
+								}
 							}
+							temp1 = temp;
 							//Check for messages from each player
 							for (PlayerCom playercom: this.connected_players) {
 								Player player = playercom.player;
