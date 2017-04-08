@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ import message.*;
 
 public class GameThread implements Runnable {
 	
-    public ArrayList<PlayerCom> connected_players = null;
+    public List<PlayerCom> connected_players = null;
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
@@ -40,7 +41,7 @@ public class GameThread implements Runnable {
     	gid = id;
         hostInput = i;
         hostOutput = o;
-        connected_players = (ArrayList<PlayerCom>) Collections.synchronizedList(new ArrayList<PlayerCom>());
+        connected_players = Collections.synchronizedList(new ArrayList<PlayerCom>());
         addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
     }
 
