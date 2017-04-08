@@ -183,7 +183,9 @@ public class PlayerThread implements Runnable {
 	    	        					e.printStackTrace();
 	    	        				} catch (IOException e) {
 	    	        					e.printStackTrace();
-	    	        				} catch (InterruptedException e) {
+	    	        				} 
+	    	        	        	/* TODO Removed since no longer using Thread.join()
+	    	        	        	catch (InterruptedException e) {
 	    	        					//When gamethread sends interrupt, land here
 	    	        					System.out.println("Interrupted Player Thread");
 	    	        					// TODO Auto-generated catch block
@@ -193,6 +195,7 @@ public class PlayerThread implements Runnable {
     	        	        			System.out.println("Refresh Response");
 	    	        					e.printStackTrace();
 	    	        				}
+	    	        				*/
 	    	        			}
 	        				}
 	        			}
