@@ -79,12 +79,11 @@ public class GameThread implements Runnable {
 					System.out.println(this.connected_players.size());
 					while(!(check == this.connected_players.size())) {
 						for (PlayerCom playercom: this.connected_players) {
-							// clear pipes
-							if (playercom.playerToGamePipe.peek() != null){
-								obj = playercom.playerToGamePipe.poll();
-							} else {
-								obj = (Object) playercom.input.readObject();
+							if (playercom.gameToPlayerPipe.peek() == null){
+								playercom.gameToPlayerPipe.put("readObject");
 							}
+							obj = playercom.playerToGamePipe.poll();
+							
 							if (obj instanceof InitialCardsMessage) {
 								System.out.println("Received Initial Cards Message");
 								check++;
@@ -311,7 +310,7 @@ public class GameThread implements Runnable {
 				}
 				//System.out.println("Out of for loop");
 			}
-			  catch (ClassNotFoundException | IOException e) {
+			  catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
