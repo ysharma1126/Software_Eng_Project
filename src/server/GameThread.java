@@ -316,22 +316,4 @@ public class GameThread implements Runnable {
         connected_players.add(playercom);
 	}
 	
-	private class PlayerCom {
-		public Player player = null;
-		public ObjectInputStream input = null;
-		public ObjectOutputStream output = null;
-		public ArrayBlockingQueue<Object> playerToGamePipe = null;
-		public ArrayBlockingQueue<String> gameToPlayerPipe = null;
-		
-		public PlayerCom(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
-			player = p;
-			input = in;
-			output = out;
-			playerToGamePipe = pgp;
-			gameToPlayerPipe = gpp;
-		}
-	};
-
 }
-
-
