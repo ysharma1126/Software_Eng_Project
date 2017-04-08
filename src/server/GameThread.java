@@ -26,6 +26,7 @@ public class GameThread implements Runnable {
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
+    public PlayerCom host = null;
     long gid;
     
     /**
@@ -42,7 +43,7 @@ public class GameThread implements Runnable {
         hostInput = i;
         hostOutput = o;
         connected_players = Collections.synchronizedList(new ArrayList<PlayerCom>());
-        addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
+        host = addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
     }
 
 	public void run() {
@@ -52,7 +53,11 @@ public class GameThread implements Runnable {
 			Object obj;
 			try {
 				//Check host, as only host can start game
-				obj = (Object) hostInput.readObject();
+				if (host.gameToPlayerPipe.peek() == null){
+					host.gameToPlayerPipe.put("readObject");
+				}
+				obj = host.playerToGamePipe.poll();
+
 				if (obj instanceof StartGameMessage) {
 					System.out.println("Received Start Game Message");
 					StartGameResponse sgr = new StartGameResponse(gid);
@@ -316,9 +321,10 @@ public class GameThread implements Runnable {
 		Server.connected_games.remove(gid);
     }
 	
-	public void addNewPlayer(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
+	public PlayerCom addNewPlayer(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
         PlayerCom playercom = new PlayerCom(p,in,out,pgp,gpp);
         connected_players.add(playercom);
+        return playercom;
 	}
 	
 }
