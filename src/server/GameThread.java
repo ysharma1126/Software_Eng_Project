@@ -40,7 +40,7 @@ public class GameThread implements Runnable {
     	gid = id;
         hostInput = i;
         hostOutput = o;
-        connected_players = new ArrayList<PlayerCom>();
+        connected_players = (ArrayList<PlayerCom>) Collections.synchronizedList(new ArrayList<PlayerCom>());
         addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
     }
 
