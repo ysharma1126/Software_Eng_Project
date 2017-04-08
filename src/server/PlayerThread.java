@@ -7,6 +7,7 @@ import message.*;
 import java.sql.*;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * A thread for a single player/client.
@@ -22,6 +23,8 @@ public class PlayerThread implements Runnable {
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
     public Thread thread = null;
+    public ArrayBlockingQueue<Object> playerToGamePipe = null;
+    public ArrayBlockingQueue<String> gameToPlayerPipe = null;
     
     /**
      * Initializes the PlayerThread. Keeps track of the given socket and
@@ -33,6 +36,8 @@ public class PlayerThread implements Runnable {
         this.socket = socket;
         clientInput = new ObjectInputStream(socket.getInputStream());
         clientOutput = new ObjectOutputStream(socket.getOutputStream());
+        playerToGamePipe = new ArrayBlockingQueue<Object>(1);
+        gameToPlayerPipe = new ArrayBlockingQueue<String>(1);
     }
 
     /**
@@ -110,7 +115,7 @@ public class PlayerThread implements Runnable {
 	    	        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
 	    	        					if (obj instanceof CreateRoomMessage) {
 	    	        					    System.out.println("Got create room message");
-	    	        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize);
+	    	        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize, playerToGamePipe, gameToPlayerPipe);
 	    	        		    			Thread t = new Thread(gt);
 	    	        						t.start();
 	    	        						
@@ -126,7 +131,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			Server.gamesize++;
 	    	        		    			//Once client in game, put this thread to sleep until game finishes
 	    	        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-	    	        		    			t.join();
+	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
 		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
@@ -139,8 +144,7 @@ public class PlayerThread implements Runnable {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
 	    	        						GameThread gt = Server.connected_games.get(resp2.gid);
 	    	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-	    	        						gt.connected_playerInput.put(player, clientInput);
-	    	        						gt.connected_playerOutput.put(player, clientOutput);
+	    	        						gt.addNewPlayer(player, clientInput, clientOutput, playerToGamePipe, gameToPlayerPipe);
 	    	        						
 	    	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
 	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
@@ -148,7 +152,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			}
 	    	        		    			//Once client in game, put this thread to sleep until game finishes
 	    	        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-	    	        		    			t.join();
+	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
 		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
@@ -176,7 +180,9 @@ public class PlayerThread implements Runnable {
 	    	        					e.printStackTrace();
 	    	        				} catch (IOException e) {
 	    	        					e.printStackTrace();
-	    	        				} catch (InterruptedException e) {
+	    	        				} 
+	    	        	        	/* TODO Removed since no longer using Thread.join()
+	    	        	        	catch (InterruptedException e) {
 	    	        					//When gamethread sends interrupt, land here
 	    	        					System.out.println("Interrupted Player Thread");
 	    	        					// TODO Auto-generated catch block
@@ -186,6 +192,7 @@ public class PlayerThread implements Runnable {
     	        	        			System.out.println("Refresh Response");
 	    	        					e.printStackTrace();
 	    	        				}
+	    	        				*/
 	    	        			}
 	        				}
 	        			}
@@ -211,7 +218,37 @@ public class PlayerThread implements Runnable {
 				e.printStackTrace();
 			}
     	}
-    } 
+    }
+    
+    /**
+     * Handles communication between player thread and game thread
+     * using the pipes
+     * @author Shalin
+     */
+    void gameMessageHandler(){
+    	String pipe_message; // holds recieved messages
+    	Object obj = null; // holds messaged to be sent
+    	try{
+	    	while(true){
+		    	while(gameToPlayerPipe.peek() == null){
+		    		// do nothing
+				}
+		    	pipe_message = gameToPlayerPipe.peek();
+		    	if (pipe_message == "leave"){
+		    		break;
+		    	}
+		    	obj = (Object) clientInput.readObject();
+		    	playerToGamePipe.put(obj);
+		    	gameToPlayerPipe.clear(); // clear pipe at end to avoid repeat instructions
+	    	}
+    	} catch (IOException e){
+    		e.printStackTrace();
+    	} catch (ClassNotFoundException e){
+    		e.printStackTrace();
+    	} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    }
     
     /**
      * Authenticates the user by checking if the credentials are valid according to the database.

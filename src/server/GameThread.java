@@ -5,9 +5,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import gamelogic.*;
 import message.*;
@@ -20,11 +22,11 @@ import message.*;
 
 public class GameThread implements Runnable {
 	
-    public Map<Player, ObjectInputStream> connected_playerInput = null;
-    public Map<Player, ObjectOutputStream> connected_playerOutput = null;
+    public List<PlayerCom> connected_players = null;
     public Player hostp = null;
     private ObjectInputStream hostInput = null;
     private ObjectOutputStream hostOutput = null;
+    public PlayerCom host = null;
     long gid;
     
     /**
@@ -35,15 +37,13 @@ public class GameThread implements Runnable {
      * @param	id	gid
      * @author Yash
      */
-    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id) throws IOException {
+    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<Object> playerToGamePipe, ArrayBlockingQueue<String> gameToPlayerPipe) throws IOException {
     	hostp = p;
     	gid = id;
         hostInput = i;
         hostOutput = o;
-        connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
-		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());
-		connected_playerInput.put(p, hostInput);
-		connected_playerOutput.put(p, hostOutput);
+        connected_players = Collections.synchronizedList(new ArrayList<PlayerCom>());
+        host = addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
     }
 
 	public void run() {
@@ -53,7 +53,11 @@ public class GameThread implements Runnable {
 			Object obj;
 			try {
 				//Check host, as only host can start game
-				obj = (Object) hostInput.readObject();
+				if (host.gameToPlayerPipe.peek() == null){
+					host.gameToPlayerPipe.put("readObject");
+				}
+				obj = host.playerToGamePipe.poll();
+
 				if (obj instanceof StartGameMessage) {
 					System.out.println("Received Start Game Message");
 					StartGameResponse sgr = new StartGameResponse(gid);
@@ -72,15 +76,19 @@ public class GameThread implements Runnable {
 					//Game only starts when server receives initialcardsmessages from each of the players in the game
 					//On InitialCardsMessage, send InitialCardsResponse, simply initial state of the table
 					int check = 0;
-					System.out.println(this.connected_playerInput.size());
-					while(!(check == this.connected_playerInput.size())) {
-						for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-							obj = (Object) entry.getValue().readObject();
+					System.out.println(this.connected_players.size());
+					while(!(check == this.connected_players.size())) {
+						for (PlayerCom playercom: this.connected_players) {
+							if (playercom.gameToPlayerPipe.peek() == null){
+								playercom.gameToPlayerPipe.put("readObject");
+							}
+							obj = playercom.playerToGamePipe.poll();
+							
 							if (obj instanceof InitialCardsMessage) {
 								System.out.println("Received Initial Cards Message");
 								check++;
 								InitialCardsResponse icr = new InitialCardsResponse(table);
-								icr.send(this.connected_playerOutput.get(entry.getKey()));
+								icr.send(playercom.output);
 								System.out.println("Sent Initial Cards Response");
 							}
 						}
@@ -101,8 +109,8 @@ public class GameThread implements Runnable {
 								}
 								//Send Updated table to all players currently in game
 								TableResponse tr1 = new TableResponse(table1);
-								for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
-									tr1.send(entry.getValue());
+								for(PlayerCom playercom: this.connected_players) {
+									tr1.send(playercom.output);
 				    			}
 								//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
 								//If the game is live, there should always be a set on the board
@@ -116,19 +124,24 @@ public class GameThread implements Runnable {
 								System.out.println(card.toImageFile());
 							}
 							//Check for messages from each player
-							for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-								obj = (Object) entry.getValue().readObject();
+							for (PlayerCom playercom: this.connected_players) {
+								Player player = playercom.player;
+								if (playercom.gameToPlayerPipe.peek() == null){
+									playercom.gameToPlayerPipe.put("readObject");
+								}
+								obj = playercom.playerToGamePipe.poll();
+								
 								if (obj instanceof SetSelectMessage) {
 									System.out.println("Received a set");
 									SetSelectMessage resp = (SetSelectMessage) obj;
 									//If set's valid, update set count, send to all players in SetSelectResponse
 									if(game.validateSet(resp.cards)) {
 										System.out.println("Set's valid!");
-										game.updateSetcount(entry.getKey());
+										game.updateSetcount(player);
 										
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), true);
-										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											ssr.send(entry1.getValue());
+										SetSelectResponse ssr = new SetSelectResponse(player, true);
+										for(PlayerCom playercom1: this.connected_players) {
+											ssr.send(playercom1.output);
 						    			}
 										for(Card card: table) {
 											System.out.println(card.toImageFile());
@@ -158,37 +171,37 @@ public class GameThread implements Runnable {
 										}
 										//Send updated table to all players in game
 										TableResponse tr2 = new TableResponse(table1);
-										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-											tr2.send(entry1.getValue());
+										for(PlayerCom playercom1: this.connected_players) {
+											tr2.send(playercom1.output);
 						    			}
 						    			
 									}
 									else {
 										//If set invalid, only tell client
 										System.out.println("Set invalid");
-										SetSelectResponse ssr = new SetSelectResponse(entry.getKey(), false);
+										SetSelectResponse ssr = new SetSelectResponse(player, false);
 										/*for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
 											ssr.send(entry1.getValue());
 						    			}*/
-										ssr.send(this.connected_playerOutput.get(entry.getKey()));
+										ssr.send(playercom.output);
 									}
 								}
 								//Users also have option to leave game midway, surrender
 								if (obj instanceof LeaveGameMessage) {
 									//Set setcount to -1, punishment for raging
-									entry.getKey().setcount = -1;
+									player.setcount = -1;
 									
 									//Tell all players client has left game
-									LeaveGameResponse lgr = new LeaveGameResponse(entry.getKey());
-									for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-										lgr.send(entry1.getValue());
+									LeaveGameResponse lgr = new LeaveGameResponse(player);
+									for(PlayerCom playercom1: this.connected_players) {
+										lgr.send(playercom1.output);
 					    			}
 									
 									//No need for this as host has no special abilities once the game has started
 									/*
-									if (entry.getKey() == this.hostp) {
+									if (player == this.hostp) {
 										for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
-											if (entryy.getKey() != entry.getKey()) {
+											if (entryy.getKey() != player) {
 												this.hostp = entryy.getKey();
 												this.hostInput = entryy.getValue();
 												this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
@@ -196,8 +209,8 @@ public class GameThread implements Runnable {
 											}
 										}
 										
-										this.connected_playerInput.remove(entry.getKey());
-										this.connected_playerOutput.remove(entry.getKey());
+										this.connected_playerInput.remove(player);
+										this.connected_playerOutput.remove(player);
 										
 										ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
 										for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
@@ -205,20 +218,17 @@ public class GameThread implements Runnable {
 						    			}
 									}
 									else {
-										this.connected_playerInput.remove(entry.getKey());
-										this.connected_playerOutput.remove(entry.getKey());
+										this.connected_playerInput.remove(player);
+										this.connected_playerOutput.remove(player);
 									}*/
 									
 									//If only 1 player in game, if player leaves, close game
-									if (this.connected_playerInput.size() == 1) {
+									if (this.connected_players.size() == 1) {
 										this.terminate();
 										return;
 									}
-
-									this.connected_playerInput.remove(entry.getKey());
-									this.connected_playerOutput.remove(entry.getKey());
-									//Need to wakeup player thread, even though game thread isnt done, so interrupt
-									Server.connected_playerThread.get(entry.getKey()).interrupt();
+									playercom.gameToPlayerPipe.put("leave");
+									connected_players.remove(playercom);
 								}
 							}
 						}
@@ -230,17 +240,17 @@ public class GameThread implements Runnable {
 						
 						//Send final table response
 						TableResponse tr2 = new TableResponse(table1);
-						for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-							if (entry1.getKey().setcount != -1) {
-								tr2.send(entry1.getValue());
+						for(PlayerCom playercom: this.connected_players) {
+							if (playercom.player.setcount != -1) {
+								tr2.send(playercom.output);
 							}
 		    			}
 						
 						//Send EndGameResponse to all players in game
 						EndGameResponse eg = new EndGameResponse();
-						for(Map.Entry<Player, ObjectOutputStream> entry: this.connected_playerOutput.entrySet()) {
-							if (entry.getKey().setcount != -1) {
-								eg.send(entry.getValue());
+						for(PlayerCom playercom: this.connected_players) {
+							if (playercom.player.setcount != -1) {
+								eg.send(playercom.output);
 							}
 		    			}
 						//Terminate and end game thread
@@ -250,57 +260,60 @@ public class GameThread implements Runnable {
 					}
 				}
 				//In Room, check with all the players if they want to leave
-				for (Map.Entry<Player, ObjectInputStream> entry: this.connected_playerInput.entrySet()) {
-					//System.out.println("In for loop");
-					obj = (Object) entry.getValue().readObject();
+				for (PlayerCom playercom: this.connected_players) {
+					
+					if (playercom.gameToPlayerPipe.peek() == null){
+						playercom.gameToPlayerPipe.put("readObject");
+					}
+					obj = playercom.playerToGamePipe.poll();
+					
 					if (obj instanceof LeaveRoomMessage) {
 						System.out.println("Received LeaveRoomMessage");
 						//Tell all players client leaving
-						LeaveRoomResponse lrr = new LeaveRoomResponse(entry.getKey());
-						for(ObjectOutputStream value : this.connected_playerOutput.values()) {
-		    				lrr.send(value);
+						LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
+						for(PlayerCom playercom1: this.connected_players) {
+		    				lrr.send(playercom1.output);
 		    			}
 						
 						System.out.println("Sent LeaveRoomResponse");
 						
 						//If only 1 player in room, if player leaves, close room
-						if (this.connected_playerInput.size() == 1) {
+						if (this.connected_players.size() == 1) {
 							this.terminate();
 							return;
 						}
 						
 						//If host leaves room, find another player and set them to be the host
-						if (entry.getKey() == this.hostp) {
-							for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
-								if (entryy.getKey() != entry.getKey()) {
-									this.hostp = entryy.getKey();
-									this.hostInput = entryy.getValue();
-									this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
+						if (playercom.player == this.hostp) {
+							for (PlayerCom playercom1: this.connected_players) {
+								if (playercom1.player != playercom.player) {
+									this.hostp = playercom1.player;
+									this.hostInput = playercom1.input;
+									this.hostOutput = playercom1.output;
 									break;
 								}
 							}
 							
-							this.connected_playerInput.remove(entry.getKey());
-							this.connected_playerOutput.remove(entry.getKey());										
 							
 							//Send ChangedHostResponse, telling all clients who the new host is
 							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
-							for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-								chr.send(entry1.getValue());
+							for(PlayerCom playercom1: this.connected_players) {
+								if (playercom1 != playercom){
+									chr.send(playercom1.output);
+								}
 			    			}
 						}
-						else {
-							this.connected_playerInput.remove(entry.getKey());
-							this.connected_playerOutput.remove(entry.getKey());
-						}
-
-						//Need to wakeup player thread, even though game thread isnt done, so interrupt
-						Server.connected_playerThread.get(entry.getKey()).interrupt();
+						
+						playercom.gameToPlayerPipe.put("leave");
+						connected_players.remove(playercom);						
 					}
 				}
 				//System.out.println("Out of for loop");
 			}
-			  catch (ClassNotFoundException | IOException e) {
+			  catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -311,7 +324,11 @@ public class GameThread implements Runnable {
 	private void terminate() throws IOException {
 		Server.connected_games.remove(gid);
     }
-
+	
+	public PlayerCom addNewPlayer(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
+        PlayerCom playercom = new PlayerCom(p,in,out,pgp,gpp);
+        connected_players.add(playercom);
+        return playercom;
+	}
+	
 }
-
-
