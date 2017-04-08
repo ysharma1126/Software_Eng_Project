@@ -241,17 +241,13 @@ public class GameThread implements Runnable {
 						//Send final table response
 						TableResponse tr2 = new TableResponse(table1);
 						for(PlayerCom playercom: this.connected_players) {
-							if (playercom.player.setcount != -1) {
-								tr2.send(playercom.output);
-							}
+							tr2.send(playercom.output);
 		    			}
 						
 						//Send EndGameResponse to all players in game
 						EndGameResponse eg = new EndGameResponse();
 						for(PlayerCom playercom: this.connected_players) {
-							if (playercom.player.setcount != -1) {
-								eg.send(playercom.output);
-							}
+							eg.send(playercom.output);
 		    			}
 						//Terminate and end game thread
 						this.terminate();
