@@ -155,7 +155,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			}
 	    	        		    			//Once client in game, put this thread to sleep until game finishes
 	    	        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-	    	        		    			t.join();
+	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
 		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
