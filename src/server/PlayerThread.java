@@ -146,6 +146,8 @@ public class PlayerThread implements Runnable {
 	    	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
 	    	        						gt.connected_playerInput.put(player, clientInput);
 	    	        						gt.connected_playerOutput.put(player, clientOutput);
+	    	        						gt.playerToGamePipes.put(player, playerToGamePipe);
+	    	        						gt.gameToPlayerPipes.put(player, gameToPlayerPipe);
 	    	        						
 	    	        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
 	    	        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
