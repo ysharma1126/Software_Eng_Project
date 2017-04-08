@@ -79,7 +79,12 @@ public class GameThread implements Runnable {
 					System.out.println(this.connected_players.size());
 					while(!(check == this.connected_players.size())) {
 						for (PlayerCom playercom: this.connected_players) {
-							obj = (Object) playercom.input.readObject();
+							// clear pipes
+							if (playercom.playerToGamePipe.peek() != null){
+								obj = playercom.playerToGamePipe.poll();
+							} else {
+								obj = (Object) playercom.input.readObject();
+							}
 							if (obj instanceof InitialCardsMessage) {
 								System.out.println("Received Initial Cards Message");
 								check++;
