@@ -40,12 +40,31 @@ import java.util.ArrayList;
  * before you start the client.  It won't work otherwise.
  */
 public class Login extends GridPane {
+  
+  private Text action_target = null;
+  
   public void handleLoginResponse (Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LoginResponse resp) {
     if (resp.is_valid)
     {
       Launcher.username = resp.username;
       Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+    }
+    else
+    {
+      this.action_target.setText("Wrong username or password");
+    }
+  }
+  
+  public void handleSignUpResponse (Stage primaryStage, ObjectOutputStream outToServer,
+      ObjectInputStream inFromServer, SignUpResponse resp) {
+    if (resp.is_valid)
+    {
+     this.action_target.setText("Signed up"); 
+    }
+    else
+    {
+      this.action_target.setText("Already a user with that username");
     }
   }
   
@@ -85,9 +104,9 @@ public class Login extends GridPane {
     this.add(hbBtn, 1, 4);
     //this.setthisLinesVisible(true);
       
-    Text actiontarget = new Text();
-    actiontarget.setId("actiontarget");
-    this.add(actiontarget, 1, 6);
+    action_target = new Text();
+    action_target.setId("actiontarget");
+    this.add(action_target, 1, 6);
       
     sign_up_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
@@ -96,28 +115,6 @@ public class Login extends GridPane {
         Sendable send_msg = new SignUpMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
         System.out.println("Sent signup");
-        try {
-          SignUpResponse response = (SignUpResponse)inFromServer.readObject();
-          
-          if (response.is_valid)
-          {
-            System.out.println("Signed up!");
-            Launcher.username = userTextField.getText();
-            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-          }
-          else
-          {
-            System.out.println("another user with that username.");
-          }
-        
-        } catch (ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-  
       }
     });
       
@@ -128,24 +125,6 @@ public class Login extends GridPane {
         System.out.println("username: " + userTextField.getText() + " password: " + pwBox.getText());
         LoginMessage send_msg = new LoginMessage(userTextField.getText(), pwBox.getText());
         send_msg.send(outToServer);
-//        System.out.println("Sent message!");
-//        try {
-//        LoginResponse response = (LoginResponse)inFromServer.readObject();
-//        System.out.println("Received response!");
-//        if (response.is_valid)
-//        {
-//          Launcher.username = userTextField.getText();
-//          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-//        }
-//        
-//        } catch (ClassNotFoundException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        } catch (IOException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }
-//  
       }
     });
   }
