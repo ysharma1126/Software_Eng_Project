@@ -1,6 +1,7 @@
 # Software_Eng_Project
 
 RUN: 
+
 make compile, make run, make all (compile+run)
 
 Run in Software_Eng_Project to compile code before actually running the server:
@@ -11,6 +12,7 @@ java -cp ../lib/mysql-connector-java-5.1.41-bin.jar:../bin server.Server 8080
 
 
 ISSUES:
+
 Comms are a little slow
 
 Not handling client disconnects
