@@ -66,11 +66,12 @@ public class PlayerThread implements Runnable {
 	    			conn.close();
 	    			if(signup_status) {
 	    				SignUpResponse sr = new SignUpResponse(true, resp.username);
-	    				System.out.println("Sending sign up response");
+	    				System.out.println("Sending sign up response valid");
 	        			sr.send(clientOutput);
 	    			}
 	    			else {
 	    				SignUpResponse sr = new SignUpResponse(false, resp.username);
+	    				System.out.println("Sending sign up response invalid");
 	        			sr.send(clientOutput);
 	    			}
 	    		}
