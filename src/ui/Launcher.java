@@ -30,6 +30,7 @@ import message.LeaveRoomResponse;
 import message.LoginResponse;
 import message.NewCardsResponse;
 import message.SetSelectResponse;
+import message.SignUpResponse;
 import message.StartGameResponse;
 import message.TableResponse;
 
@@ -181,6 +182,11 @@ public class Launcher extends Application {
                 LoginResponse lresp = (LoginResponse) obj;
                 Platform.runLater(() ->
                   ((Login) current_page).handleLoginResponse(primaryStage, outToServer, inFromServer, lresp));
+              }
+              if (obj instanceof SignUpResponse) {
+                SignUpResponse sresp = (SignUpResponse) obj;
+                Platform.runLater(() ->
+                ((Login) current_page).handleSignUpResponse(sresp));
               }
             }
             

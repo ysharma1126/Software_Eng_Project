@@ -56,8 +56,7 @@ public class Login extends GridPane {
     }
   }
   
-  public void handleSignUpResponse (Stage primaryStage, ObjectOutputStream outToServer,
-      ObjectInputStream inFromServer, SignUpResponse resp) {
+  public void handleSignUpResponse (SignUpResponse resp) {
     if (resp.is_valid)
     {
      this.action_target.setText("Signed up"); 
