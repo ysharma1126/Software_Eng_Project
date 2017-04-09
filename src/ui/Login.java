@@ -102,8 +102,8 @@ public class Login extends GridPane {
           if (response.is_valid)
           {
             System.out.println("Signed up!");
-//            Launcher.username = userTextField.getText();
-//            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+            Launcher.username = userTextField.getText();
+            Launcher.openBrowser(primaryStage, outToServer, inFromServer);
           }
           else
           {

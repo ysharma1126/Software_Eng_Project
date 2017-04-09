@@ -266,6 +266,7 @@ public class Game extends BorderPane {
         cards.add(location_to_card.get(location));
       }
       SetSelectMessage set_message = new SetSelectMessage(Launcher.username, cards);
+      System.out.println("sent set select message");
       set_message.send(outToServer);
     }
   }
