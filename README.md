@@ -1,18 +1,16 @@
 # Software_Eng_Project
 
-TODO:
-
-GUI needs a listener thread for server responses
-GUI has to not make holes in the grid if past 12 cards
-
-Run in src:
-java -cp ../lib/mysql-connector-java-5.1.41-bin.jar:../bin server.Server 8080
+RUN: 
+make compile, make run, make all (compile+run)
 
 Run in Software_Eng_Project to compile code before actually running the server:
 javac -d bin/ -cp src src/server/*.java
 
+Run in src:
+java -cp ../lib/mysql-connector-java-5.1.41-bin.jar:../bin server.Server 8080
 
-CURRENT ISSUES:
+
+ISSUES:
 Comms are a little slow
 Not handling client disconnects
 Not handling user signup failing because already in DB
