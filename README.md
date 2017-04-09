@@ -37,5 +37,3 @@ Surrender button isnt functional
 When host leaves, the host is changed, but that isnt updated on the UI
 If Shalin's the host and Sahils in the room, if Shalin leaves, in Shalin's lobby he sees 1 person in room, sahil who is the host
 However Sahil's UI doesnt change, if Shalin joins room again, Sahil's UI has Shalin (host), Sahil, Shalin while Shalin's UI has Sahil (host), Shalin, which is correct
-
-UI freezes on Sign Up
