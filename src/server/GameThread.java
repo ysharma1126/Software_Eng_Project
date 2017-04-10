@@ -68,30 +68,27 @@ public class GameThread implements Runnable {
 							System.out.println("Sent LeaveRoomResponse");
 	
 							
-							//If only one player in room, close room
+							//If only 1 player in game, if player leaves, close game
 							if (this.connected_players.size() == 1) {
+								this.connected_players.remove(playercom);
 								this.terminate();
-	                            connected_players.remove(playercom);						
-	                            playercom.gameToPlayerPipe.put("leave");
 								return;
 							}
+							playercom.gameToPlayerPipe.put("leave");
+							this.connected_players.remove(playercom);
 							
 							//If host leaves room, find another player and set them to be the host
 							if (playercom == host) {
 								for (PlayerCom playercom1: this.connected_players) {
-									if (playercom1 != host) {
-										host = playercom1;
-										break;
-									}
+									host = playercom1;
+									break;
 								}
 								
 								
 								//Send ChangedHostResponse, telling all clients who the new host is
 								ChangedHostResponse chr = new ChangedHostResponse(host.player);
 								for(PlayerCom playercom1: this.connected_players) {
-									if (playercom1 != playercom){
-										chr.send(playercom1.output);
-									}
+									chr.send(playercom1.output);
 				    			}
 							}
 							
@@ -286,11 +283,12 @@ public class GameThread implements Runnable {
 						
 						//If only 1 player in game, if player leaves, close game
 						if (this.connected_players.size() == 1) {
+							this.connected_players.remove(playercom);
 							this.terminate();
 							return;
 						}
 						playercom.gameToPlayerPipe.put("leave");
-						connected_players.remove(playercom);
+						this.connected_players.remove(playercom);
 					}
 				}
 			}
