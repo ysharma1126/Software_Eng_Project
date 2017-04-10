@@ -102,7 +102,7 @@ public class PlayerThread implements Runnable {
 	        				obj = (Object) clientInput.readObject();
 	        				if (obj instanceof GamesUpdateMessage) {
 	        					System.out.println("Initial GamesUpdateMessage");
-	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
 	    	        			gur.send(clientOutput);
 	    	        			System.out.println("Initial GamesUpdateResponse");
 	    	        			//Now that client's updated, check for lobby actions
@@ -189,7 +189,7 @@ public class PlayerThread implements Runnable {
 	    	        					System.out.println("Interrupted Player Thread");
 	    	        					// TODO Auto-generated catch block
 	    	        					//Once playerthread interrupted, get refreshed
-	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
     	        	        			gur1.send(clientOutput);
     	        	        			System.out.println("Refresh Response");
 	    	        					e.printStackTrace();
