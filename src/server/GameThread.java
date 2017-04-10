@@ -67,7 +67,7 @@ public class GameThread implements Runnable {
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					System.out.println("Sent Start Game Response");
+					System.out.println("Sent Start Game Response");	
 					Server.connected_games.put(gid, this);
 					//Game Logic
 					Game game = new Game();

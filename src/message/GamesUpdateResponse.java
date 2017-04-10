@@ -19,11 +19,11 @@ public class GamesUpdateResponse implements Sendable, Serializable {
 	public Set <Player> players;
 	
 	
-  public GamesUpdateResponse(Map <Long, GameThread> games, Map <Player, ObjectInputStream> players) {
+  public GamesUpdateResponse(Map <Long, GameThread> rooms, Map <Player, ObjectInputStream> players) {
     Map <Long, Set<Player>> temp1 = new HashMap<Long, Set<Player>>();
     Map <Long, Player> temp2 = new HashMap<Long, Player>();
     Set <Player> temp3 = new HashSet<Player>();
-    for (Map.Entry<Long, GameThread> entry: games.entrySet()) {
+    for (Map.Entry<Long, GameThread> entry: rooms.entrySet()) {
     	Set <Player> tempset = new HashSet<Player>();
     	for(PlayerCom playercom : entry.getValue().connected_players){
     		tempset.add(playercom.player);
@@ -42,6 +42,7 @@ public class GamesUpdateResponse implements Sendable, Serializable {
   
   public void send(ObjectOutputStream outputstream)
   {
+	System.out.println(this.gamehost.size());
     try {
       outputstream.writeObject(this);
     } catch (IOException e) {
