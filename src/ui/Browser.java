@@ -73,7 +73,7 @@ public class Browser extends VBox {
   public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
     gameplayers.putAll(resp.gameusernames);
     gameowners.putAll(resp.gamehost);
-    System.out.println(gameowners.size());
+    System.out.println(resp.gamehost.size());
     System.out.println(System.identityHashCode(gameowners));
     System.out.println(System.identityHashCode(resp.gamehost));
     
