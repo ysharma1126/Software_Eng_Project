@@ -13,24 +13,17 @@ java -cp ../lib/mysql-connector-java-5.1.41-bin.jar:../bin server.Server 8080
 
 ISSUES:
 
-Comms are a little slow (More importantly, clients have to send multiple messages to get server response)
-
 Not handling client disconnects
 
 Not handling user signup failing because already in DB
 
-Exception in thread "Thread-2" java.util.ConcurrentModificationException
-	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:901)
-	at java.util.ArrayList$Itr.next(ArrayList.java:851)
-	at server.GameThread.run(GameThread.java:263)
-	at java.lang.Thread.run(Thread.java:745)
-^^^occuring with multiple clients (sometimes)
-
-When player leaves room, playerthread doesn't wake up (sometimes)
-
 When game is started, the room isn't removed from the lobby
 
 Surrender button isnt functional
+
+Leaving a room with 2+ people doesn't properly change host
+
+Leaving a room with 2+ people can't create game after
 
 When host leaves, the host is changed, but that isnt updated on the UI
 If Shalin's the host and Sahils in the room, if Shalin leaves, in Shalin's lobby he sees 1 person in room, sahil who is the host
