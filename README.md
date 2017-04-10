@@ -30,8 +30,6 @@ When player leaves room, playerthread doesn't wake up (sometimes)
 
 When game is started, the room isn't removed from the lobby
 
-Scores of each player isn't displayed (Also no invalid set displayed to client, but I don't think that matters)
-
 Surrender button isnt functional
 
 When host leaves, the host is changed, but that isnt updated on the UI
