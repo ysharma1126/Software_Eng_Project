@@ -46,7 +46,7 @@ public class GameThread implements Runnable {
 			Object obj;
 			try {				
 				//In Room, check with all the players and see what they want to do
-				synchronized (connected_players){
+				synchronized (this.connected_players){
 					for (PlayerCom playercom: this.connected_players) {
 						
 						if (playercom.gameToPlayerPipe.peek() == null){

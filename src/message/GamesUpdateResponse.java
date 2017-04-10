@@ -42,7 +42,7 @@ public class GamesUpdateResponse implements Sendable, Serializable {
   
   public void send(ObjectOutputStream outputstream)
   {
-	System.out.println(this.gamehost.size());
+	//System.out.println(this.gamehost.size());
     try {
       outputstream.writeObject(this);
     } catch (IOException e) {
