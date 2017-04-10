@@ -46,54 +46,56 @@ public class GameThread implements Runnable {
 			Object obj;
 			try {				
 				//In Room, check with all the players and see what they want to do
-				for (PlayerCom playercom: this.connected_players) {
-					
-					if (playercom.gameToPlayerPipe.peek() == null){
-						playercom.gameToPlayerPipe.put("readObject");
-					}
-					obj = playercom.playerToGamePipe.poll();
-					
-					if (playercom == host && obj instanceof StartGameMessage) {
-						gameStart();
-					}
-					if (obj instanceof LeaveRoomMessage) {
-						System.out.println("Received LeaveRoomMessage");
-						//Tell all players client leaving
-						LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
-						for(PlayerCom playercom1: this.connected_players) {
-		    				lrr.send(playercom1.output);
-		    			}
+				synchronized (connected_players){
+					for (PlayerCom playercom: this.connected_players) {
 						
-						System.out.println("Sent LeaveRoomResponse");
-
-						
-						//If only one player in room, close room
-						if (this.connected_players.size() == 1) {
-							this.terminate();
-                            connected_players.remove(playercom);						
-                            playercom.gameToPlayerPipe.put("leave");
-							return;
+						if (playercom.gameToPlayerPipe.peek() == null){
+							playercom.gameToPlayerPipe.put("readObject");
 						}
+						obj = playercom.playerToGamePipe.poll();
 						
-						//If host leaves room, find another player and set them to be the host
-						if (playercom == host) {
-							for (PlayerCom playercom1: this.connected_players) {
-								if (playercom1 != host) {
-									host = playercom1;
-									break;
-								}
+						if (playercom == host && obj instanceof StartGameMessage) {
+							gameStart();
+						}
+						if (obj instanceof LeaveRoomMessage) {
+							System.out.println("Received LeaveRoomMessage");
+							//Tell all players client leaving
+							LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
+							for(PlayerCom playercom1: this.connected_players) {
+			    				lrr.send(playercom1.output);
+			    			}
+							
+							System.out.println("Sent LeaveRoomResponse");
+	
+							
+							//If only one player in room, close room
+							if (this.connected_players.size() == 1) {
+								this.terminate();
+	                            connected_players.remove(playercom);						
+	                            playercom.gameToPlayerPipe.put("leave");
+								return;
 							}
 							
-							
-							//Send ChangedHostResponse, telling all clients who the new host is
-							ChangedHostResponse chr = new ChangedHostResponse(host.player);
-							for(PlayerCom playercom1: this.connected_players) {
-								if (playercom1 != host){
-									chr.send(playercom1.output);
+							//If host leaves room, find another player and set them to be the host
+							if (playercom == host) {
+								for (PlayerCom playercom1: this.connected_players) {
+									if (playercom1 != host) {
+										host = playercom1;
+										break;
+									}
 								}
-			    			}
+								
+								
+								//Send ChangedHostResponse, telling all clients who the new host is
+								ChangedHostResponse chr = new ChangedHostResponse(host.player);
+								for(PlayerCom playercom1: this.connected_players) {
+									if (playercom1 != host){
+										chr.send(playercom1.output);
+									}
+				    			}
+							}
+							
 						}
-						
 					}
 				}
 				//System.out.println("Out of for loop");
