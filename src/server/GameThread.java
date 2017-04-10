@@ -23,7 +23,6 @@ import message.*;
 public class GameThread implements Runnable {
 	
     public List<PlayerCom> connected_players = null;
-    public Player hostp = null;
     public PlayerCom host = null;
     long gid;
     
@@ -36,7 +35,6 @@ public class GameThread implements Runnable {
      * @author Yash
      */
     public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<Object> playerToGamePipe, ArrayBlockingQueue<String> gameToPlayerPipe) throws IOException {
-    	hostp = p;
     	gid = id;
         connected_players = Collections.synchronizedList(new ArrayList<PlayerCom>());
         host = addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
@@ -75,9 +73,9 @@ public class GameThread implements Runnable {
 						}
 						
 						//If host leaves room, find another player and set them to be the host
-						if (playercom.player == this.hostp) {
+						if (playercom == host) {
 							for (PlayerCom playercom1: this.connected_players) {
-								if (playercom1.player != playercom.player) {
+								if (playercom1 != host) {
 									host = playercom1;
 									break;
 								}
@@ -85,9 +83,9 @@ public class GameThread implements Runnable {
 							
 							
 							//Send ChangedHostResponse, telling all clients who the new host is
-							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
+							ChangedHostResponse chr = new ChangedHostResponse(host.player);
 							for(PlayerCom playercom1: this.connected_players) {
-								if (playercom1 != playercom){
+								if (playercom1 != host){
 									chr.send(playercom1.output);
 								}
 			    			}
