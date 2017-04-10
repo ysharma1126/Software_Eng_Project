@@ -29,7 +29,7 @@ public class GamesUpdateResponse implements Sendable, Serializable {
     		tempset.add(playercom.player);
     	}
     	temp1.put(entry.getKey(), tempset);
-    	temp2.put(entry.getKey(), entry.getValue().hostp);
+    	temp2.put(entry.getKey(), entry.getValue().host.player);
     }
     for (Map.Entry<Player, ObjectInputStream> entry: players.entrySet()) {
     	temp3.add(entry.getKey());
