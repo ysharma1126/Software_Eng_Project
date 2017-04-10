@@ -427,6 +427,7 @@ public class Browser extends VBox {
         // if ((name_input.getText() != null && !name_input.getText().isEmpty())) {
         // create_room(primaryStage, outToServer, inFromServer, name_input.getText());
         // }
+        System.out.println("Sent Create Room Message");
         CreateRoomMessage msg = new CreateRoomMessage(Launcher.username);
         msg.send(outToServer);
         // create_room(primaryStage, outToServer, inFromServer);
