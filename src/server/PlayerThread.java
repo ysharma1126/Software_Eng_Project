@@ -243,6 +243,8 @@ public class PlayerThread implements Runnable {
 		    	playerToGamePipe.put(obj);
 		    	gameToPlayerPipe.clear(); // clear pipe at end to avoid repeat instructions
 	    	}
+            gameToPlayerPipe.clear();
+            playerToGamePipe.clear();
     	} catch (IOException e){
     		e.printStackTrace();
     	} catch (ClassNotFoundException e){

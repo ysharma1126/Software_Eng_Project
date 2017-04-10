@@ -65,10 +65,13 @@ public class GameThread implements Runnable {
 		    			}
 						
 						System.out.println("Sent LeaveRoomResponse");
+
 						
-						//If only 1 player in room, if player leaves, close room
+						//If only one player in room, close room
 						if (this.connected_players.size() == 1) {
 							this.terminate();
+                            connected_players.remove(playercom);						
+                            playercom.gameToPlayerPipe.put("leave");
 							return;
 						}
 						
@@ -91,8 +94,6 @@ public class GameThread implements Runnable {
 			    			}
 						}
 						
-						playercom.gameToPlayerPipe.put("leave");
-						connected_players.remove(playercom);						
 					}
 				}
 				//System.out.println("Out of for loop");
@@ -317,6 +318,7 @@ public class GameThread implements Runnable {
 	
 	private void terminate() throws IOException {
 		Server.connected_games.remove(gid);
+        Server.connected_rooms.remove(gid);
     }
 	
 	public PlayerCom addNewPlayer(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
