@@ -13,7 +13,7 @@ java -cp ../lib/mysql-connector-java-5.1.41-bin.jar:../bin server.Server 8080
 
 ISSUES:
 
-Comms are a little slow (More importantly, buttons take multiple hits to get server response)
+Comms are a little slow (More importantly, clients have to send multiple messages to get server response)
 
 Not handling client disconnects
 
