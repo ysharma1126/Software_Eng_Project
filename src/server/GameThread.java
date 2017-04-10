@@ -67,7 +67,7 @@ public class GameThread implements Runnable {
 							
 							System.out.println("Sent LeaveRoomResponse");
 	
-							
+							System.out.println(this.connected_players.size());
 							//If only 1 player in game, if player leaves, close game
 							if (this.connected_players.size() == 1) {
 								this.connected_players.remove(playercom);
@@ -91,7 +91,6 @@ public class GameThread implements Runnable {
 									chr.send(playercom1.output);
 				    			}
 							}
-							
 						}
 					}
 				}
