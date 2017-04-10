@@ -102,7 +102,7 @@ public class PlayerThread implements Runnable {
 	        				obj = (Object) clientInput.readObject();
 	        				if (obj instanceof GamesUpdateMessage) {
 	        					System.out.println("Initial GamesUpdateMessage");
-	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
 	    	        			gur.send(clientOutput);
 	    	        			System.out.println("Initial GamesUpdateResponse");
 	    	        			//Now that client's updated, check for lobby actions
@@ -122,7 +122,7 @@ public class PlayerThread implements Runnable {
 	    	        						t.start();
 	    	        						
 	    	        		    			System.out.println("Continue Player Thread");
-	    	        		    			Server.connected_games.put(Server.gamesize, gt);
+	    	        		    			Server.connected_rooms.put(Server.gamesize, gt);
 	    	        		    			Server.connected_gamethreads.put(Server.gamesize, t);
 	    	        		    			
 	    	        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
@@ -136,7 +136,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
-		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
 	    	        	        			gur1.send(clientOutput);
 	    	        	        			System.out.println("Refresh Response");
 	    	        					}
@@ -144,7 +144,7 @@ public class PlayerThread implements Runnable {
 	    	        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
 	    	        					else if (obj instanceof JoinRoomMessage) {
 	    	        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
-	    	        						GameThread gt = Server.connected_games.get(resp2.gid);
+	    	        						GameThread gt = Server.connected_rooms.get(resp2.gid);
 	    	        						Thread t = Server.connected_gamethreads.get(resp2.gid);
 	    	        						gt.addNewPlayer(player, clientInput, clientOutput, playerToGamePipe, gameToPlayerPipe);
 	    	        						
@@ -157,7 +157,7 @@ public class PlayerThread implements Runnable {
 	    	        		    			gameMessageHandler();
 	    	        		    			
 	    	        		    			//Once playerthread wakes up, get refreshed
-		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
 	    	        	        			gur1.send(clientOutput);
 	    	        	        			System.out.println("Refresh Response");
 	    	        					}
@@ -170,7 +170,7 @@ public class PlayerThread implements Runnable {
 	    	        					//Manual Refresh Button
 	    	        					else if (obj instanceof RefreshMessage) {
 	    	        						System.out.println("Refresh Message");
-	    	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
 	    	        	        			gur1.send(clientOutput);
 	    	        	        			System.out.println("Refresh Response");
 	    	        					}
@@ -189,7 +189,7 @@ public class PlayerThread implements Runnable {
 	    	        					System.out.println("Interrupted Player Thread");
 	    	        					// TODO Auto-generated catch block
 	    	        					//Once playerthread interrupted, get refreshed
-	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_games, Server.connected_playerInput);
+	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
     	        	        			gur1.send(clientOutput);
     	        	        			System.out.println("Refresh Response");
 	    	        					e.printStackTrace();

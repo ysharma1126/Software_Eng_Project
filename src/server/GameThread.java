@@ -60,13 +60,15 @@ public class GameThread implements Runnable {
 
 				if (obj instanceof StartGameMessage) {
 					System.out.println("Received Start Game Message");
+					Server.connected_rooms.remove(gid);
 					StartGameResponse sgr = new StartGameResponse(gid);
 					//Sent StartGameResponse to all players
 					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
 					for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
 	    				sgr.send(value);
 	    			}
-					System.out.println("Sent Start Game Response");
+					System.out.println("Sent Start Game Response");	
+					Server.connected_games.put(gid, this);
 					//Game Logic
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
@@ -120,6 +122,7 @@ public class GameThread implements Runnable {
 							ArrayList <Card> temp = new ArrayList <Card>();	
 							//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
 							//optimizes testing out game, finding a set is hard
+							/*
 							temp = game.checkSetexists(table);
 							if (temp1 != temp) {
 								for (Card card: temp) {
@@ -127,6 +130,7 @@ public class GameThread implements Runnable {
 								}
 							}
 							temp1 = temp;
+							*/
 							//Check for messages from each player
 							for (PlayerCom playercom: this.connected_players) {
 								Player player = playercom.player;

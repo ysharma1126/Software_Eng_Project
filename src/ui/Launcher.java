@@ -163,7 +163,7 @@ public class Launcher extends Application {
             Object obj = null;
             try {
               obj = inFromServer.readObject();
-              System.out.println(current_page + "Object read " + obj);
+              System.out.println(current_page + " Object read " + obj);
             } catch (ClassNotFoundException e) {
               // TODO Auto-generated catch block
               e.printStackTrace();

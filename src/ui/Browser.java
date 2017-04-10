@@ -71,9 +71,9 @@ public class Browser extends VBox {
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
   public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
-    gameplayers.putAll(resp.gameusernames);
-    gameowners.putAll(resp.gamehost);
-    System.out.println(gameowners.size());
+    gameplayers = resp.gameusernames;
+    gameowners = resp.gamehost;
+    System.out.println(resp.gamehost.size());
     System.out.println(System.identityHashCode(gameowners));
     System.out.println(System.identityHashCode(resp.gamehost));
     
@@ -104,7 +104,7 @@ public class Browser extends VBox {
     if (resp.uname.equals(Launcher.username)) {
       System.out.println("Joining room owned by " + gameowners.get(resp.gid));
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
-    }
+    } 
   }
 
   public void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -340,8 +340,8 @@ public class Browser extends VBox {
   public Browser(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer) {
     
-    this.gameplayers = new HashMap<Long, Set<Player>>();
-    this.gameowners = new HashMap<Long, Player>();
+//    this.gameplayers = new HashMap<Long, Set<Player>>();
+//    this.gameowners = new HashMap<Long, Player>();
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);

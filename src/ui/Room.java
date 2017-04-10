@@ -80,8 +80,14 @@ public class Room extends VBox {
   public void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveRoomResponse resp) {
     players.remove(resp.uname);
-    user_data.remove(new UserData(resp.uname));
+    for (UserData u : user_data) {
+      if (u.getHost()) {
+        user_data.remove(u);
+        break;
+      }
+    }
     System.out.println("Room: Player leaving room");
+    System.out.println(user_data.size());
     System.out.println(resp.uname);
     System.out.println(Launcher.username);
     if (resp.uname.equals(Launcher.username)) {
@@ -94,6 +100,7 @@ public class Room extends VBox {
 
   public void handleChangedHostResponse(ChangedHostResponse resp) {
     user_data.get(0).setHost(true);
+    System.out.println(user_data.get(0).getName());
     user_tbl.setItems(user_data);
   }
 
