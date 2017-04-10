@@ -68,6 +68,7 @@ public class Room extends VBox {
   private Task task;
   // private MenuBar menubar;
   private GridPane content;
+  private Button startgame_btn;
   private final TableView<UserData> user_tbl = new TableView<>();
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
@@ -99,8 +100,16 @@ public class Room extends VBox {
   }
 
   public void handleChangedHostResponse(ChangedHostResponse resp) {
-    user_data.get(0).setHost(true);
-    System.out.println(user_data.get(0).getName());
+    for (UserData u : user_data) {
+      if (u.getName().equals(resp.currenthost)) {
+        if (Launcher.username.equals(resp.currenthost)) {
+          is_host = true;
+          startgame_btn.setVisible(true);
+        } 
+        u.setHost(true);
+        break;
+      }
+    }
     user_tbl.setItems(user_data);
   }
 
@@ -293,21 +302,26 @@ public class Room extends VBox {
     content.add(leavegame_btn, 0, 2, 1, 1);
 
     // Start game button
+    
+    startgame_btn = new Button("START");
+    startgame_btn.getStyleClass().add("btn-newgame");
+    startgame_btn.setPrefHeight(60);
+    content.add(startgame_btn, 2, 2, 1, 1);
+    GridPane.setHalignment(startgame_btn, HPos.RIGHT);
+    startgame_btn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        StartGameMessage startmsg = new StartGameMessage();
+        startmsg.send(outToServer);
+        System.out.println("Room: Start game button pressed.");
+      }
+    });
+    
     if (is_host) {
-      Button startgame_btn = new Button("START");
-      startgame_btn.getStyleClass().add("btn-newgame");
-      startgame_btn.setPrefHeight(60);
-      content.add(startgame_btn, 2, 2, 1, 1);
-      GridPane.setHalignment(startgame_btn, HPos.RIGHT);
-      startgame_btn.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent e) {
-          StartGameMessage startmsg = new StartGameMessage();
-          startmsg.send(outToServer);
-          System.out.println("Room: Start game button pressed.");
-        }
-      });
-    };
+      startgame_btn.setVisible(true);
+    } else {
+      startgame_btn.setVisible(false);
+    }
 
     this.getChildren().addAll(content);
     this.getStyleClass().add("browser");
