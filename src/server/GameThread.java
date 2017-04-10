@@ -89,7 +89,7 @@ public class GameThread implements Runnable {
 								//Send ChangedHostResponse, telling all clients who the new host is
 								ChangedHostResponse chr = new ChangedHostResponse(host.player);
 								for(PlayerCom playercom1: this.connected_players) {
-									if (playercom1 != host){
+									if (playercom1 != playercom){
 										chr.send(playercom1.output);
 									}
 				    			}
