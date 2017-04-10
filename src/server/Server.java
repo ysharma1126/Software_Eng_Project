@@ -25,6 +25,8 @@ public class Server {
     static Map<Player, Thread> connected_playerThread = null;
     //Keep track of games
 	static Map<Long, GameThread> connected_games = null;
+	//Keep track of rooms
+	static Map<Long, GameThread> connected_rooms = null;
 	//Keep track of actual thread for sleeping/waking up from other threads
 	static Map<Long, Thread> connected_gamethreads = null;
 	static int portNumber;
@@ -41,6 +43,7 @@ public class Server {
 			System.exit(1);
 		}
 		connected_games = Collections.synchronizedMap(new HashMap<Long, GameThread>());
+		connected_rooms = Collections.synchronizedMap(new HashMap<Long, GameThread>());
 		connected_gamethreads = Collections.synchronizedMap(new HashMap<Long, Thread>());
 		connected_playerInput = Collections.synchronizedMap(new HashMap<Player,ObjectInputStream>());
 		connected_playerOutput = Collections.synchronizedMap(new HashMap<Player,ObjectOutputStream>());

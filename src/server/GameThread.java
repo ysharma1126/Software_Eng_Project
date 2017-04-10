@@ -60,6 +60,7 @@ public class GameThread implements Runnable {
 
 				if (obj instanceof StartGameMessage) {
 					System.out.println("Received Start Game Message");
+					Server.connected_rooms.remove(this);
 					StartGameResponse sgr = new StartGameResponse(gid);
 					//Sent StartGameResponse to all players
 					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
@@ -67,6 +68,7 @@ public class GameThread implements Runnable {
 	    				sgr.send(value);
 	    			}
 					System.out.println("Sent Start Game Response");
+					Server.connected_games.put(Server.gamesize, this);
 					//Game Logic
 					Game game = new Game();
 					ArrayList <Card> deck = game.createDeck();
