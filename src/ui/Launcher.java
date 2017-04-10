@@ -202,6 +202,11 @@ public class Launcher extends Application {
                 Platform.runLater(() -> 
                   ((Browser) current_page).handleJoinRoomResponse(primaryStage, outToServer, inFromServer, jr_resp));
               }
+              
+              if (obj instanceof ChangedHostResponse) {
+                ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
+                System.out.println(Launcher.username + " received a ChangedHostResponse");
+              }
             }
             
             /*** Handle responses as Room ***/
@@ -220,6 +225,7 @@ public class Launcher extends Application {
               }
   
               if (obj instanceof ChangedHostResponse) {
+                System.out.println(Launcher.username + " received a ChangedHostResponse");
                 ChangedHostResponse ch_resp = (ChangedHostResponse) obj;
                 Platform.runLater(() -> 
                   ((Room) current_page).handleChangedHostResponse(ch_resp));

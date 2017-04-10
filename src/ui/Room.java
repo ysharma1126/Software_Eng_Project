@@ -82,7 +82,7 @@ public class Room extends VBox {
       ObjectInputStream inFromServer, LeaveRoomResponse resp) {
     players.remove(resp.uname);
     for (UserData u : user_data) {
-      if (u.getHost()) {
+      if (u.getNameOnly().equals(resp.uname)) {
         user_data.remove(u);
         break;
       }
@@ -424,6 +424,10 @@ public class Room extends VBox {
       } else {
         return user_name.get();
       }
+    }
+    
+    public String getNameOnly() {
+      return user_name.get();
     }
 
     public void setName(String name) {
