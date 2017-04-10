@@ -104,7 +104,7 @@ public class Browser extends VBox {
     if (resp.uname.equals(Launcher.username)) {
       System.out.println("Joining room owned by " + gameowners.get(resp.gid));
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
-    }
+    } 
   }
 
   public void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
