@@ -71,8 +71,8 @@ public class Browser extends VBox {
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
   public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
-    gameplayers.putAll(resp.gameusernames);
-    gameowners.putAll(resp.gamehost);
+    gameplayers = resp.gameusernames;
+    gameowners = resp.gamehost;
     System.out.println(resp.gamehost.size());
     System.out.println(System.identityHashCode(gameowners));
     System.out.println(System.identityHashCode(resp.gamehost));
@@ -340,8 +340,8 @@ public class Browser extends VBox {
   public Browser(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer) {
     
-    this.gameplayers = new HashMap<Long, Set<Player>>();
-    this.gameowners = new HashMap<Long, Player>();
+//    this.gameplayers = new HashMap<Long, Set<Player>>();
+//    this.gameowners = new HashMap<Long, Player>();
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);
