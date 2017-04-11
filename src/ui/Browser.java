@@ -353,6 +353,8 @@ public class Browser extends VBox {
         // game_tbl.getSelectionModel().getSelectedItem().game_id.get());
         JoinRoomMessage msg = new JoinRoomMessage(Launcher.username,
             game_tbl.getSelectionModel().getSelectedItem().game_id.get());
+        System.out.println("clicked on: " + Launcher.username + " " +
+            game_tbl.getSelectionModel().getSelectedItem().game_id.get());
         msg.send(outToServer);
         // join_room(primaryStage, outToServer, inFromServer,
         // game_tbl.getSelectionModel().getSelectedItem().game_id.get());

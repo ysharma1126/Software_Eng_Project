@@ -73,9 +73,13 @@ public class Room extends VBox {
   private final ObservableList<UserData> user_data = FXCollections.observableArrayList();
 
   public void handleJoinRoomResponse(JoinRoomResponse resp) {
-    players.add(resp.uname);
-    user_data.add(new UserData(resp.uname));
-    user_tbl.setItems(user_data);
+    System.out.println("Join room " + this.gid + " " + resp.gid);
+    if (this.gid.equals(resp.gid)) {
+      players.add(resp.uname);
+      user_data.add(new UserData(resp.uname));
+      user_tbl.setItems(user_data);  
+      System.out.println("Added player");
+    }
   }
 
   public void handleLeaveRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -118,8 +122,11 @@ public class Room extends VBox {
     System.out.println("Room: Game started");
     System.out.println(resp.gid);
     System.out.println(this.gid);
-    if (resp.gid == this.gid) {
+    if (this.gid.equals(resp.gid)) {
       //task.cancel();
+      for (String p : this.players) {
+        System.out.println("Player: " + p);
+      }
       Launcher.openGame(primaryStage, outToServer, inFromServer,
           new ArrayList<String>(players));
     }
