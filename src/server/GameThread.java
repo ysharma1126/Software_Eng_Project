@@ -72,6 +72,7 @@ public class GameThread implements Runnable {
 							if (this.connected_players.size() == 1) {
 								this.connected_players.remove(playercom);
 								this.terminate();
+								playercom.gameToPlayerPipe.put("leave");
 								return;
 							}
 							playercom.gameToPlayerPipe.put("leave");
