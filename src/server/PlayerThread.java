@@ -222,7 +222,7 @@ public class PlayerThread implements Runnable {
      * using the pipes
      * @author Shalin
      */
-    void gameMessageHandler() throws IOException{
+    void gameMessageHandler() throws IOException, EOFException{
     	String pipe_message; // holds recieved messages
     	Object obj = null; // holds messaged to be sent
     	try{
