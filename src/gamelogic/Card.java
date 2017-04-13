@@ -50,6 +50,58 @@ public class Card implements Serializable{
 	  }
 	}
 	
+	public String getDescription(){
+		String description = "";
+		switch(shape){
+			case 0:
+				description += "Wave";
+				break;
+			case 1:
+				description += "Diamond";
+				break;
+			case 2:
+				description += "Oval";
+				break;
+		}
+		description += "\t";
+		switch(color){
+		case 0:
+			description += "Red";
+			break;
+		case 1:
+			description += "Purple";
+			break;
+		case 2:
+			description += "Green";
+			break;
+		}
+		description += "\t";
+		switch(shading){
+		case 0:
+			description += "Solid";
+			break;
+		case 1:
+			description += "Wavy";
+			break;
+		case 2:
+			description += "Empty";
+			break;
+		}
+		description += "\t";
+		switch(number){
+		case 0:
+			description += "One";
+			break;
+		case 1:
+			description += "Two";
+			break;
+		case 2:
+			description += "Three";
+			break;
+		}
+		return description;
+	}
+	
 	
 	@Override
 	public String toString()

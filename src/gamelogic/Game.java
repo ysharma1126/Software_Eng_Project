@@ -63,7 +63,7 @@ public class Game {
 	 * Checks to see whether a set exists on the table, in order to know if 3 cards need to be dealt
 	 * @author		ysharma1126
 	 * @param	cards	cards on he table 
-	 * @return		boolean representing whether there is a set on the table
+	 * @return		Arraylist of Cards in the set
 	 *
 	 */
 	

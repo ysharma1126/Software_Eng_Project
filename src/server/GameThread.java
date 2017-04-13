@@ -150,7 +150,6 @@ public class GameThread implements Runnable {
 		//Handles Game Actions
 		System.out.println("Starting Game");
 		//Game only ends when deck is empty and no set exists on the table
-		ArrayList <Card> temp1 = new ArrayList <Card>();
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 			// end game if no players left
 			if (connected_players.size() <= 0){
@@ -179,12 +178,9 @@ public class GameThread implements Runnable {
 			//optimizes testing out game, finding a set is hard
 			temp = game.checkSetexists(table);
 			String answer = "";
-			if (temp1 != temp) {
-				for (Card card: temp) {
-					answer += card.toImageFile();
-				}
+			for (Card card: temp) {
+				answer += card.getDescription() + "|";
 			}
-			temp1 = temp;
 			System.out.print(answer + "\r");
 			//Check for messages from each player
 			for (PlayerCom playercom: this.connected_players) {
