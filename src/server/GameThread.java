@@ -34,10 +34,11 @@ public class GameThread implements Runnable {
      * @param	id	gid
      * @author Yash
      */
-    public GameThread(Player p, ObjectInputStream i, ObjectOutputStream o, long id, ArrayBlockingQueue<Object> playerToGamePipe, ArrayBlockingQueue<String> gameToPlayerPipe) throws IOException {
+    public GameThread(long id, PlayerCom playercom) throws IOException {
     	gid = id;
         connected_players = Collections.synchronizedList(new ArrayList<PlayerCom>());
-        host = addNewPlayer(p,i,o,playerToGamePipe,gameToPlayerPipe);
+        addNewPlayer(playercom);
+        host = playercom;
     }
 
 	public void run() {
@@ -56,6 +57,7 @@ public class GameThread implements Runnable {
 						
 						if (playercom == host && obj instanceof StartGameMessage) {
 							gameStart();
+							return;
 						}
 						if (obj instanceof LeaveRoomMessage) {
 							System.out.println("Received LeaveRoomMessage");
@@ -147,173 +149,171 @@ public class GameThread implements Runnable {
 			}
 		}
 		//Handles Game Actions
-		while (true) {
-			System.out.println("Starting Game");
-			//Game only ends when deck is empty and no set exists on the table
-			ArrayList <Card> temp1 = new ArrayList <Card>();
-			while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
-				//No set on table, if there's no set on table, must be at least 3 cards in deck
-				if (game.checkSetexists(table).size() == 0) {
-					System.out.println("No Set on Table");
-					game.dealCards(deck, table, 3);
-					//This is just because sending table to client didn't work, dumb solution after hours of frustration, don't question it
-					ArrayList <Card> table1 = new ArrayList <Card>();
-					for (Card card: table) {
-						table1.add(card);
-					}
-					//Send Updated table to all players currently in game
-					TableResponse tr1 = new TableResponse(table1);
-					for(PlayerCom playercom: this.connected_players) {
-						tr1.send(playercom.output);
-	    			}
-					//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
-					//If the game is live, there should always be a set on the board
-					continue;
+		System.out.println("Starting Game");
+		//Game only ends when deck is empty and no set exists on the table
+		ArrayList <Card> temp1 = new ArrayList <Card>();
+		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
+			//No set on table, if there's no set on table, must be at least 3 cards in deck
+			if (game.checkSetexists(table).size() == 0) {
+				System.out.println("No Set on Table");
+				game.dealCards(deck, table, 3);
+				//This is just because sending table to client didn't work, dumb solution after hours of frustration, don't question it
+				ArrayList <Card> table1 = new ArrayList <Card>();
+				for (Card card: table) {
+					table1.add(card);
 				}
-				ArrayList <Card> temp = new ArrayList <Card>();	
-				//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
-				//optimizes testing out game, finding a set is hard
-				temp = game.checkSetexists(table);
-				String answer = "";
-				if (temp1 != temp) {
-					for (Card card: temp) {
-						answer += card.toImageFile();
-					}
+				//Send Updated table to all players currently in game
+				TableResponse tr1 = new TableResponse(table1);
+				for(PlayerCom playercom: this.connected_players) {
+					tr1.send(playercom.output);
+    			}
+				//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
+				//If the game is live, there should always be a set on the board
+				continue;
+			}
+			ArrayList <Card> temp = new ArrayList <Card>();	
+			//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
+			//optimizes testing out game, finding a set is hard
+			temp = game.checkSetexists(table);
+			String answer = "";
+			if (temp1 != temp) {
+				for (Card card: temp) {
+					answer += card.toImageFile();
 				}
-				temp1 = temp;
-				System.out.print(answer + "\r");
-				//Check for messages from each player
-				for (PlayerCom playercom: this.connected_players) {
-					Player player = playercom.player;
-					if (playercom.gameToPlayerPipe.peek() == null){
-						playercom.gameToPlayerPipe.put("readObject");
-					}
-					obj = playercom.playerToGamePipe.poll();
-					
-					if (obj instanceof SetSelectMessage) {
-						System.out.println("Received a set");
-						SetSelectMessage resp = (SetSelectMessage) obj;
-						//If set's valid, update set count, send to all players in SetSelectResponse
-						if(game.validateSet(resp.cards)) {
-							System.out.println("Set's valid!");
-							game.updateSetcount(player);
-							
-							SetSelectResponse ssr = new SetSelectResponse(player, true);
-							for(PlayerCom playercom1: this.connected_players) {
-								ssr.send(playercom1.output);
-			    			}
-							for(Card card: table) {
-								System.out.println(card.toImageFile());
-							}
-							//If set's valid, remove cards from table
-							//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
-							//replaced it's done realistically, like the 3 cards are literally replaced on the board, the cards aren't shifted
-							//around unrealistically. 
-							
-							//To put things short, we put a hole attribute in card, and changed removecard to set hole attribute to true
-							game.removeCards(resp.cards, table);
-							System.out.println("Table Size");
-							//Overloaded size function needed as holes need to be manually not accounted for when calculating number of cards
-							//on table
-							System.out.println(game.getsize(table));
-							for(Card card: table) {
-								System.out.println(card.toImageFile());
-							}
-							//If less than 12 cards on table and there are cards in the deck, REPLACE the holes. Function takes next 3 cards
-							//in deck and places it in place of the holes
-							if (game.getsize(table) < 12 && !deck.isEmpty()) {
-								game.replaceCards(resp.cards, deck, table);
-							}
-							ArrayList <Card> table1 = new ArrayList<Card>();
-							for (Card card: table) {
-								table1.add(card);
-							}
-							//Send updated table to all players in game
-							TableResponse tr2 = new TableResponse(table1);
-							for(PlayerCom playercom1: this.connected_players) {
-								tr2.send(playercom1.output);
-			    			}
-			    			
-						}
-						else {
-							//If set invalid, only tell client
-							System.out.println("Set invalid");
-							SetSelectResponse ssr = new SetSelectResponse(player, false);
-							/*for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-								ssr.send(entry1.getValue());
-			    			}*/
-							ssr.send(playercom.output);
-						}
-					}
-					//Users also have option to leave game midway, surrender
-					if (obj instanceof LeaveGameMessage) {
-						//Set setcount to -1, punishment for raging
-						player.setcount = -1;
+			}
+			temp1 = temp;
+			System.out.print(answer + "\r");
+			//Check for messages from each player
+			for (PlayerCom playercom: this.connected_players) {
+				Player player = playercom.player;
+				if (playercom.gameToPlayerPipe.peek() == null){
+					playercom.gameToPlayerPipe.put("readObject");
+				}
+				obj = playercom.playerToGamePipe.poll();
+				
+				if (obj instanceof SetSelectMessage) {
+					System.out.println("Received a set");
+					SetSelectMessage resp = (SetSelectMessage) obj;
+					//If set's valid, update set count, send to all players in SetSelectResponse
+					if(game.validateSet(resp.cards)) {
+						System.out.println("Set's valid!");
+						game.updateSetcount(player);
 						
-						//Tell all players client has left game
-						LeaveGameResponse lgr = new LeaveGameResponse(player);
+						SetSelectResponse ssr = new SetSelectResponse(player, true);
 						for(PlayerCom playercom1: this.connected_players) {
-							lgr.send(playercom1.output);
+							ssr.send(playercom1.output);
 		    			}
-						
-						//No need for this as host has no special abilities once the game has started
-						/*
-						if (player == this.hostp) {
-							for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
-								if (entryy.getKey() != player) {
-									this.hostp = entryy.getKey();
-									this.hostInput = entryy.getValue();
-									this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
-									break;
-								}
-							}
-							
-							this.connected_playerInput.remove(player);
-							this.connected_playerOutput.remove(player);
-							
-							ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
-							for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-								chr.send(entry1.getValue());
-			    			}
+						for(Card card: table) {
+							System.out.println(card.toImageFile());
 						}
-						else {
-							this.connected_playerInput.remove(player);
-							this.connected_playerOutput.remove(player);
-						}*/
+						//If set's valid, remove cards from table
+						//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
+						//replaced it's done realistically, like the 3 cards are literally replaced on the board, the cards aren't shifted
+						//around unrealistically. 
 						
-						//If only 1 player in game, if player leaves, close game
-						if (this.connected_players.size() == 1) {
-							this.connected_players.remove(playercom);
-							this.terminate();
-							return;
+						//To put things short, we put a hole attribute in card, and changed removecard to set hole attribute to true
+						game.removeCards(resp.cards, table);
+						System.out.println("Table Size");
+						//Overloaded size function needed as holes need to be manually not accounted for when calculating number of cards
+						//on table
+						System.out.println(game.getsize(table));
+						for(Card card: table) {
+							System.out.println(card.toImageFile());
 						}
-						playercom.gameToPlayerPipe.put("leave");
-						this.connected_players.remove(playercom);
+						//If less than 12 cards on table and there are cards in the deck, REPLACE the holes. Function takes next 3 cards
+						//in deck and places it in place of the holes
+						if (game.getsize(table) < 12 && !deck.isEmpty()) {
+							game.replaceCards(resp.cards, deck, table);
+						}
+						ArrayList <Card> table1 = new ArrayList<Card>();
+						for (Card card: table) {
+							table1.add(card);
+						}
+						//Send updated table to all players in game
+						TableResponse tr2 = new TableResponse(table1);
+						for(PlayerCom playercom1: this.connected_players) {
+							tr2.send(playercom1.output);
+		    			}
+		    			
+					}
+					else {
+						//If set invalid, only tell client
+						System.out.println("Set invalid");
+						SetSelectResponse ssr = new SetSelectResponse(player, false);
+						/*for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+							ssr.send(entry1.getValue());
+		    			}*/
+						ssr.send(playercom.output);
 					}
 				}
+				//Users also have option to leave game midway, surrender
+				if (obj instanceof LeaveGameMessage) {
+					//Set setcount to -1, punishment for raging
+					player.setcount = -1;
+					
+					//Tell all players client has left game
+					LeaveGameResponse lgr = new LeaveGameResponse(player);
+					for(PlayerCom playercom1: this.connected_players) {
+						lgr.send(playercom1.output);
+	    			}
+					
+					//No need for this as host has no special abilities once the game has started
+					/*
+					if (player == this.hostp) {
+						for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
+							if (entryy.getKey() != player) {
+								this.hostp = entryy.getKey();
+								this.hostInput = entryy.getValue();
+								this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
+								break;
+							}
+						}
+						
+						this.connected_playerInput.remove(player);
+						this.connected_playerOutput.remove(player);
+						
+						ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
+						for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
+							chr.send(entry1.getValue());
+		    			}
+					}
+					else {
+						this.connected_playerInput.remove(player);
+						this.connected_playerOutput.remove(player);
+					}*/
+					
+					//If only 1 player in game, if player leaves, close game
+					if (this.connected_players.size() == 1) {
+						this.connected_players.remove(playercom);
+						this.terminate();
+						return;
+					}
+					playercom.gameToPlayerPipe.put("leave");
+					this.connected_players.remove(playercom);
+				}
 			}
-			//Game's over
-			ArrayList <Card> table1 = new ArrayList<Card>();
-			for (Card card: table) {
-				table1.add(card);
-			}
-			
-			//Send final table response
-			TableResponse tr2 = new TableResponse(table1);
-			for(PlayerCom playercom: this.connected_players) {
-				tr2.send(playercom.output);
-			}
-			
-			//Send EndGameResponse to all players in game
-			EndGameResponse eg = new EndGameResponse();
-			for(PlayerCom playercom: this.connected_players) {
-				eg.send(playercom.output);
-			}
-			//Terminate and end game thread
-			this.terminate();
-			//Push Stats to DB
-			return;
 		}
+		//Game's over
+		ArrayList <Card> table1 = new ArrayList<Card>();
+		for (Card card: table) {
+			table1.add(card);
+		}
+		
+		//Send final table response
+		TableResponse tr2 = new TableResponse(table1);
+		for(PlayerCom playercom: this.connected_players) {
+			tr2.send(playercom.output);
+		}
+		
+		//Send EndGameResponse to all players in game
+		EndGameResponse eg = new EndGameResponse();
+		for(PlayerCom playercom: this.connected_players) {
+			eg.send(playercom.output);
+		}
+		//Terminate and end game thread
+		this.terminate();
+		//Push Stats to DB
+		return;
 	}
 	
 	private void terminate() throws IOException {
@@ -321,10 +321,8 @@ public class GameThread implements Runnable {
         Server.connected_rooms.remove(gid);
     }
 	
-	public PlayerCom addNewPlayer(Player p, ObjectInputStream in, ObjectOutputStream out, ArrayBlockingQueue<Object> pgp, ArrayBlockingQueue<String> gpp){
-        PlayerCom playercom = new PlayerCom(p,in,out,pgp,gpp);
+	public void addNewPlayer(PlayerCom playercom){
         connected_players.add(playercom);
-        return playercom;
 	}
 	
 }

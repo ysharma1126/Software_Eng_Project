@@ -23,6 +23,7 @@ public class PlayerThread implements Runnable {
     private ObjectInputStream clientInput = null;
     private ObjectOutputStream clientOutput = null;
     public Thread thread = null;
+    private PlayerCom playercom = null;
     public ArrayBlockingQueue<Object> playerToGamePipe = null;
     public ArrayBlockingQueue<String> gameToPlayerPipe = null;
     
@@ -86,7 +87,8 @@ public class PlayerThread implements Runnable {
 	    			if(authenticate_status) {
 	    				//If authenticated, create player object, add to hashmaps, and enter into the check for lobby messages
 	    				player = new Player(resp.username);
-	    				
+	    				playercom = new PlayerCom(player,clientInput,clientOutput, playerToGamePipe, gameToPlayerPipe);
+		    			
 	    				LoginResponse lr = new LoginResponse(true, player.username);
 	        			lr.send(clientOutput);
 	        			Server.connected_playerInput.put(player, clientInput);
@@ -116,7 +118,7 @@ public class PlayerThread implements Runnable {
 		        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
 		        					if (obj instanceof CreateRoomMessage) {
 		        					    System.out.println("Got create room message");
-		        						GameThread gt = new GameThread(player, clientInput, clientOutput, Server.gamesize, playerToGamePipe, gameToPlayerPipe);
+		        					    GameThread gt = new GameThread(Server.gamesize, playercom);
 		        		    			Thread t = new Thread(gt);
 		        						t.start();
 		        						
@@ -145,7 +147,7 @@ public class PlayerThread implements Runnable {
 		        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
 		        						GameThread gt = Server.connected_rooms.get(resp2.gid);
 		        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-		        						gt.addNewPlayer(player, clientInput, clientOutput, playerToGamePipe, gameToPlayerPipe);
+		        						gt.addNewPlayer(playercom);
 		        						
 		        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
 		        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
