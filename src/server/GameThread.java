@@ -173,15 +173,15 @@ public class GameThread implements Runnable {
 				ArrayList <Card> temp = new ArrayList <Card>();	
 				//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
 				//optimizes testing out game, finding a set is hard
-				/*
 				temp = game.checkSetexists(table);
+				String answer = "";
 				if (temp1 != temp) {
 					for (Card card: temp) {
-						System.out.println(card.toImageFile());
+						answer += card.toImageFile();
 					}
 				}
 				temp1 = temp;
-				*/
+				System.out.print(answer + "\r");
 				//Check for messages from each player
 				for (PlayerCom playercom: this.connected_players) {
 					Player player = playercom.player;
