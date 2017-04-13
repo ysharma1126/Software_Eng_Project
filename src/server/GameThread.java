@@ -153,6 +153,10 @@ public class GameThread implements Runnable {
 		//Game only ends when deck is empty and no set exists on the table
 		ArrayList <Card> temp1 = new ArrayList <Card>();
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
+			// end game if no players left
+			if (connected_players.size() <= 0){
+				return;
+			}
 			//No set on table, if there's no set on table, must be at least 3 cards in deck
 			if (game.checkSetexists(table).size() == 0) {
 				System.out.println("No Set on Table");
@@ -247,7 +251,7 @@ public class GameThread implements Runnable {
 					}
 				}
 				//Users also have option to leave game midway, surrender
-				if (obj instanceof LeaveGameMessage) {
+				else if (obj instanceof LeaveGameMessage) {
 					//Set setcount to -1, punishment for raging
 					player.setcount = -1;
 					
@@ -290,6 +294,10 @@ public class GameThread implements Runnable {
 					}
 					playercom.gameToPlayerPipe.put("leave");
 					this.connected_players.remove(playercom);
+				}
+				// recieve PlayerCom when a player has disconnected
+				else if (obj instanceof PlayerCom){
+					connected_players.remove(obj);
 				}
 			}
 		}

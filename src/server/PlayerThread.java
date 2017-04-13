@@ -26,6 +26,7 @@ public class PlayerThread implements Runnable {
     private PlayerCom playercom = null;
     public ArrayBlockingQueue<Object> playerToGamePipe = null;
     public ArrayBlockingQueue<String> gameToPlayerPipe = null;
+    private volatile Boolean gameStarted = null;
     
     /**
      * Initializes the PlayerThread. Keeps track of the given socket and
@@ -109,6 +110,7 @@ public class PlayerThread implements Runnable {
 	    	        			System.out.println("Initial GamesUpdateResponse");
 	    	        			//Now that client's updated, check for lobby actions
 	    	        			while (true) {
+	    	        				gameStarted = false;
 		        					obj = (Object) clientInput.readObject();
 		        					//if (obj instanceof StatsRequest) {
 		        					//	Stats stat = new Stats(this.getStats());
@@ -134,6 +136,7 @@ public class PlayerThread implements Runnable {
 		        		    			Server.gamesize++;
 		        		    			//Once client in game, put this thread to sleep until game finishes
 		        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
+		        		    			gameStarted=true;
 		        		    			gameMessageHandler();
 		        		    			
 		        		    			//Once playerthread wakes up, get refreshed
@@ -155,6 +158,7 @@ public class PlayerThread implements Runnable {
 		        		    			}
 		        		    			//Once client in game, put this thread to sleep until game finishes
 		        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
+		        		    			gameStarted=true;
 		        		    			gameMessageHandler();
 		        		    			
 		        		    			//Once playerthread wakes up, get refreshed
@@ -210,6 +214,9 @@ public class PlayerThread implements Runnable {
 				// DISCONNECT
 				e.printStackTrace();
 				this.terminate();
+				if(gameStarted){
+					removePlayerFromGame();
+				}
 				return;
 	    	}
 			catch (SQLException e) {
@@ -280,6 +287,14 @@ public class PlayerThread implements Runnable {
     	}
     	return authenticate_status;
     }*/
+    
+    private void removePlayerFromGame(){
+    	try{
+    		playerToGamePipe.put(playercom);
+    	} catch(InterruptedException e){
+    		e.printStackTrace();
+    	}
+    }
     
     /**
      * Terminates user session by closing the socket and removing player from connected_player hashmaps
