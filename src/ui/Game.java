@@ -135,7 +135,6 @@ public class Game extends BorderPane {
 
   public void handleLeaveGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveGameResponse resp) {
-    username_to_score_field.get(resp.uname).setText("Surrendered");
     
     if (resp.uname == Launcher.username)
     {
@@ -149,6 +148,7 @@ public class Game extends BorderPane {
       });
       center_pane.add(go_back, 0, 0); 
     }
+    username_to_score_field.get(resp.uname).setText("Surrendered");
   }
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
