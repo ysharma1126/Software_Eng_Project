@@ -244,10 +244,12 @@ public class Room extends VBox {
         if (playername.equals(owner.username)) {
           player.setHost(true);
         }
+        players.add(playername);
         user_data.add(player);
       }
       // Add yourself
       user_data.add(new UserData(Launcher.username));
+      players.add(Launcher.username);
       this.is_host = false;
     }
 
