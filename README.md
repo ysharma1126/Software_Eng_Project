@@ -17,7 +17,8 @@ Not punishing client disconnects in game (SERVER)
 
 Not handling user signup failing because already in DB (SERVER)
 
-Surrender button isnt functional (CLIENT)
+Non-host clients do not get a scoreboard because of null player list for opengame (CLIENT)
+  - Surrender button isnt functional (CLIENT)
 
 When host leaves, the host is changed, that's updated on the lobby UI but that isnt updated on the room UI  (CLIENT)
 
