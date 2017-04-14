@@ -285,10 +285,11 @@ public class GameThread implements Runnable {
 					if (this.connected_players.size() == 1) {
 						this.connected_players.remove(playercom);
 						this.terminate();
+						playercom.gameToPlayerPipe.put("leave");
 						return;
 					}
-					playercom.gameToPlayerPipe.put("leave");
 					this.connected_players.remove(playercom);
+					playercom.gameToPlayerPipe.put("leave");
 				}
 				// recieve PlayerCom when a player has disconnected
 				else if (obj instanceof PlayerCom){
@@ -311,6 +312,8 @@ public class GameThread implements Runnable {
 		//Send EndGameResponse to all players in game
 		EndGameResponse eg = new EndGameResponse();
 		for(PlayerCom playercom: this.connected_players) {
+			this.connected_players.remove(playercom);
+			playercom.gameToPlayerPipe.put("leave");
 			eg.send(playercom.output);
 		}
 		//Terminate and end game thread
