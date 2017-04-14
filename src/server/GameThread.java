@@ -155,6 +155,7 @@ public class GameThread implements Runnable {
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 			// end game if no players left
 			if (connected_players.size() <= 0){
+				this.terminate();
 				return;
 			}
 			//No set on table, if there's no set on table, must be at least 3 cards in deck
@@ -258,31 +259,6 @@ public class GameThread implements Runnable {
 						lgr.send(playercom1.output);
 	    			}
 					
-					//No need for this as host has no special abilities once the game has started
-					/*
-					if (player == this.hostp) {
-						for (Map.Entry<Player, ObjectInputStream> entryy: this.connected_playerInput.entrySet()) {
-							if (entryy.getKey() != player) {
-								this.hostp = entryy.getKey();
-								this.hostInput = entryy.getValue();
-								this.hostOutput = this.connected_playerOutput.get(entryy.getKey());
-								break;
-							}
-						}
-						
-						this.connected_playerInput.remove(player);
-						this.connected_playerOutput.remove(player);
-						
-						ChangedHostResponse chr = new ChangedHostResponse(this.hostp);
-						for(Map.Entry<Player, ObjectOutputStream> entry1: this.connected_playerOutput.entrySet()) {
-							chr.send(entry1.getValue());
-		    			}
-					}
-					else {
-						this.connected_playerInput.remove(player);
-						this.connected_playerOutput.remove(player);
-					}*/
-					
 					//If only 1 player in game, if player leaves, close game
 					if (this.connected_players.size() == 1) {
 						this.connected_players.remove(playercom);
@@ -294,8 +270,21 @@ public class GameThread implements Runnable {
 					playercom.gameToPlayerPipe.put("leave");
 				}
 				// receive PlayerCom when a player has disconnected
+				// similar to leavegameMessage
 				else if (obj instanceof PlayerCom){
-					connected_players.remove(obj);
+					PlayerCom surrendered_player = (PlayerCom) obj;
+					
+					//remove player since the socket is already closed
+					connected_players.remove(surrendered_player);
+					
+					//Set setcount to -1, punishment for raging
+					surrendered_player.player.setcount = -1;
+					
+					//Tell all players client has left game
+					LeaveGameResponse lgr = new LeaveGameResponse(surrendered_player.player);
+					for(PlayerCom playercom1: this.connected_players) {
+						lgr.send(playercom1.output);
+	    			}
 				}
 			}
 		}
