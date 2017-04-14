@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -291,13 +293,23 @@ public class GameThread implements Runnable {
 					this.connected_players.remove(playercom);
 					playercom.gameToPlayerPipe.put("leave");
 				}
-				// recieve PlayerCom when a player has disconnected
+				// receive PlayerCom when a player has disconnected
 				else if (obj instanceof PlayerCom){
 					connected_players.remove(obj);
 				}
 			}
 		}
+		
 		//Game's over
+		
+		// make sure every player is in readObject state
+		for (PlayerCom playercom: this.connected_players) {
+			if (playercom.gameToPlayerPipe.peek() == null){
+				playercom.gameToPlayerPipe.put("readObject");
+			}
+		}
+
+		//resolves not being able to send original table 
 		ArrayList <Card> table1 = new ArrayList<Card>();
 		for (Card card: table) {
 			table1.add(card);
@@ -316,8 +328,25 @@ public class GameThread implements Runnable {
 			playercom.gameToPlayerPipe.put("leave");
 			eg.send(playercom.output);
 		}
+		
+		// make sure we hear a response from ALL players before proceeding
+		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
+		while( responded_players.size() < connected_players.size()){
+			for(PlayerCom playercom: this.connected_players){
+				if (playercom.playerToGamePipe.peek() != null){
+					responded_players.add(playercom);
+				}
+			}
+		}
+		
+		//tell all players to leave
+		for (PlayerCom playercom: this.connected_players) {
+			playercom.gameToPlayerPipe.put("leave");
+		}
+		
 		//Terminate and end game thread
 		this.terminate();
+
 		//Push Stats to DB
 		return;
 
