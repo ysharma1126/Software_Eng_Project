@@ -262,7 +262,7 @@ public class Launcher extends Application {
 
               if(obj instanceof LeaveGameResponse) {
                 LeaveGameResponse lg_resp = (LeaveGameResponse) obj;
-                Platform.runLater(() -> ((Game) current_page).handleLeaveGameResponse(lg_resp));    
+                Platform.runLater(() -> ((Game) current_page).handleLeaveGameResponse(primaryStage, outToServer, inFromServer, lg_resp));    
               }
               
               if (obj instanceof InitialCardsResponse) {

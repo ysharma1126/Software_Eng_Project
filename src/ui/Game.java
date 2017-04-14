@@ -21,9 +21,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import message.EndGameMessage;
 import message.EndGameResponse;
 import message.InitialCardsMessage;
 import message.InitialCardsResponse;
+import message.LeaveGameMessage;
 import message.LeaveGameResponse;
 import message.NewCardsResponse;
 import message.SetSelectMessage;
@@ -131,8 +133,22 @@ public class Game extends BorderPane {
     }
   }
 
-  public void handleLeaveGameResponse(LeaveGameResponse resp) {
+  public void handleLeaveGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
+      ObjectInputStream inFromServer, LeaveGameResponse resp) {
     username_to_score_field.get(resp.uname).setText("Surrendered");
+    
+    if (resp.uname == Launcher.username)
+    {
+      center_pane.getChildren().clear();
+      Button go_back = new Button("Back to Lobby");
+      go_back.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent e) {
+          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+        }
+      });
+      center_pane.add(go_back, 0, 0); 
+    }
   }
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -146,6 +162,8 @@ public class Game extends BorderPane {
       }
     });
     center_pane.add(go_back, 0, 0);
+    EndGameMessage e_msg = new EndGameMessage();
+    e_msg.send(outToServer);
   }
 
   public void handleInitialCardsResponse(ObjectOutputStream outToServer,
@@ -213,8 +231,17 @@ public class Game extends BorderPane {
 
   public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer,
       ArrayList<String> users) {
-    ToolBar toolbar = new ToolBar(new Button("Surrender"), new Button("Change Password"),
-        new Button("Player Statistics"));
+    
+    Button surrender_btn = new Button("Surrender");
+    ToolBar toolbar = new ToolBar(surrender_btn);
+    surrender_btn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        LeaveGameMessage l_mesg = new LeaveGameMessage(Launcher.username);
+        l_mesg.send(outToServer);
+      }
+      
+    });
 
     VBox right_detail_pane = new VBox();
     for (String user : users) {
