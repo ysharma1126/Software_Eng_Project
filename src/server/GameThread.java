@@ -203,7 +203,7 @@ public class GameThread implements Runnable {
 							ssr.send(playercom1.output);
 		    			}
 						for(Card card: table) {
-							System.out.println(card.toImageFile());
+							System.out.println(card.getDescription());
 						}
 						//If set's valid, remove cards from table
 						//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
@@ -217,7 +217,7 @@ public class GameThread implements Runnable {
 						//on table
 						System.out.println(game.getsize(table));
 						for(Card card: table) {
-							System.out.println(card.toImageFile());
+							System.out.println(card.getDescription());
 						}
 						//If less than 12 cards on table and there are cards in the deck, REPLACE the holes. Function takes next 3 cards
 						//in deck and places it in place of the holes
