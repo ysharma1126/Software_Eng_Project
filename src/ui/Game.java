@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -53,7 +54,7 @@ public class Game extends BorderPane {
   private volatile HashMap<Location, Boolean> location_to_click_status =
       new HashMap<Location, Boolean>();
   private volatile HashSet<Location> locations_clicked = new HashSet<Location>();
-  private volatile HashMap<String, Text> username_to_score_field = new HashMap<String, Text>();
+  private volatile HashMap<String, BorderPane> username_to_score_field = new HashMap<String, BorderPane>();
 
 
   public void handleSetResponse(SetSelectResponse resp) {
@@ -66,8 +67,8 @@ public class Game extends BorderPane {
       if (username == Launcher.username) {
         set_correct.setText("Correct!");
       }
-      username_to_score_field.get(resp.username)
-          .setText(resp.username + ": " + Integer.toString(resp.setcount));
+      ((Label) username_to_score_field.get(resp.username).getRight())
+          .setText(Integer.toString(resp.setcount));
     }
   }
 
@@ -155,7 +156,9 @@ public class Game extends BorderPane {
       });
       center_pane.add(go_back, 0, 0); 
     }
-    username_to_score_field.get(resp.uname).setText("Surrendered");
+    //username_to_score_field.get(resp.uname).setText("Surrendered");
+    ((Label) username_to_score_field.get(resp.uname).getRight())
+    .setText("SURRENDERED");
   }
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
@@ -278,10 +281,17 @@ public class Game extends BorderPane {
     
     
     for (String user : users) {
-      Text text = new Text(user);
-      text.getStyleClass().add("scoreboard-entry");
-      scoreboard_body.getChildren().add(text);
-      username_to_score_field.put(user, text);
+      BorderPane scoreboard_entry = new BorderPane();
+      Label username = new Label(user);
+      Label score = new Label("0");
+      
+      scoreboard_entry.setLeft(username);
+      scoreboard_entry.setRight(score);
+      //Text text = new Text(user);
+      username.getStyleClass().add("scoreboard-entry");
+      score.getStyleClass().add("scoreboard-entry");
+      scoreboard_body.getChildren().add(scoreboard_entry);
+      username_to_score_field.put(user, scoreboard_entry);
     }
     
     scoreboard_wrapper.getStyleClass().add("scoreboard-wrapper");

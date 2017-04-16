@@ -105,6 +105,6 @@
 }
 
 .scoreboard-entry {
-	-fx-font: "Montserrat";
-	-fx-fill: #ffffff;
+	-fx-font-family: "Montserrat";
+	-fx-text-fill: #ffffff;
 }
