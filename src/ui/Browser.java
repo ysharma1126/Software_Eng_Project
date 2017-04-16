@@ -177,7 +177,7 @@ public class Browser extends VBox {
 
     content = new GridPane();
 
-    content.setGridLinesVisible(true);
+    content.setGridLinesVisible(false);
     content.setHgap(30);
     content.setVgap(30);
     content.setPadding(new Insets(45, 10, 45, 10));
@@ -273,7 +273,7 @@ public class Browser extends VBox {
 
     // User info
     GridPane userinfo = new GridPane();
-    userinfo.setGridLinesVisible(true);
+    userinfo.setGridLinesVisible(false);
     userinfo.setPrefWidth(230);
     userinfo.setPrefHeight(120);
     userinfo.setHgap(10);
@@ -345,7 +345,8 @@ public class Browser extends VBox {
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);
-
+    this.getStyleClass().add("browser");
+    
     game_tbl.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
@@ -364,7 +365,7 @@ public class Browser extends VBox {
 
     content = new GridPane();
 
-    content.setGridLinesVisible(true);
+    content.setGridLinesVisible(false);
     content.setHgap(30);
     content.setVgap(30);
     content.setPadding(new Insets(45, 10, 45, 10));
@@ -438,9 +439,10 @@ public class Browser extends VBox {
     content.add(newgame_btn, 0, 2, 1, 1);
 
     // Create refresh button
-    Button refresh_btn = new Button(Character.toString((char) 0xf1b9));
+    Button refresh_btn = new Button("REFRESH");
+    //Button refresh_btn = new Button(Character.toString((char) 0xf1b9));
     refresh_btn.getStyleClass().add("btn-refresh");
-    refresh_btn.setPrefWidth(60);
+    //refresh_btn.setPrefWidth(60);
     refresh_btn.setPrefHeight(60);
     content.add(refresh_btn, 2, 2, 1, 1);
     GridPane.setHalignment(refresh_btn, HPos.RIGHT);
@@ -454,7 +456,7 @@ public class Browser extends VBox {
 
     // User info
     GridPane userinfo = new GridPane();
-    userinfo.setGridLinesVisible(true);
+    userinfo.setGridLinesVisible(false);
     userinfo.setPrefWidth(230);
     userinfo.setPrefHeight(120);
     userinfo.setHgap(10);
@@ -514,7 +516,6 @@ public class Browser extends VBox {
     content.add(user_tbl, 3, 1, 1, 2);
 
     this.getChildren().addAll(content);
-    this.getStyleClass().add("browser");
     this.setPadding(new Insets(0, 40, 0, 40));
 
 

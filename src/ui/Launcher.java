@@ -57,6 +57,12 @@ public class Launcher extends Application {
     Login login = new Login(primaryStage, outToServer, inFromServer);
     current_page = login;
     Scene scene = new Scene(login, 800, 600);
+    scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
+    scene.getStylesheets().add(
+        "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
+    scene.getStylesheets().add("ui/login.css");
+    primaryStage.setTitle("SET");
+    primaryStage.setResizable(false);
     primaryStage.setScene(scene);
     primaryStage.show();
   }
@@ -83,7 +89,7 @@ public class Launcher extends Application {
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add(
         "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
-    scene.getStylesheets().add("ui/style.css");
+    scene.getStylesheets().add("ui/browser.css");
     primaryStage.setResizable(false);
     primaryStage.setScene(scene);
     System.out.println(primaryStage.getScene());
@@ -111,7 +117,7 @@ public class Launcher extends Application {
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add(
         "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
-    scene.getStylesheets().add("ui/style.css");
+    scene.getStylesheets().add("ui/room.css");
     primaryStage.setTitle("SET");
     primaryStage.setResizable(false);
     primaryStage.setScene(scene);
@@ -124,7 +130,7 @@ public class Launcher extends Application {
     Game game = new Game(primaryStage, outToServer, inFromServer, users);
     current_page = game;
     System.out.println("openGame 2");
-    Scene scene = new Scene(game, 1200, 900);
+    Scene scene = new Scene(game, 1280, 720);
     System.out.println("openGame 3");
     primaryStage.setScene(scene);
     System.out.println("openGame 4");
@@ -135,7 +141,13 @@ public class Launcher extends Application {
       ObjectInputStream inFromServer, ArrayList<String> users) {
     Game game = new Game(primaryStage, outToServer, inFromServer, users);
     current_page = game;
-    Scene scene = new Scene(game, 1200, 900);
+    Scene scene = new Scene(game, 1280, 800);
+    scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
+    scene.getStylesheets().add(
+        "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
+    scene.getStylesheets().add("ui/game.css");
+    primaryStage.setTitle("SET");
+    primaryStage.setResizable(false);
     primaryStage.setScene(scene);
     primaryStage.show();
   }

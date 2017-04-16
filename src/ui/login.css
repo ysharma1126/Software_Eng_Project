@@ -1,0 +1,67 @@
+.root {
+	-fx-font-family: "Montserrat";
+	
+}
+
+
+.login {
+	-fx-background-color: #efebe9;
+}
+
+.title {
+	-fx-font-size: 84;
+	-fx-font-weight: bold;
+	/* -fx-font-style: italic; */
+	-fx-text-fill: #37474f;
+}
+
+.title .text {
+	-fx-font-smoothing-type: gray;
+}
+
+.field-label {
+	-fx-font-size: 12;
+/* 	-fx-font-weight: bold; */
+	/* -fx-font-style: italic; */
+	-fx-text-fill: #000000;
+}
+
+.field-label .text {
+	-fx-font-smoothing-type: gray;
+}
+
+.btn-signup {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 14;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f4511e;
+	-fx-border-radius: 2;
+	-fx-background-radius: 2;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 8 12 8 12;
+}
+
+.btn-signup: hover {
+	-fx-background-color: #ff5722;
+}
+
+.btn-signin {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 14;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #009688;
+	-fx-border-radius: 2;
+	-fx-background-radius: 2;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 8 12 8 12;
+}
+
+.btn-signin: hover {
+	-fx-background-color: #26a69a;
+}

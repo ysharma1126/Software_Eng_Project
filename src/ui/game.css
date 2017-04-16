@@ -1,0 +1,110 @@
+.root {
+	-fx-font-family: "Montserrat";
+}
+
+.game {
+	-fx-background-color: #efebe9;
+}
+
+.toolbar {
+	-fx-background-color: #90a4ae;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 20px;
+}
+
+.status {
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+}
+
+.btn-surrender {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f44336;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+
+.btn-surrender: hover {
+	-fx-background-color: #ef5350;
+}
+
+.btn-set {
+	-fx-font-family: "Montserrat";
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #8bc34a;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
+
+.btn-set: hover {
+	-fx-background-color: #9ccc65;
+}
+
+.card {
+/* 	-fx-font-family: "Montserrat"; */
+/* 	-fx-font-size: 20; */
+/* 	-fx-font-weight: bold; */
+/* 	-fx-font-style: italic; */
+/* 	-fx-text-fill: #ffffff; */
+	-fx-background-color: #FFFFFF;
+	-fx-border-radius: 10;
+	-fx-background-radius: 10;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 60 40 60 40;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+}
+
+.card: hover {
+	-fx-background-color: #f1f8e9;
+}
+.card-selected {
+	-fx-background-color: #fff8e1;
+}
+
+
+.scoreboard-wrapper {
+	-fx-padding: 50px;
+	
+}
+
+.scoreboard-body {
+	-fx-background-color: rgba(0,0,0,0.3);
+	-fx-padding: 10px;
+	-fx-font-size: 16;
+	-fx-text-fill: #ffffff;
+}
+
+.scoreboard-title {
+	-fx-background-color: rgba(0,0,0,0.5);
+	-fx-padding: 10px;
+	-fx-font-size: 16;
+	-fx-font-weight: bold;
+	-fx-text-fill: #ffffff;
+}
+
+.scoreboard-title .text {
+	-fx-font-smoothing-type: gray;
+}
+
+.scoreboard-entry {
+	-fx-font: "Montserrat";
+	-fx-fill: #ffffff;
+}

@@ -9,11 +9,16 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -54,12 +59,12 @@ public class Game extends BorderPane {
   public void handleSetResponse(SetSelectResponse resp) {
     if (!resp.is_valid) {
       System.out.println("Incorrect");
-      set_correct.setText("Incorrect");
+      set_correct.setText("Incorrect!");
     } else {
       String username = resp.username;
       System.out.println(resp.username + " Got a set correct");
       if (username == Launcher.username) {
-        set_correct.setText("Correct");
+        set_correct.setText("Correct!");
       }
       username_to_score_field.get(resp.username)
           .setText(resp.username + ": " + Integer.toString(resp.setcount));
@@ -85,21 +90,23 @@ public class Game extends BorderPane {
 
     for (Card card : t_resp.table1) {
       if (card.hole == false) {
-        Rectangle setCard = new Rectangle();
+        Button setCard = new Button();
+        setCard.getStyleClass().add("card");
         String imagesrc = card.toImageFile();
         imagesrc = "ui/resources/images/cards/" + imagesrc;
         // System.out.println(imagesrc);
         System.out.println(card.randomnum);
         Image image = new Image(imagesrc);
-        ImagePattern imagePattern = new ImagePattern(image);
-        setCard.setHeight(200);
-        setCard.setWidth(100);
-        setCard.setFill(imagePattern);
-        setCard.setArcHeight(20);
-        setCard.setArcWidth(20);
-        setCard.setStrokeType(StrokeType.INSIDE);
-        setCard.setStroke(Color.web("blue", 0.30));
-        setCard.setStrokeWidth(0);
+        setCard.setGraphic(new ImageView(image));
+        //ImagePattern imagePattern = new ImageView(image);
+//        setCard.setHeight(200);
+//        setCard.setWidth(100);
+//        setCard.setFill(imagePattern);
+//        setCard.setArcHeight(20);
+//        setCard.setArcWidth(20);
+//        setCard.setStrokeType(StrokeType.INSIDE);
+//        setCard.setStroke(Color.web("blue", 0.30));
+//        setCard.setStrokeWidth(0);
         // System.out.println("Colindex: " + colindex);
         // System.out.println("Rowindex: " + rowindex);
         // System.out.println("");
@@ -112,10 +119,10 @@ public class Game extends BorderPane {
           @Override
           public void handle(MouseEvent t) {
             if (locations_clicked.contains(location) == false) {
-              setCard.setStrokeWidth(4);
+              setCard.getStyleClass().add("card-selected");
               locations_clicked.add(location);
             } else if (locations_clicked.contains(location) == true) {
-              setCard.setStrokeWidth(0);
+              setCard.getStyleClass().remove("card-selected");
               locations_clicked.remove(location);
             }
 
@@ -175,16 +182,12 @@ public class Game extends BorderPane {
         imagesrc = "ui/resources/images/cards/" + imagesrc;
         System.out.println(imagesrc);
         Image image = new Image(imagesrc);
-        ImagePattern imagePattern = new ImagePattern(image);
-        Rectangle setCard = new Rectangle();
-        setCard.setHeight(200);
-        setCard.setWidth(100);
-        setCard.setFill(imagePattern);
-        setCard.setArcHeight(20);
-        setCard.setArcWidth(20);
-        setCard.setStrokeType(StrokeType.INSIDE);
-        setCard.setStroke(Color.web("blue", 0.30));
-        setCard.setStrokeWidth(0);
+
+        Button setCard = new Button();
+        setCard.getStyleClass().add("card");
+        // System.out.println(imagesrc);
+        System.out.println(card.randomnum);
+        setCard.setGraphic(new ImageView(image));
         center_pane.add(setCard, colindex, rowindex);
         Location location = new Location(rowindex, colindex);
         location_to_card.put(location, card);
@@ -194,10 +197,10 @@ public class Game extends BorderPane {
           @Override
           public void handle(MouseEvent t) {
             if (locations_clicked.contains(location) == false) {
-              setCard.setStrokeWidth(4);
+              setCard.getStyleClass().add("card-selected");
               locations_clicked.add(location);
             } else if (locations_clicked.contains(location) == true) {
-              setCard.setStrokeWidth(0);
+              setCard.getStyleClass().remove("card-selected");
               locations_clicked.remove(location);
             }
 
@@ -231,9 +234,33 @@ public class Game extends BorderPane {
 
   public Game(Stage primaryStage, ObjectOutputStream outToServer, ObjectInputStream inFromServer,
       ArrayList<String> users) {
+    this.getStyleClass().add("game");
     
-    Button surrender_btn = new Button("Surrender");
-    ToolBar toolbar = new ToolBar(surrender_btn);
+    Button surrender_btn = new Button("SURRENDER");
+    surrender_btn.getStyleClass().add("btn-surrender");
+    surrender_btn.setPrefWidth(200);
+    Button set_btn = new Button("SET");
+    set_btn.getStyleClass().add("btn-set");
+    set_btn.setPrefWidth(200);
+    set_correct = new Text("");
+    set_correct.getStyleClass().add("status");
+
+
+    set_btn.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        submit_cards(outToServer, inFromServer);
+      }
+    });
+    
+    final Pane leftSpacer = new Pane();
+    HBox.setHgrow(leftSpacer, Priority.SOMETIMES);
+
+    final Pane rightSpacer = new Pane();
+    HBox.setHgrow(rightSpacer, Priority.SOMETIMES);
+
+    
+    ToolBar toolbar = new ToolBar(surrender_btn, leftSpacer, set_correct, rightSpacer, set_btn);
     surrender_btn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent e) {
@@ -242,41 +269,47 @@ public class Game extends BorderPane {
       }
       
     });
+    toolbar.getStyleClass().add("toolbar");
 
-    VBox right_detail_pane = new VBox();
+    Label scoreboard_title = new Label("SCORE");
+    scoreboard_title.setAlignment(Pos.CENTER);
+    VBox scoreboard_wrapper = new VBox();
+    VBox scoreboard_body = new VBox();
+    
+    
     for (String user : users) {
       Text text = new Text(user);
-      right_detail_pane.getChildren().add(text);
+      text.getStyleClass().add("scoreboard-entry");
+      scoreboard_body.getChildren().add(text);
       username_to_score_field.put(user, text);
     }
+    
+    scoreboard_wrapper.getStyleClass().add("scoreboard-wrapper");
+    scoreboard_wrapper.getChildren().add(scoreboard_title);
+    scoreboard_wrapper.getChildren().add(scoreboard_body);
+    scoreboard_title.setPrefWidth(240);
+    scoreboard_body.setPrefWidth(240);
+    scoreboard_title.getStyleClass().add("scoreboard-title");
+    scoreboard_body.getStyleClass().add("scoreboard-body");
+    
+
+    
     /*
      * Add in user score boxes to right detail pane
      */
 
     center_pane = new GridPane();
+    center_pane.setGridLinesVisible(false);
     center_pane.setAlignment(Pos.CENTER);
-    // center_pane.setHgap(20);
-    // center_pane.setVgap(20);
+    //center_pane.setHgap(30);
+    //center_pane.setVgap(20);
 
-    VBox left_detail_pane = new VBox();
-    Button set_btn = new Button("Set!");
-    set_correct = new Text("");
 
-    left_detail_pane.getChildren().add(set_btn);
-    left_detail_pane.getChildren().add(set_correct);
-    left_detail_pane.setMargin(set_btn, new Insets(10, 10, 10, 10));
 
-    set_btn.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent e) {
-        submit_cards(outToServer, inFromServer);
-      }
-    });
-
-    this.setTop(toolbar);
+    this.setBottom(toolbar);
     this.setCenter(center_pane);
-    this.setLeft(left_detail_pane);
-    this.setRight(right_detail_pane);
+    //this.setLeft(left_detail_pane);
+    this.setRight(scoreboard_wrapper);
     this.setMargin(center_pane, new Insets(10, 10, 10, 10));
 
     InitialCardsMessage start_msg = new InitialCardsMessage(Launcher.username);

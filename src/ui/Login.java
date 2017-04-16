@@ -2,6 +2,7 @@ package ui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import message.Sendable;
 import message.SetSelectResponse;
@@ -73,30 +75,39 @@ public class Login extends GridPane {
     this.setHgap(10);
     this.setVgap(10);
     this.setPadding(new Insets(25, 25, 25, 25));
+    this.getStyleClass().add("login");
     
-    Text scenetitle = new Text("Game of Set");
+    Label scenetitle = new Label("SET");
+    GridPane.setHalignment(scenetitle, HPos.CENTER);
     this.add(scenetitle, 0, 0, 2, 1);
+    scenetitle.getStyleClass().add("title");
     
-    Label userName = new Label("User Name:");
+    Label userName = new Label("USERNAME");
     this.add(userName, 0, 1);
+    userName.getStyleClass().add("field-label");
     
     TextField userTextField = new TextField();
     this.add(userTextField, 1, 1);
+    userTextField.getStyleClass().add("field-input");
     
-    Label pw = new Label("Password:");
+    Label pw = new Label("PASSWORD");
     this.add(pw, 0, 2);
+    pw.getStyleClass().add("field-label");
       
     PasswordField pwBox = new PasswordField();
     this.add(pwBox, 1, 2);  
+    pwBox.getStyleClass().add("field-input");
     
     
-    Button sign_up_btn = new Button("Sign up");
+    Button sign_up_btn = new Button("SIGN UP");
+    sign_up_btn.getStyleClass().add("btn-signup");
     HBox hbSignUpBtn = new HBox(10);
     hbSignUpBtn.setAlignment(Pos.BOTTOM_LEFT);
     hbSignUpBtn.getChildren().add(sign_up_btn);
     this.add(hbSignUpBtn, 0, 4);
     
-    Button sign_in_btn = new Button("Sign in");
+    Button sign_in_btn = new Button("SIGN IN");
+    sign_in_btn.getStyleClass().add("btn-signin");
     HBox hbBtn = new HBox(10);
     hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
     hbBtn.getChildren().add(sign_in_btn);
@@ -155,10 +166,13 @@ public class Login extends GridPane {
     
     
     Button sign_up_btn = new Button("Sign up");
+    
     HBox hbSignUpBtn = new HBox(10);
+    
     hbSignUpBtn.setAlignment(Pos.BOTTOM_LEFT);
     hbSignUpBtn.getChildren().add(sign_up_btn);
     this.add(hbSignUpBtn, 1, 4);
+    
     
     Button sign_in_btn = new Button("Sign in");
     HBox hbBtn = new HBox(10);
@@ -178,9 +192,11 @@ public class Login extends GridPane {
     sign_in_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
       public void handle(ActionEvent e) {
-        Launcher.openGame(primaryStage, users);
+        //Launcher.openGame(primaryStage, users);
       }
     });
+    
+    
   }
   
 }

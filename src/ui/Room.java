@@ -139,7 +139,7 @@ public class Room extends VBox {
     // menubar = new MenuBar();
     content = new GridPane();
 
-    content.setGridLinesVisible(true);
+    content.setGridLinesVisible(false);
     content.setHgap(30);
     content.setVgap(30);
     content.setPadding(new Insets(45, 10, 45, 10));
@@ -227,7 +227,7 @@ public class Room extends VBox {
       Long gid, Player owner, Set<Player> playerlist) {
 
     this.gid = gid;
-    
+    this.getStyleClass().add("room");
     /*** You're the room creator ***/
     if (owner == null) {
       players.add(Launcher.username);
@@ -256,7 +256,7 @@ public class Room extends VBox {
     // menubar = new MenuBar();
     content = new GridPane();
 
-    content.setGridLinesVisible(true);
+    content.setGridLinesVisible(false);
     content.setHgap(30);
     content.setVgap(30);
     content.setPadding(new Insets(45, 10, 45, 10));
@@ -298,7 +298,7 @@ public class Room extends VBox {
 
     // Leave game button
     Button leavegame_btn = new Button("LEAVE");
-    leavegame_btn.getStyleClass().add("btn-newgame");
+    leavegame_btn.getStyleClass().add("btn-leaveroom");
     leavegame_btn.setPrefHeight(60);
     leavegame_btn.setOnAction(new EventHandler<ActionEvent>() {
       @Override
@@ -313,7 +313,7 @@ public class Room extends VBox {
     // Start game button
     
     startgame_btn = new Button("START");
-    startgame_btn.getStyleClass().add("btn-newgame");
+    startgame_btn.getStyleClass().add("btn-startgame");
     startgame_btn.setPrefHeight(60);
     content.add(startgame_btn, 2, 2, 1, 1);
     GridPane.setHalignment(startgame_btn, HPos.RIGHT);
@@ -333,7 +333,6 @@ public class Room extends VBox {
     }
 
     this.getChildren().addAll(content);
-    this.getStyleClass().add("browser");
     this.setPadding(new Insets(0, 40, 0, 40));
 
 //    task = new Task<Void>() {
