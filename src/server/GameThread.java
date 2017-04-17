@@ -106,7 +106,8 @@ public class GameThread implements Runnable {
 						//Tell all players client leaving
 						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
 						for(PlayerCom playercom1: this.connected_players) {
-		    				lrr.send(playercom1.output);
+							if (!surrendered_player.player.username.equals(playercom1.player.username))
+								lrr.send(playercom1.output);
 		    			}
 						
 						//remove player since the socket is already closed
