@@ -292,14 +292,14 @@ public class GameThread implements Runnable {
 		}
 		
 		//Game's over
-		
+		System.out.println("Game's over");
 		// make sure every player is in readObject state
 		for (PlayerCom playercom: this.connected_players) {
 			if (playercom.gameToPlayerPipe.peek() == null){
 				playercom.gameToPlayerPipe.put("readObject");
 			}
 		}
-
+		System.out.println("Everyone's in readObject state");
 		//resolves not being able to send original table 
 		ArrayList <Card> table1 = new ArrayList<Card>();
 		for (Card card: table) {
@@ -319,7 +319,7 @@ public class GameThread implements Runnable {
 			playercom.gameToPlayerPipe.put("leave");
 			eg.send(playercom.output);
 		}
-		
+		System.out.println("Sent EndGameResponse");
 		// make sure we hear a response from ALL players before proceeding
 		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
 		while( responded_players.size() < connected_players.size()){
@@ -329,15 +329,15 @@ public class GameThread implements Runnable {
 				}
 			}
 		}
-		
+		System.out.println("Heard Response from all players");
 		//tell all players to leave
 		for (PlayerCom playercom: this.connected_players) {
 			playercom.gameToPlayerPipe.put("leave");
 		}
-		
+		System.out.println("All players told to leave");
 		//Terminate and end game thread
 		this.terminate();
-
+		System.out.println("Terminated");
 		//Push Stats to DB
 		return;
 
