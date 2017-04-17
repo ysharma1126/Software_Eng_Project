@@ -23,10 +23,14 @@ On endgame, setselectmessage (or any message) needs to be sent to server for ser
 
 Refresh response sent, but need to click back to lobby to get back. Lobby isn't actually refreshed, you have to click refresh again for lobby to refresh and shit to work (CLIENT)
 
-Client disconnect is handled for in lobby, and in game, but not in room. (SERVER/CLIENT)
+Client disconnect is handled for in lobby, but not in room. (SERVER/CLIENT)
   - Tried to fix it, however those in lobby still see the room, even if 0/10 in it.
   - Cant create room after leaving room, even though sent createroomresponse
   - If in room, cant do shit if host disconnects. Server sends no response
+  
+Leave Game and Client disconnect not working in game (SERVER)
+  - Leave Game, other player sees surrendered but don't return back to lobby
+  - Client disconnect, other client doesnt see shit and nothing works
 
 
 
