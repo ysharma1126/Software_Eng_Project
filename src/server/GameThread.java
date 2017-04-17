@@ -229,9 +229,6 @@ public class GameThread implements Runnable {
 							game.replaceCards(resp.cards, deck, table);
 						}
 						//System.out.println(game.getsize(table));
-						for(Card card: table) {
-							System.out.println(card.getDescription());
-						}
 						ArrayList <Card> table1 = new ArrayList<Card>();
 						for (Card card: table) {
 							table1.add(card);
