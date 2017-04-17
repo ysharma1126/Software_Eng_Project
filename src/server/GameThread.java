@@ -179,12 +179,12 @@ public class GameThread implements Runnable {
 			ArrayList <Card> temp = new ArrayList <Card>();	
 			//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
 			//optimizes testing out game, finding a set is hard
-			temp = game.checkSetexists(table);
+			/*temp = game.checkSetexists(table);
 			String answer = "";
 			for (Card card: temp) {
 				answer += card.getDescription() + "|";
 			}
-			System.out.print(answer + "\r");
+			System.out.print(answer + "\r");*/
 			//Check for messages from each player
 			for (PlayerCom playercom: this.connected_players) {
 				Player player = playercom.player;
@@ -205,9 +205,9 @@ public class GameThread implements Runnable {
 						for(PlayerCom playercom1: this.connected_players) {
 							ssr.send(playercom1.output);
 		    			}
-						for(Card card: table) {
+						/*for(Card card: table) {
 							System.out.println(card.getDescription());
-						}
+						}*/
 						//If set's valid, remove cards from table
 						//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
 						//replaced it's done realistically, like the 3 cards are literally replaced on the board, the cards aren't shifted
