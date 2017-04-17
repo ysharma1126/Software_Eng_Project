@@ -68,7 +68,7 @@ public class Game {
 	 */
 	
 	public ArrayList <Card> checkSetexists(ArrayList <Card> cards) {
-		System.out.println("Checking if set exists");
+		//System.out.println("Checking if set exists");
 		ArrayList <Card> result = new ArrayList <Card>();
 		if (cards == null) {
 			return result;
