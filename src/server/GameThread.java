@@ -64,7 +64,15 @@ public class GameThread implements Runnable {
 					if (obj instanceof LeaveRoomMessage) {
 						System.out.println("Received LeaveRoomMessage");
 						
-						System.out.println(this.connected_players.size());
+						//Tell all players client leaving
+						LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
+						for(PlayerCom playercom1: this.connected_players) {
+		    				lrr.send(playercom1.output);
+		    			}
+						
+						System.out.println("Sent LeaveRoomResponse");
+						
+						//System.out.println(this.connected_players.size());
 						//If only 1 player in room, if player leaves, close game
 						if (this.connected_players.size() == 1) {
 							this.connected_players.remove(playercom);
@@ -74,14 +82,6 @@ public class GameThread implements Runnable {
 						}
 						playercom.gameToPlayerPipe.put("leave");
 						this.connected_players.remove(playercom);
-						
-						//Tell all players client leaving
-						LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
-						for(PlayerCom playercom1: this.connected_players) {
-		    				lrr.send(playercom1.output);
-		    			}
-						
-						System.out.println("Sent LeaveRoomResponse");
 						
 						//If host leaves room, find another player and set them to be the host
 						if (playercom == host) {
@@ -103,6 +103,12 @@ public class GameThread implements Runnable {
 					else if (obj instanceof PlayerCom){
 						PlayerCom surrendered_player = (PlayerCom) obj;
 						
+						//Tell all players client leaving
+						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
+						for(PlayerCom playercom1: this.connected_players) {
+		    				lrr.send(playercom1.output);
+		    			}
+						
 						//remove player since the socket is already closed
 						connected_players.remove(surrendered_player);
 						//If only 1 player in room, if player leaves, close game
@@ -112,12 +118,6 @@ public class GameThread implements Runnable {
 							return;
 						}
 						this.connected_players.remove(playercom);
-						
-						//Tell all players client leaving
-						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
-						for(PlayerCom playercom1: this.connected_players) {
-		    				lrr.send(playercom1.output);
-		    			}
 						
 						//If host leaves room, find another player and set them to be the host
 						if (surrendered_player == host) {
