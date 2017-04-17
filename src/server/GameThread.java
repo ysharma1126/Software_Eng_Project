@@ -228,6 +228,7 @@ public class GameThread implements Runnable {
 						if (game.getsize(table) < 12 && !deck.isEmpty()) {
 							game.replaceCards(resp.cards, deck, table);
 						}
+						//System.out.println(game.getsize(table));
 						for(Card card: table) {
 							System.out.println(card.getDescription());
 						}

@@ -175,8 +175,8 @@ public class Game {
 			for (Card card1: table) {
 				if(this.equals(card1, card)) {
 					Card temp = deck.remove(deck.size()-1);
-					System.out.println(temp.getDescription());
-					System.out.println(card1.getDescription());
+					//System.out.println(temp.getDescription());
+					//System.out.println(card1.getDescription());
 					table.set(table.indexOf(card1), temp);
 					//table.get(table.indexOf(card1)).color = temp.color;
 					//table.get(table.indexOf(card1)).number = temp.number;
