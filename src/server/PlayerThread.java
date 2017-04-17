@@ -88,115 +88,117 @@ public class PlayerThread implements Runnable {
 	    			if(authenticate_status) {
 	    				//If authenticated, create player object, add to hashmaps, and enter into the check for lobby messages
 	    				player = new Player(resp.username);
-	    				playercom = new PlayerCom(player,clientInput,clientOutput, playerToGamePipe, gameToPlayerPipe);
-		    			
-	    				LoginResponse lr = new LoginResponse(true, player.username);
-	        			lr.send(clientOutput);
-	        			Server.connected_playerInput.put(player, clientInput);
-	        			Server.connected_playerOutput.put(player, clientOutput);
-	        			Server.connected_playerThread.put(player,Thread.currentThread());
-	        			
-	        			while(true) {
-	        				//Once Client gets successful LoginResponse, sends GameUpdateMessage
-	        				//GamesUpdateResponse gives client all necessary data, copied below
-	        				//public Map <Long, Set<Player>> gameusernames;
-	        				//public Map <Long, Player> gamehost;
-	        				//public Set <Player> players;
-	        				obj = (Object) clientInput.readObject();
-	        				if (obj instanceof GamesUpdateMessage) {
-	        					System.out.println("Initial GamesUpdateMessage");
-	        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-	    	        			gur.send(clientOutput);
-	    	        			System.out.println("Initial GamesUpdateResponse");
-	    	        			//Now that client's updated, check for lobby actions
-	    	        			while (true) {
-	    	        				gameStarted = false;
-		        					obj = (Object) clientInput.readObject();
-		        					//if (obj instanceof StatsRequest) {
-		        					//	Stats stat = new Stats(this.getStats());
-		        					//}
-		        					
-		        					//On CreateRoomMessage, start game thread, add to hashmaps. send CreateRoomResponse to all connected players
-		        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
-		        					if (obj instanceof CreateRoomMessage) {
-		        					    System.out.println("Got create room message");
-		        					    GameThread gt = new GameThread(Server.gamesize, playercom);
-		        		    			Thread t = new Thread(gt);
-		        						t.start();
-		        						
-		        		    			System.out.println("Continue Player Thread");
-		        		    			Server.connected_rooms.put(Server.gamesize, gt);
-		        		    			Server.connected_gamethreads.put(Server.gamesize, t);
-		        		    			
-		        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
-		        		    			System.out.println("sent create room response");
-		        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-		        		    				cgr.send(value);
-		        		    			}
-		        		    			Server.gamesize++;
-		        		    			//Once client in game, put this thread to sleep until game finishes
-		        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-		        		    			gameStarted=true;
-		        		    			gameMessageHandler();
-		        		    			
-		        		    			//Once playerthread wakes up, get refreshed
-	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-		        	        			gur1.send(clientOutput);
-		        	        			System.out.println("Refresh Response");
-		        					}
-		        					//On JoinRoomMessage, find gamethread based on gid, add player to hashmaps, send JoinRoomResponse to all connected players
-		        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
-		        					else if (obj instanceof JoinRoomMessage) {
-		        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
-		        						GameThread gt = Server.connected_rooms.get(resp2.gid);
-		        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-		        						gt.addNewPlayer(playercom);
-		        						
-		        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
-		        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-		        		    				jgr.send(value);
-		        		    			}
-		        		    			//Once client in game, put this thread to sleep until game finishes
-		        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-		        		    			gameStarted=true;
-		        		    			gameMessageHandler();
-		        		    			
-		        		    			//Once playerthread wakes up, get refreshed
-	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-		        	        			gur1.send(clientOutput);
-		        	        			System.out.println("Refresh Response");
-		        					}
-		        					//If client wants to logout, terminate connection and end player thread
-		        					//DESIGN DECISION: LogOut option only in lobby, client disconnects need to be handled
-		        					else if (obj instanceof LogOutMessage) {
-		        						this.terminate();
-		        			            return;
-		        					}
-		        					//Manual Refresh Button
-		        					else if (obj instanceof RefreshMessage) {
-		        						System.out.println("Refresh Message");
-		        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-		        	        			gur1.send(clientOutput);
-		        	        			System.out.println("Refresh Response");
-		        					}
-		        					else {
-		        						//Handle request we don't understand
-		        					}
-	    	        	        	/* TODO Removed since no longer using Thread.join()
-	    	        	        	catch (InterruptedException e) {
-	    	        					//When gamethread sends interrupt, land here
-	    	        					System.out.println("Interrupted Player Thread");
-	    	        					// TODO Auto-generated catch block
-	    	        					//Once playerthread interrupted, get refreshed
-	    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-    	        	        			gur1.send(clientOutput);
-    	        	        			System.out.println("Refresh Response");
-	    	        					e.printStackTrace();
-	    	        				}
-	    	        				*/
-	    	        			}
-	        				}
-	        			}
+	    				if (Server.connected_playerInput.get(player) == null) {
+		    				playercom = new PlayerCom(player,clientInput,clientOutput, playerToGamePipe, gameToPlayerPipe);
+			    			
+		    				LoginResponse lr = new LoginResponse(true, player.username);
+		        			lr.send(clientOutput);
+		        			Server.connected_playerInput.put(player, clientInput);
+		        			Server.connected_playerOutput.put(player, clientOutput);
+		        			Server.connected_playerThread.put(player,Thread.currentThread());
+		        			
+		        			while(true) {
+		        				//Once Client gets successful LoginResponse, sends GameUpdateMessage
+		        				//GamesUpdateResponse gives client all necessary data, copied below
+		        				//public Map <Long, Set<Player>> gameusernames;
+		        				//public Map <Long, Player> gamehost;
+		        				//public Set <Player> players;
+		        				obj = (Object) clientInput.readObject();
+		        				if (obj instanceof GamesUpdateMessage) {
+		        					System.out.println("Initial GamesUpdateMessage");
+		        					GamesUpdateResponse gur = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+		    	        			gur.send(clientOutput);
+		    	        			System.out.println("Initial GamesUpdateResponse");
+		    	        			//Now that client's updated, check for lobby actions
+		    	        			while (true) {
+		    	        				gameStarted = false;
+			        					obj = (Object) clientInput.readObject();
+			        					//if (obj instanceof StatsRequest) {
+			        					//	Stats stat = new Stats(this.getStats());
+			        					//}
+			        					
+			        					//On CreateRoomMessage, start game thread, add to hashmaps. send CreateRoomResponse to all connected players
+			        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
+			        					if (obj instanceof CreateRoomMessage) {
+			        					    System.out.println("Got create room message");
+			        					    GameThread gt = new GameThread(Server.gamesize, playercom);
+			        		    			Thread t = new Thread(gt);
+			        						t.start();
+			        						
+			        		    			System.out.println("Continue Player Thread");
+			        		    			Server.connected_rooms.put(Server.gamesize, gt);
+			        		    			Server.connected_gamethreads.put(Server.gamesize, t);
+			        		    			
+			        		    			CreateRoomResponse cgr = new CreateRoomResponse(player, Server.gamesize);
+			        		    			System.out.println("sent create room response");
+			        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+			        		    				cgr.send(value);
+			        		    			}
+			        		    			Server.gamesize++;
+			        		    			//Once client in game, put this thread to sleep until game finishes
+			        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
+			        		    			gameStarted=true;
+			        		    			gameMessageHandler();
+			        		    			
+			        		    			//Once playerthread wakes up, get refreshed
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+			        	        			gur1.send(clientOutput);
+			        	        			System.out.println("Refresh Response");
+			        					}
+			        					//On JoinRoomMessage, find gamethread based on gid, add player to hashmaps, send JoinRoomResponse to all connected players
+			        					//POSSIBLE DEBUG: Unnecessarily sending response to players already in game might overflow buffer
+			        					else if (obj instanceof JoinRoomMessage) {
+			        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
+			        						GameThread gt = Server.connected_rooms.get(resp2.gid);
+			        						Thread t = Server.connected_gamethreads.get(resp2.gid);
+			        						gt.addNewPlayer(playercom);
+			        						
+			        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
+			        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+			        		    				jgr.send(value);
+			        		    			}
+			        		    			//Once client in game, put this thread to sleep until game finishes
+			        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
+			        		    			gameStarted=true;
+			        		    			gameMessageHandler();
+			        		    			
+			        		    			//Once playerthread wakes up, get refreshed
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+			        	        			gur1.send(clientOutput);
+			        	        			System.out.println("Refresh Response");
+			        					}
+			        					//If client wants to logout, terminate connection and end player thread
+			        					//DESIGN DECISION: LogOut option only in lobby, client disconnects need to be handled
+			        					else if (obj instanceof LogOutMessage) {
+			        						this.terminate();
+			        			            return;
+			        					}
+			        					//Manual Refresh Button
+			        					else if (obj instanceof RefreshMessage) {
+			        						System.out.println("Refresh Message");
+			        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+			        	        			gur1.send(clientOutput);
+			        	        			System.out.println("Refresh Response");
+			        					}
+			        					else {
+			        						//Handle request we don't understand
+			        					}
+		    	        	        	/* TODO Removed since no longer using Thread.join()
+		    	        	        	catch (InterruptedException e) {
+		    	        					//When gamethread sends interrupt, land here
+		    	        					System.out.println("Interrupted Player Thread");
+		    	        					// TODO Auto-generated catch block
+		    	        					//Once playerthread interrupted, get refreshed
+		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+	    	        	        			gur1.send(clientOutput);
+	    	        	        			System.out.println("Refresh Response");
+		    	        					e.printStackTrace();
+		    	        				}
+		    	        				*/
+		    	        			}
+		        				}
+		        			}
+	    				}
 	    			}
 	    			//If login fails, just tell client, do nothing
 	    			else {
