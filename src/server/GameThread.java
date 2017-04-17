@@ -317,9 +317,9 @@ public class GameThread implements Runnable {
 		for(PlayerCom playercom: this.connected_players) {
 			this.connected_players.remove(playercom);
 			playercom.gameToPlayerPipe.put("leave");
+			System.out.println("Sent EndGameResponse");
 			eg.send(playercom.output);
 		}
-		System.out.println("Sent EndGameResponse");
 		// make sure we hear a response from ALL players before proceeding
 		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
 		while( responded_players.size() < connected_players.size()){

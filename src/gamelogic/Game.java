@@ -74,35 +74,42 @@ public class Game {
 			return result;
 		}
 		int size = cards.size();
-		boolean holecheck = false;
+		boolean aholecheck = false;
+		boolean bholecheck = false;
+		boolean cholecheck = false;
 		for (int i = 0; i < size; i++){
 			Card a = cards.get(i);
 			if (a.hole) {
-				holecheck = true;
+				aholecheck = true;
 			}
 			for (int j = 0; j < size; j++) {
 				Card b = cards.get(j);
 				if (b.hole) {
-					holecheck = true;
+					bholecheck = true;
 				}
 				for (int k = 0; k < size; k++) {
 					Card c = cards.get(k);
 					if (c.hole) {
-						holecheck = true;
+						cholecheck = true;
 					}
 					ArrayList <Card> temp = new ArrayList <Card>();
                     temp.add(a);
                     temp.add(b);
                     temp.add(c);
-					if (validateSet(temp) && (!holecheck) && (!this.equals(a,b)) && (!this.equals(a,c)) && (!this.equals(b,c))) {
+					if (validateSet(temp) 
+							&& (!aholecheck) && (!bholecheck) && (!cholecheck) 
+							&& (!this.equals(a,b)) && (!this.equals(a,c)) && (!this.equals(b,c))) {
 						for (Card card: temp) {
 							result.add(card);
 						}
 						return result;
 					}
 					temp.clear();
+					cholecheck = false;
 				}
+				bholecheck = false;
 			}
+			aholecheck = false;
 		}
 		return result;
 	}
@@ -139,7 +146,7 @@ public class Game {
 		boolean holechecker = false;
 		int count = 0;
 		for (Card card: table) {
-			if (count != (numcards - 1)) {
+			if (count != numcards) {
 				if (card.hole) {
 					holechecker = true;
 					table.get(table.indexOf(card)).hole = false;
