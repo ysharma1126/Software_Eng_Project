@@ -88,7 +88,15 @@ public class PlayerThread implements Runnable {
 	    			if(authenticate_status) {
 	    				//If authenticated, create player object, add to hashmaps, and enter into the check for lobby messages
 	    				player = new Player(resp.username);
-	    				if (Server.connected_playerInput.get(player) == null) {
+	    				boolean loggedin = false;
+	    				for (Player p: Server.connected_playerInput.keySet()) {
+	    					System.out.println(p.username);
+	    					if (resp.username == p.username) {
+	    						loggedin = true;
+	    						break;
+	    					}
+	    				}
+	    				if (!loggedin) {
 		    				playercom = new PlayerCom(player,clientInput,clientOutput, playerToGamePipe, gameToPlayerPipe);
 			    			
 		    				LoginResponse lr = new LoginResponse(true, player.username);
