@@ -68,6 +68,7 @@ public class Game {
 	 */
 	
 	public ArrayList <Card> checkSetexists(ArrayList <Card> cards) {
+		System.out.println("Checking if set exists");
 		ArrayList <Card> result = new ArrayList <Card>();
 		if (cards == null) {
 			return result;
@@ -131,6 +132,7 @@ public class Game {
 	 *
 	 */
 	public void dealCards(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
+		System.out.println("Dealing Cards");
 		if (deck.isEmpty()) {
 			return;
 		}
@@ -165,6 +167,7 @@ public class Game {
 	 *
 	 */
 	public void replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
+		System.out.println("Replacing Cards");
 		for (Card card: set) {
 			if (deck.isEmpty()) {
 				break;
@@ -172,8 +175,8 @@ public class Game {
 			for (Card card1: table) {
 				if(this.equals(card1, card)) {
 					Card temp = deck.remove(deck.size()-1);
-					System.out.println(temp.toImageFile());
-					System.out.println(card1.toImageFile());
+					System.out.println(temp.getDescription());
+					System.out.println(card1.getDescription());
 					table.set(table.indexOf(card1), temp);
 					//table.get(table.indexOf(card1)).color = temp.color;
 					//table.get(table.indexOf(card1)).number = temp.number;
@@ -195,6 +198,7 @@ public class Game {
 	 *
 	 */
 	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
+		System.out.println("Removing Cards");
 		for (Card card: set) {
 			for (Card card1: table) {
 				if (this.equals(card, card1)) {

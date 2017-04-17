@@ -99,6 +99,13 @@ public class Card implements Serializable{
 			description += "Three";
 			break;
 		}
+		description += "\t";
+		if(hole) {
+			description += "hole";
+		}
+		else {
+			description += "nothole";
+		}
 		return description;
 	}
 	

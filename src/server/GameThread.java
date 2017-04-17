@@ -155,9 +155,10 @@ public class GameThread implements Runnable {
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 			// end game if no players left
 			if (connected_players.size() <= 0){
+				System.out.println("Terminating");
 				this.terminate();
 				return;
-			}
+			}	
 			//No set on table, if there's no set on table, must be at least 3 cards in deck
 			if (game.checkSetexists(table).size() == 0) {
 				System.out.println("No Set on Table");
@@ -174,17 +175,18 @@ public class GameThread implements Runnable {
     			}
 				//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
 				//If the game is live, there should always be a set on the board
+				System.out.println("continue");
 				continue;
 			}
 			ArrayList <Card> temp = new ArrayList <Card>();	
 			//checkSetexists returns set, returns 0 if no set, hence can be used as a check as well
 			//optimizes testing out game, finding a set is hard
-			/*temp = game.checkSetexists(table);
+			temp = game.checkSetexists(table);
 			String answer = "";
 			for (Card card: temp) {
 				answer += card.getDescription() + "|";
 			}
-			System.out.print(answer + "\r");*/
+			System.out.print(answer + "\r");
 			//Check for messages from each player
 			for (PlayerCom playercom: this.connected_players) {
 				Player player = playercom.player;
@@ -205,9 +207,7 @@ public class GameThread implements Runnable {
 						for(PlayerCom playercom1: this.connected_players) {
 							ssr.send(playercom1.output);
 		    			}
-						/*for(Card card: table) {
-							System.out.println(card.getDescription());
-						}*/
+
 						//If set's valid, remove cards from table
 						//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
 						//replaced it's done realistically, like the 3 cards are literally replaced on the board, the cards aren't shifted
@@ -215,17 +215,21 @@ public class GameThread implements Runnable {
 						
 						//To put things short, we put a hole attribute in card, and changed removecard to set hole attribute to true
 						game.removeCards(resp.cards, table);
-						System.out.println("Table Size");
-						//Overloaded size function needed as holes need to be manually not accounted for when calculating number of cards
-						//on table
-						System.out.println(game.getsize(table));
+
 						for(Card card: table) {
 							System.out.println(card.getDescription());
 						}
 						//If less than 12 cards on table and there are cards in the deck, REPLACE the holes. Function takes next 3 cards
 						//in deck and places it in place of the holes
+						System.out.println("Table Size");
+						//Overloaded size function needed as holes need to be manually not accounted for when calculating number of cards
+						//on table
+						System.out.println(game.getsize(table));
 						if (game.getsize(table) < 12 && !deck.isEmpty()) {
 							game.replaceCards(resp.cards, deck, table);
+						}
+						for(Card card: table) {
+							System.out.println(card.getDescription());
 						}
 						ArrayList <Card> table1 = new ArrayList<Card>();
 						for (Card card: table) {
