@@ -91,7 +91,7 @@ public class PlayerThread implements Runnable {
 	    				boolean loggedin = false;
 	    				for (Player p: Server.connected_playerInput.keySet()) {
 	    					System.out.println(p.username);
-	    					if (resp.username == p.username) {
+	    					if (resp.username.equals(p.username)) {
 	    						loggedin = true;
 	    						break;
 	    					}
