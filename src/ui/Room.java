@@ -104,13 +104,17 @@ public class Room extends VBox {
   }
 
   public void handleChangedHostResponse(ChangedHostResponse resp) {
+    System.out.println(user_data.size());
+    System.out.println(resp.currenthost);
     for (UserData u : user_data) {
-      if (u.getName().equals(resp.currenthost)) {
+      System.out.println(u.getNameOnly());
+      if (u.getNameOnly().equals(resp.currenthost)) {
         if (Launcher.username.equals(resp.currenthost)) {
           is_host = true;
           startgame_btn.setVisible(true);
         } 
         u.setHost(true);
+        user_data.set(user_data.indexOf(u), u);
         break;
       }
     }
