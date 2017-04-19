@@ -19,6 +19,7 @@ public class Game {
 	 */
  public ArrayList <Card> createDeck() {
 		ArrayList <Card> cards = new ArrayList <Card> (81);
+		/* TODO: temporarily removed to test endgame
 		for (int shape = 0; shape < 3; shape++) {
 			for (int number = 0; number < 3; number++) {
 				for (int color = 0; color < 3; color++) {
@@ -29,6 +30,21 @@ public class Game {
 				
 			}
 		}
+		*/
+		/* START TEMP CODE */
+		cards.add(new Card(0,0,0,0,false));
+		cards.add(new Card(1,0,0,0,false));
+		cards.add(new Card(2,0,0,0,false));
+		cards.add(new Card(1,1,0,0,false));
+		cards.add(new Card(0,1,0,0,false));
+		cards.add(new Card(0,2,0,0,false));
+		cards.add(new Card(0,1,1,0,false));
+		cards.add(new Card(0,0,1,0,false));
+		cards.add(new Card(0,0,2,0,false));
+		cards.add(new Card(0,0,1,1,false));
+		cards.add(new Card(0,0,1,2,false));
+		cards.add(new Card(0,0,2,2,false));
+		/* END TEMP CODE */
 		Collections.shuffle(cards);
 		return cards;
 	}
