@@ -439,10 +439,10 @@ public class Browser extends VBox {
     content.add(newgame_btn, 0, 2, 1, 1);
 
     // Create refresh button
-    Button refresh_btn = new Button("REFRESH");
+    Button refresh_btn = new Button("\ue5d5");
     //Button refresh_btn = new Button(Character.toString((char) 0xf1b9));
     refresh_btn.getStyleClass().add("btn-refresh");
-    //refresh_btn.setPrefWidth(60);
+    refresh_btn.setPrefWidth(60);
     refresh_btn.setPrefHeight(60);
     content.add(refresh_btn, 2, 2, 1, 1);
     GridPane.setHalignment(refresh_btn, HPos.RIGHT);
@@ -472,12 +472,14 @@ public class Browser extends VBox {
     // Label nbronze = new Label("0");
     //
     // user_wins.getChildren().addAll(ngold, nsilver, nbronze);
-    // userinfo.add(user_avatar, 0, 0, 1, 1);
+    Label user_img = new Label("\ue853");
+    userinfo.add(user_img, 0, 0, 1, 1);
+    user_img.getStyleClass().add("user-icon");
     userinfo.add(user_name, 1, 0, 1, 1);
     // userinfo.add(user_wins, 0, 1, 2, 1);
     userinfo.getStyleClass().add("user");
     content.add(userinfo, 3, 0, 1, 1);
-
+    // ICONS: https://github.com/google/material-design-icons/blob/master/iconfont/codepoints
     // Online Users / chat
     user_tbl.setEditable(false);
     user_tbl.setPrefWidth(230);

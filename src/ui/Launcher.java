@@ -89,6 +89,7 @@ public class Launcher extends Application {
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add(
         "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
+    scene.getStylesheets().add("ui/global.css");
     scene.getStylesheets().add("ui/browser.css");
     primaryStage.setResizable(false);
     primaryStage.setScene(scene);
@@ -117,6 +118,7 @@ public class Launcher extends Application {
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add(
         "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
+    scene.getStylesheets().add("ui/global.css");
     scene.getStylesheets().add("ui/room.css");
     primaryStage.setTitle("SET");
     primaryStage.setResizable(false);
@@ -145,6 +147,7 @@ public class Launcher extends Application {
     scene.getStylesheets().add("https://fonts.googleapis.com/icon?family=Material+Icons");
     scene.getStylesheets().add(
         "https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i");
+    scene.getStylesheets().add("ui/global.css");
     scene.getStylesheets().add("ui/game.css");
     primaryStage.setTitle("SET");
     primaryStage.setResizable(false);

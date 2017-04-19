@@ -26,19 +26,15 @@
 }
 
 .btn-refresh {
-/* 	-fx-font-family: "Material Icons"; */
-/* 	-fx-font-style: normal; */
-	-fx-font-family: "Montserrat";
-	-fx-font-size: 20;
-	-fx-font-weight: bold;
-	-fx-font-style: italic;
+	-fx-font-family: "Material Icons";
+	-fx-font-size: 26;
 	-fx-text-fill: #ffffff;
 	-fx-background-color: #8bc34a;
 	-fx-border-radius: 3;
 	-fx-background-radius: 3;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
 	-fx-opacity: 0.9;
-	-fx-padding: 12 30 12 30;
+	-fx-padding: 0;
 }
 
 .btn-refresh: hover {
@@ -48,6 +44,9 @@
 .tbl-game {
 	-fx-background-color: #424242;
 	-fx-background-insets: 0;
+	-fx-table-cell-border-color: transparent;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
 }
 
 .tbl-game: focused {
@@ -94,13 +93,15 @@
 	-fx-background-color: #424242;
 }
 
+.tbl-game .table-row-cell: focused{
+	-fx-background-color: #424242;
+}
+
 .tbl-game .table-row-cell: hover{
 	-fx-background-color: #607d8b;
 }
 
-.tbl-game .table-row-cell: focused{
-	-fx-background-color: #78909c;
-}
+
 
 .tbl-game > .virtual-flow > .scroll-bar {
 	-fx-background-color: transparent;
@@ -225,9 +226,17 @@
 }
 
 .user .label {
+	-fx-font-size: 28;
+	-fx-font-weight: bold;
 	-fx-text-fill: #ffffff;
 }
 
+.user .label .text {
+	-fx-font-smoothing-type: gray;
+}
+.user-icon {
+	-fx-font-family: "Material Icons";
+}
 .btn-card {
 	-fx-font-family: "sans-serif";
 	-fx-font-weight: 600;
