@@ -1,0 +1,20 @@
+.root {
+	-fx-font-family: "Montserrat";
+}
+
+.text {
+	-fx-font-smoothing-type: gray;
+}
+
+.button {
+	-fx-font-size: 20;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #ffffff;
+	-fx-background-color: #f4511e;
+	-fx-border-radius: 3;
+	-fx-background-radius: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 0.9;
+	-fx-padding: 12 30 12 30;
+}
