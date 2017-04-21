@@ -207,7 +207,7 @@ public class GameThread implements Runnable {
 					table1.add(card);
 				}
 				//Send Updated table to all players currently in game
-				TableResponse tr1 = new TableResponse(table1);
+				TableResponse tr1 = new TableResponse(table);
 				for(PlayerCom playercom: this.connected_players) {
 					tr1.send(playercom.output);
     			}
@@ -224,7 +224,7 @@ public class GameThread implements Runnable {
 			for (Card card: temp) {
 				answer += card.getDescription() + "|";
 			}
-			System.out.print(answer + "\r");
+			//System.out.print(answer + "\r");
 			//Check for messages from each player
 			for (PlayerCom playercom: this.connected_players) {
 				Player player = playercom.player;
@@ -272,7 +272,7 @@ public class GameThread implements Runnable {
 							table1.add(card);
 						}
 						//Send updated table to all players in game
-						TableResponse tr2 = new TableResponse(table1);
+						TableResponse tr2 = new TableResponse(table);
 						for(PlayerCom playercom1: this.connected_players) {
 							tr2.send(playercom1.output);
 		    			}
@@ -353,7 +353,7 @@ public class GameThread implements Runnable {
 		}
 		
 		//Send final table response
-		TableResponse tr2 = new TableResponse(table1);
+		TableResponse tr2 = new TableResponse(table);
 		for(PlayerCom playercom: this.connected_players) {
 			tr2.send(playercom.output);
 		}
