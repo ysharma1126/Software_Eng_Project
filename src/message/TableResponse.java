@@ -4,17 +4,16 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import gamelogic.*;
 
 public class TableResponse implements Sendable, Serializable{
 	
-	public CopyOnWriteArrayList<Card> table1;
+	public ArrayList<Card> table1;
 	public double randomnum;
 	
-	public TableResponse(CopyOnWriteArrayList <Card> t) {
-		this.table1 = new CopyOnWriteArrayList<Card>(t);
+	public TableResponse(ArrayList <Card> t) {
+		this.table1 = t;
 	}
 	
 	public void send(ObjectOutputStream outputstream)
