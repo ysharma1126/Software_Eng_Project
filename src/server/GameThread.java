@@ -68,6 +68,7 @@ public class GameThread implements Runnable {
 						LeaveRoomResponse lrr = new LeaveRoomResponse(playercom.player);
 						for(PlayerCom playercom1: this.connected_players) {
 		    				lrr.send(playercom1.output);
+							playercom1.output.flush();
 		    			}
 						
 						System.out.println("Sent LeaveRoomResponse");
@@ -95,6 +96,7 @@ public class GameThread implements Runnable {
 							ChangedHostResponse chr = new ChangedHostResponse(host.player);
 							for(PlayerCom playercom1: this.connected_players) {
 								chr.send(playercom1.output);
+								playercom1.output.flush();
 			    			}
 						}
 					}
@@ -108,6 +110,7 @@ public class GameThread implements Runnable {
 						for(PlayerCom playercom1: this.connected_players) {
 							if (!surrendered_player.player.username.equals(playercom1.player.username))
 								lrr.send(playercom1.output);
+								playercom1.output.flush();
 		    			}
 						
 						//remove player since the socket is already closed
@@ -132,6 +135,7 @@ public class GameThread implements Runnable {
 							ChangedHostResponse chr = new ChangedHostResponse(host.player);
 							for(PlayerCom playercom1: this.connected_players) {
 								chr.send(playercom1.output);
+								playercom1.output.flush();
 			    			}
 						}
 					}
@@ -183,6 +187,7 @@ public class GameThread implements Runnable {
 					check++;
 					InitialCardsResponse icr = new InitialCardsResponse(table);
 					icr.send(playercom.output);
+					playercom.output.flush();
 					System.out.println("Sent Initial Cards Response");
 				}
 			}
@@ -210,6 +215,7 @@ public class GameThread implements Runnable {
 				TableResponse tr1 = new TableResponse(table);
 				for(PlayerCom playercom: this.connected_players) {
 					tr1.send(playercom.output);
+					playercom.output.flush();
     			}
 				//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
 				//If the game is live, there should always be a set on the board
@@ -244,6 +250,7 @@ public class GameThread implements Runnable {
 						SetSelectResponse ssr = new SetSelectResponse(player, true);
 						for(PlayerCom playercom1: this.connected_players) {
 							ssr.send(playercom1.output);
+							playercom1.output.flush();
 		    			}
 
 						//If set's valid, remove cards from table
@@ -275,6 +282,7 @@ public class GameThread implements Runnable {
 						TableResponse tr2 = new TableResponse(table);
 						for(PlayerCom playercom1: this.connected_players) {
 							tr2.send(playercom1.output);
+							playercom1.output.flush();
 		    			}
 		    			
 					}
@@ -286,6 +294,7 @@ public class GameThread implements Runnable {
 							ssr.send(entry1.getValue());
 		    			}*/
 						ssr.send(playercom.output);
+						playercom.output.flush();
 					}
 				}
 				//Users also have option to leave game midway, surrender
@@ -307,6 +316,7 @@ public class GameThread implements Runnable {
 					LeaveGameResponse lgr = new LeaveGameResponse(player);
 					for(PlayerCom playercom1: this.connected_players) {
 						lgr.send(playercom1.output);
+						playercom1.output.flush();
 	    			}
 				}
 				// receive PlayerCom when a player has disconnected
@@ -332,6 +342,7 @@ public class GameThread implements Runnable {
 					LeaveGameResponse lgr = new LeaveGameResponse(surrendered_player.player);
 					for(PlayerCom playercom1: this.connected_players) {
 						lgr.send(playercom1.output);
+						playercom1.output.flush();
 	    			}
 				}
 			}
@@ -356,6 +367,7 @@ public class GameThread implements Runnable {
 		TableResponse tr2 = new TableResponse(table);
 		for(PlayerCom playercom: this.connected_players) {
 			tr2.send(playercom.output);
+			playercom.output.flush();
 		}
 		
 		//Send EndGameResponse to all players in game
@@ -365,6 +377,7 @@ public class GameThread implements Runnable {
 			playercom.gameToPlayerPipe.put("leave");
 			System.out.println("Sent EndGameResponse");
 			eg.send(playercom.output);
+			playercom.output.flush();
 		}
 		// make sure we hear a response from ALL players before proceeding
 		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
