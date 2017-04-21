@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Game class, functions needed to control the Set game
@@ -83,7 +84,7 @@ public class Game {
 	 *
 	 */
 	
-	public ArrayList <Card> checkSetexists(ArrayList <Card> cards) {
+	public ArrayList <Card> checkSetexists(CopyOnWriteArrayList <Card> cards) {
 		//System.out.println("Checking if set exists");
 		ArrayList <Card> result = new ArrayList <Card>();
 		if (cards == null) {
@@ -137,7 +138,7 @@ public class Game {
 	 * @param	numcards	Number of cards to be dealt
 	 *
 	 */
-	public void initTable(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
+	public void initTable(ArrayList <Card> deck, CopyOnWriteArrayList <Card> table, int numcards) {
 		for (int i = 0; i < numcards; i++) {
 			if (deck.isEmpty()) {
 				break;
@@ -154,7 +155,7 @@ public class Game {
 	 * @param	numcards	Number of cards to be dealt
 	 *
 	 */
-	public void dealCards(ArrayList <Card> deck, ArrayList <Card> table, int numcards) {
+	public void dealCards(ArrayList <Card> deck, CopyOnWriteArrayList <Card> table, int numcards) {
 		System.out.println("Dealing Cards");
 		if (deck.isEmpty()) {
 			return;
@@ -189,7 +190,7 @@ public class Game {
 	 * @param	numcards	Number of cards to be dealt
 	 *
 	 */
-	public void replaceCards(ArrayList <Card> set, ArrayList <Card> deck, ArrayList <Card> table) {
+	public void replaceCards(ArrayList <Card> set, ArrayList <Card> deck, CopyOnWriteArrayList <Card> table) {
 		System.out.println("Replacing Cards");
 		for (Card card: set) {
 			if (deck.isEmpty()) {
@@ -220,7 +221,7 @@ public class Game {
 	 * @param	table	The cards currently on the table
 	 *
 	 */
-	public void removeCards(ArrayList <Card> set, ArrayList <Card> table) {
+	public void removeCards(ArrayList <Card> set, CopyOnWriteArrayList <Card> table) {
 		System.out.println("Removing Cards");
 		for (Card card: set) {
 			for (Card card1: table) {
@@ -241,7 +242,7 @@ public class Game {
 		p.setcount++;
 	}
 	
-	public int getsize(ArrayList <Card> table) {
+	public int getsize(CopyOnWriteArrayList <Card> table) {
 		int size = 0;
 		for (Card card: table) {
 			if (!card.hole) {

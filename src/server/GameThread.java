@@ -164,7 +164,7 @@ public class GameThread implements Runnable {
 		//Game Logic
 		Game game = new Game();
 		ArrayList <Card> deck = game.createDeck();
-		ArrayList <Card> table = new ArrayList <Card>();
+		CopyOnWriteArrayList <Card> table = new CopyOnWriteArrayList <Card>();
 		game.initTable(deck, table, 12);
 		System.out.println("Setup Table");
 		//Game only starts when server receives initialcardsmessages from each of the players in the game
