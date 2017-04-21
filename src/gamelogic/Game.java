@@ -226,7 +226,6 @@ public class Game {
 			for (Card card1: table) {
 				if (this.equals(card, card1)) {
 					table.get(table.indexOf(card1)).hole = true;
-					table.get(table.indexOf(card1)).hole_test = 1;
 				}
 			}
 		}

@@ -15,7 +15,6 @@ public class Card implements Serializable{
 	public int shading;
 	public boolean hole;
 	public double randomnum;
-	public int hole_test;
 	/**
 	 * Initializes a card
 	 * @author		ysharma1126
@@ -37,7 +36,6 @@ public class Card implements Serializable{
 		color = col;
 		shading = shde;
 		hole = hle;
-		hole_test = 0;
 	}
 	
 	public String toImageFile()
@@ -108,8 +106,6 @@ public class Card implements Serializable{
 		else {
 			description += "nothole";
 		}
-		description += "\t";
-		description += "hole_test: " + hole_test;
 		return description;
 	}
 	
