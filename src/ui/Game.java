@@ -90,7 +90,6 @@ public class Game extends BorderPane {
     center_pane.getChildren().clear();
 
     for (Card card : t_resp.table1) {
-      System.out.println(card.getDescription());
       if (card.hole == false) {
         Button setCard = new Button();
         setCard.getStyleClass().add("card");

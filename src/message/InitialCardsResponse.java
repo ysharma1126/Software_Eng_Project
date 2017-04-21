@@ -4,15 +4,14 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import gamelogic.*;
 
 public class InitialCardsResponse implements Sendable, Serializable{
 	
-	public CopyOnWriteArrayList<Card> table;
+	public ArrayList<Card> table;
 	
-	public InitialCardsResponse(CopyOnWriteArrayList <Card> t) {
+	public InitialCardsResponse(ArrayList <Card> t) {
 		this.table = t;
 	}
 	
