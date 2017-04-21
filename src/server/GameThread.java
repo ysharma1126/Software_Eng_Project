@@ -1,17 +1,9 @@
 package server;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import gamelogic.*;
@@ -201,14 +193,11 @@ public class GameThread implements Runnable {
 			if (game.checkSetexists(table).size() == 0) {
 				System.out.println("No Set on Table");
 				game.dealCards(deck, table, 3);
-				//This is just because sending table to client didn't work, dumb solution after hours of frustration, don't question it
-				ArrayList <Card> table1 = new ArrayList <Card>();
-				for (Card card: table) {
-					table1.add(card);
-				}
+
 				//Send Updated table to all players currently in game
-				TableResponse tr1 = new TableResponse(table1);
+				TableResponse tr1 = new TableResponse(table);
 				for(PlayerCom playercom: this.connected_players) {
+					playercom.output.reset();
 					tr1.send(playercom.output);
     			}
 				//Check again if the game needs to continue, and if so, if 3 more cards need to be dealt to the table
@@ -267,13 +256,11 @@ public class GameThread implements Runnable {
 							game.replaceCards(resp.cards, deck, table);
 						}
 						//System.out.println(game.getsize(table));
-						ArrayList <Card> table1 = new ArrayList<Card>();
-						for (Card card: table) {
-							table1.add(card);
-						}
+
 						//Send updated table to all players in game
-						TableResponse tr2 = new TableResponse(table1);
+						TableResponse tr2 = new TableResponse(table);
 						for(PlayerCom playercom1: this.connected_players) {
+							playercom1.output.reset();
 							tr2.send(playercom1.output);
 		    			}
 		    			
@@ -346,15 +333,11 @@ public class GameThread implements Runnable {
 			}
 		}
 		System.out.println("Everyone's in readObject state");
-		//resolves not being able to send original table 
-		ArrayList <Card> table1 = new ArrayList<Card>();
-		for (Card card: table) {
-			table1.add(card);
-		}
-		
+
 		//Send final table response
-		TableResponse tr2 = new TableResponse(table1);
+		TableResponse tr2 = new TableResponse(table);
 		for(PlayerCom playercom: this.connected_players) {
+			playercom.output.reset();
 			tr2.send(playercom.output);
 		}
 		
