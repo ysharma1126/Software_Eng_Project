@@ -107,11 +107,11 @@ public class GameThread implements Runnable {
 						//Server.connected_playerOutput.remove(surrendered_player);
 						//If only 1 player in room, if player leaves, close game
 						if (this.connected_players.size() == 1) {
-							this.connected_players.remove(playercom);
+							this.connected_players.remove(surrendered_player);
 							this.terminate();
 							return;
 						}
-						this.connected_players.remove(playercom);
+						this.connected_players.remove(surrendered_player);
 						
 						//If host leaves room, find another player and set them to be the host
 						if (surrendered_player == host) {
