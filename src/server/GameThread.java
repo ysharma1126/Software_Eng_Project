@@ -287,14 +287,15 @@ public class GameThread implements Runnable {
 						playercom.gameToPlayerPipe.put("leave");
 						return;
 					}
-					this.connected_players.remove(playercom);
-					playercom.gameToPlayerPipe.put("leave");
 					
 					//Tell all players client has left game
 					LeaveGameResponse lgr = new LeaveGameResponse(player);
 					for(PlayerCom playercom1: this.connected_players) {
 						lgr.send(playercom1.output);
 	    			}
+					
+					this.connected_players.remove(playercom);
+					playercom.gameToPlayerPipe.put("leave");
 				}
 				// receive PlayerCom when a player has disconnected
 				// similar to leavegameMessage

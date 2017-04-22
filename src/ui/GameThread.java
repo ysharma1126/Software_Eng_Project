@@ -104,7 +104,7 @@ public class GameThread implements Runnable {
       //grid.getChildren().clear();
       
       System.out.println(resp.randomnum);
-      for (Card card : resp.table)
+      for (Card card : resp.table1)
       {
         if (card.hole == false)
         {
