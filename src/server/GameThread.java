@@ -344,8 +344,6 @@ public class GameThread implements Runnable {
 		//Send EndGameResponse to all players in game
 		EndGameResponse eg = new EndGameResponse();
 		for(PlayerCom playercom: this.connected_players) {
-			this.connected_players.remove(playercom);
-			playercom.gameToPlayerPipe.put("leave");
 			System.out.println("Sent EndGameResponse");
 			eg.send(playercom.output);
 		}
