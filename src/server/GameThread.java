@@ -357,13 +357,16 @@ public class GameThread implements Runnable {
 			}
 		}
 		System.out.println("Heard Response from all players");
+		
+		//Terminate game - early so that players show up in lobby
+		this.terminate();
+		
 		//tell all players to leave
 		for (PlayerCom playercom: this.connected_players) {
 			playercom.gameToPlayerPipe.put("leave");
+			playercom.player.setcount=0; // reset setcount so it's 0 for any new game
 		}
 		System.out.println("All players told to leave");
-		//Terminate and end game thread
-		this.terminate();
 		System.out.println("Terminated");
 		//Push Stats to DB
 		return;
