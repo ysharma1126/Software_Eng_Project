@@ -31,7 +31,7 @@ public class GameThread implements Runnable {
      */
     public GameThread(long id, PlayerCom playercom) throws IOException {
     	gid = id;
-        connected_players = new CopyOnWriteArrayList<PlayerCom>();
+        this.connected_players = new CopyOnWriteArrayList<PlayerCom>();
         addNewPlayer(playercom);
         host = playercom;
     }
@@ -185,7 +185,7 @@ public class GameThread implements Runnable {
 		//Game only ends when deck is empty and no set exists on the table
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 			// end game if no players left
-			if (connected_players.size() <= 0){
+			if (this.connected_players.size() <= 0){
 				System.out.println("Terminating");
 				this.terminate();
 				return;
@@ -304,16 +304,13 @@ public class GameThread implements Runnable {
 				else if (obj instanceof PlayerCom){
 					PlayerCom surrendered_player = (PlayerCom) obj;
 					
-					//remove player since the socket is already closed
-					connected_players.remove(surrendered_player);
-					
 					//If only 1 player in game, if player leaves, close game
 					if (this.connected_players.size() == 1) {
-						this.connected_players.remove(playercom);
+						this.connected_players.remove(surrendered_player);
 						this.terminate();
 						return;
 					}
-					this.connected_players.remove(playercom);
+					this.connected_players.remove(surrendered_player);
 
 					//Set setcount to -1, punishment for raging
 					surrendered_player.player.setcount = -1;
@@ -352,7 +349,7 @@ public class GameThread implements Runnable {
 		}
 		// make sure we hear a response from ALL players before proceeding
 		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
-		while( responded_players.size() < connected_players.size()){
+		while( responded_players.size() < this.connected_players.size()){
 			for(PlayerCom playercom: this.connected_players){
 				if (playercom.playerToGamePipe.peek() != null){
 					responded_players.add(playercom);
@@ -382,7 +379,7 @@ public class GameThread implements Runnable {
     }
 	
 	public void addNewPlayer(PlayerCom playercom){
-        connected_players.add(playercom);
+        this.connected_players.add(playercom);
 	}
 	
 }
