@@ -103,7 +103,8 @@ public class GameThread implements Runnable {
 		    			}
 						
 						//remove player since the socket is already closed
-						connected_players.remove(surrendered_player);
+				    	//Server.connected_playerInput.remove(surrendered_player);
+						//Server.connected_playerOutput.remove(surrendered_player);
 						//If only 1 player in room, if player leaves, close game
 						if (this.connected_players.size() == 1) {
 							this.connected_players.remove(playercom);
