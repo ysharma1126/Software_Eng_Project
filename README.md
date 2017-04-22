@@ -17,10 +17,6 @@ If host leaves, host changes, as seen in lobby, but room doesn't (well sometimes
 
 (Maybe not necessary, check with sable) Make client threaded, to remove refresh button. Continuously clicking it is kinda cancer. Not necessary, but if easy do so. (CLIENT)
 
-On table response, holes (cards with attribute hole=true) do not disappear (CLIENT) (BIG PROBLEMOOOO)
-
-On endgame, setselectmessage (or any message) needs to be sent to server for server to send endgameresponse, all players told to leave, gamethread to be terminated, and refresh response sent to all clients (SERVER) (Shalin, check your endgame code, it doesn't make sense)
-
 Refresh response sent, but need to click back to lobby to get back. Lobby isn't actually refreshed, you have to click refresh again for lobby to refresh and shit to work (CLIENT)
 
 Client disconnect is handled for in lobby, but not in room. (SERVER/CLIENT)
