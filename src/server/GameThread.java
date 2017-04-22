@@ -280,6 +280,12 @@ public class GameThread implements Runnable {
 					//Set setcount to -1, punishment for raging
 					player.setcount = -1;
 					
+					//Tell all players client has left game
+					LeaveGameResponse lgr = new LeaveGameResponse(player);
+					for(PlayerCom playercom1: this.connected_players) {
+						lgr.send(playercom1.output);
+	    			}
+					
 					//If only 1 player in game, if player leaves, close game
 					if (this.connected_players.size() == 1) {
 						this.connected_players.remove(playercom);
@@ -288,11 +294,6 @@ public class GameThread implements Runnable {
 						return;
 					}
 					
-					//Tell all players client has left game
-					LeaveGameResponse lgr = new LeaveGameResponse(player);
-					for(PlayerCom playercom1: this.connected_players) {
-						lgr.send(playercom1.output);
-	    			}
 					
 					this.connected_players.remove(playercom);
 					playercom.gameToPlayerPipe.put("leave");
