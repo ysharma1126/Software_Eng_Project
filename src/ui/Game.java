@@ -144,17 +144,21 @@ public class Game extends BorderPane {
   public void handleLeaveGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveGameResponse resp) {
     
-    if (resp.uname == Launcher.username)
+	System.out.println("Response uname: " + resp.uname);
+	System.out.println("Launcher uname: " + Launcher.username);
+    if (resp.uname.equals(Launcher.username))
     {
-      center_pane.getChildren().clear();
-      Button go_back = new Button("Back to Lobby");
-      go_back.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent e) {
-          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-        }
-      });
-      center_pane.add(go_back, 0, 0); 
+    	System.out.println("It's the same");
+//      center_pane.getChildren().clear();
+//      Button go_back = new Button("Back to Lobby");
+//      go_back.setOnAction(new EventHandler<ActionEvent>() {
+//        @Override
+//        public void handle(ActionEvent e) {
+//          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//        }
+//      });
+//      center_pane.add(go_back, 0, 0);
+        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     }
     //username_to_score_field.get(resp.uname).setText("Surrendered");
     ((Label) username_to_score_field.get(resp.uname).getRight())
@@ -163,15 +167,16 @@ public class Game extends BorderPane {
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, EndGameResponse resp) {
-    center_pane.getChildren().clear();
-    Button go_back = new Button("Back to Lobby");
-    go_back.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent e) {
-        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-      }
-    });
-    center_pane.add(go_back, 0, 0);
+//    center_pane.getChildren().clear();
+//    Button go_back = new Button("Back to Lobby");
+//    go_back.setOnAction(new EventHandler<ActionEvent>() {
+//      @Override
+//      public void handle(ActionEvent e) {
+//        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//      }
+//    });
+//    center_pane.add(go_back, 0, 0);
+    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     EndGameMessage e_msg = new EndGameMessage();
     e_msg.send(outToServer);
   }
