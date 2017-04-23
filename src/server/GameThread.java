@@ -94,24 +94,24 @@ public class GameThread implements Runnable {
 					// similar to leavegameMessage
 					else if (obj instanceof PlayerCom){
 						PlayerCom surrendered_player = (PlayerCom) obj;
-						
-						//Tell all players client leaving
-						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
-						for(PlayerCom playercom1: this.connected_players) {
-							if (!surrendered_player.player.username.equals(playercom1.player.username))
-								lrr.send(playercom1.output);
-		    			}
-						
+
 						//remove player since the socket is already closed
 				    	//Server.connected_playerInput.remove(surrendered_player);
 						//Server.connected_playerOutput.remove(surrendered_player);
 						//If only 1 player in room, if player leaves, close game
 						if (this.connected_players.size() == 1) {
+							System.out.println("Only one player in room, closing GameThread");
 							this.connected_players.remove(surrendered_player);
 							this.terminate();
 							return;
 						}
 						this.connected_players.remove(surrendered_player);
+						
+						//Tell all players client leaving
+						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
+						for(PlayerCom playercom1: this.connected_players) {
+							lrr.send(playercom1.output);
+		    			}
 						
 						//If host leaves room, find another player and set them to be the host
 						if (surrendered_player == host) {
@@ -119,7 +119,6 @@ public class GameThread implements Runnable {
 								host = playercom1;
 								break;
 							}
-							
 							
 							//Send ChangedHostResponse, telling all clients who the new host is
 							ChangedHostResponse chr = new ChangedHostResponse(host.player);
