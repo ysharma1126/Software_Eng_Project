@@ -210,7 +210,7 @@ public class PlayerThread implements Runnable {
 	    			}
 	    			//If login fails, just tell client, do nothing
 	    			else {
-	    				LoginResponse lr = new LoginResponse(false, player.username);
+	    				LoginResponse lr = new LoginResponse(false, resp.username);
 	        			lr.send(clientOutput);
 	    			}
 	    				
