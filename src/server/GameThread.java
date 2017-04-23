@@ -94,7 +94,12 @@ public class GameThread implements Runnable {
 					// similar to leavegameMessage
 					else if (obj instanceof PlayerCom){
 						PlayerCom surrendered_player = (PlayerCom) obj;
-
+	    				
+						// print players still connected to server
+						for (Player p: Server.connected_playerInput.keySet()) {
+	    					System.out.println(p.username);
+	    				}
+						
 						//remove player since the socket is already closed
 				    	//Server.connected_playerInput.remove(surrendered_player);
 						//Server.connected_playerOutput.remove(surrendered_player);
