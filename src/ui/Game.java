@@ -64,7 +64,7 @@ public class Game extends BorderPane {
     } else {
       String username = resp.username;
       System.out.println(resp.username + " Got a set correct");
-      if (username == Launcher.username) {
+      if (username.equals(Launcher.username)) {
         set_correct.setText("Correct!");
       }
       ((Label) username_to_score_field.get(resp.username).getRight())
