@@ -31,7 +31,7 @@ public class GameThread implements Runnable {
      */
     public GameThread(long id, PlayerCom playercom) throws IOException {
     	gid = id;
-        connected_players = new CopyOnWriteArrayList<PlayerCom>();
+        this.connected_players = new CopyOnWriteArrayList<PlayerCom>();
         addNewPlayer(playercom);
         host = playercom;
     }
@@ -94,23 +94,29 @@ public class GameThread implements Runnable {
 					// similar to leavegameMessage
 					else if (obj instanceof PlayerCom){
 						PlayerCom surrendered_player = (PlayerCom) obj;
+	    				
+						// print players still connected to server
+						for (Player p: Server.connected_playerInput.keySet()) {
+	    					System.out.println(p.username);
+	    				}
+						
+						//remove player since the socket is already closed
+				    	//Server.connected_playerInput.remove(surrendered_player);
+						//Server.connected_playerOutput.remove(surrendered_player);
+						//If only 1 player in room, if player leaves, close game
+						if (this.connected_players.size() == 1) {
+							System.out.println("Only one player in room, closing GameThread");
+							this.connected_players.remove(surrendered_player);
+							this.terminate();
+							return;
+						}
+						this.connected_players.remove(surrendered_player);
 						
 						//Tell all players client leaving
 						LeaveRoomResponse lrr = new LeaveRoomResponse(surrendered_player.player);
 						for(PlayerCom playercom1: this.connected_players) {
-							if (!surrendered_player.player.username.equals(playercom1.player.username))
-								lrr.send(playercom1.output);
+							lrr.send(playercom1.output);
 		    			}
-						
-						//remove player since the socket is already closed
-						connected_players.remove(surrendered_player);
-						//If only 1 player in room, if player leaves, close game
-						if (this.connected_players.size() == 1) {
-							this.connected_players.remove(playercom);
-							this.terminate();
-							return;
-						}
-						this.connected_players.remove(playercom);
 						
 						//If host leaves room, find another player and set them to be the host
 						if (surrendered_player == host) {
@@ -118,7 +124,6 @@ public class GameThread implements Runnable {
 								host = playercom1;
 								break;
 							}
-							
 							
 							//Send ChangedHostResponse, telling all clients who the new host is
 							ChangedHostResponse chr = new ChangedHostResponse(host.player);
@@ -184,7 +189,7 @@ public class GameThread implements Runnable {
 		//Game only ends when deck is empty and no set exists on the table
 		while(!deck.isEmpty() || (game.checkSetexists(table).size() > 0)) {
 			// end game if no players left
-			if (connected_players.size() <= 0){
+			if (this.connected_players.size() <= 0){
 				System.out.println("Terminating");
 				this.terminate();
 				return;
@@ -280,6 +285,12 @@ public class GameThread implements Runnable {
 					//Set setcount to -1, punishment for raging
 					player.setcount = -1;
 					
+					//Tell all players client has left game
+					LeaveGameResponse lgr = new LeaveGameResponse(player);
+					for(PlayerCom playercom1: this.connected_players) {
+						lgr.send(playercom1.output);
+	    			}
+					
 					//If only 1 player in game, if player leaves, close game
 					if (this.connected_players.size() == 1) {
 						this.connected_players.remove(playercom);
@@ -287,30 +298,23 @@ public class GameThread implements Runnable {
 						playercom.gameToPlayerPipe.put("leave");
 						return;
 					}
+					
+					
 					this.connected_players.remove(playercom);
 					playercom.gameToPlayerPipe.put("leave");
-					
-					//Tell all players client has left game
-					LeaveGameResponse lgr = new LeaveGameResponse(player);
-					for(PlayerCom playercom1: this.connected_players) {
-						lgr.send(playercom1.output);
-	    			}
 				}
 				// receive PlayerCom when a player has disconnected
 				// similar to leavegameMessage
 				else if (obj instanceof PlayerCom){
 					PlayerCom surrendered_player = (PlayerCom) obj;
 					
-					//remove player since the socket is already closed
-					connected_players.remove(surrendered_player);
-					
 					//If only 1 player in game, if player leaves, close game
 					if (this.connected_players.size() == 1) {
-						this.connected_players.remove(playercom);
+						this.connected_players.remove(surrendered_player);
 						this.terminate();
 						return;
 					}
-					this.connected_players.remove(playercom);
+					this.connected_players.remove(surrendered_player);
 
 					//Set setcount to -1, punishment for raging
 					surrendered_player.player.setcount = -1;
@@ -349,7 +353,7 @@ public class GameThread implements Runnable {
 		}
 		// make sure we hear a response from ALL players before proceeding
 		HashSet<PlayerCom> responded_players = new HashSet<PlayerCom>();
-		while( responded_players.size() < connected_players.size()){
+		while( responded_players.size() < this.connected_players.size()){
 			for(PlayerCom playercom: this.connected_players){
 				if (playercom.playerToGamePipe.peek() != null){
 					responded_players.add(playercom);
@@ -379,7 +383,7 @@ public class GameThread implements Runnable {
     }
 	
 	public void addNewPlayer(PlayerCom playercom){
-        connected_players.add(playercom);
+        this.connected_players.add(playercom);
 	}
 	
 }

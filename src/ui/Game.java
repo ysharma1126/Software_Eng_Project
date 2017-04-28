@@ -146,9 +146,9 @@ public class Game extends BorderPane {
   public void handleLeaveGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveGameResponse resp) {
     
-    System.out.println("Got leave game response");
-    
-    if (resp.uname == Launcher.username)
+	System.out.println("Response uname: " + resp.uname);
+	System.out.println("Launcher uname: " + Launcher.username);
+    if (resp.uname.equals(Launcher.username))
     {
 //      center_pane.getChildren().clear();
 //      Button go_back = new Button("Back to Lobby");
