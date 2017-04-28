@@ -305,8 +305,8 @@ public class Game extends BorderPane {
     scoreboard_wrapper.getStyleClass().add("scoreboard-wrapper");
     scoreboard_wrapper.getChildren().add(scoreboard_title);
     scoreboard_wrapper.getChildren().add(scoreboard_body);
-    scoreboard_title.setPrefWidth(240);
-    scoreboard_body.setPrefWidth(240);
+    scoreboard_title.setPrefWidth(200);
+    scoreboard_body.setPrefWidth(200);
     scoreboard_title.getStyleClass().add("scoreboard-title");
     scoreboard_body.getStyleClass().add("scoreboard-body");
     
@@ -318,6 +318,7 @@ public class Game extends BorderPane {
 
     center_pane = new GridPane();
     center_pane.setGridLinesVisible(false);
+    center_pane.getStyleClass().add("gameboard");
     center_pane.setAlignment(Pos.CENTER);
     //center_pane.setHgap(30);
     //center_pane.setVgap(20);

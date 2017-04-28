@@ -66,10 +66,10 @@
 	-fx-border-radius: 10;
 	-fx-background-radius: 10;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
-	-fx-opacity: 0.9;
-	-fx-padding: 60 40 60 40;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
+	-fx-opacity: 1;
+	-fx-padding: 55 35 55 35;
+    -fx-border-insets: 15px;
+    -fx-background-insets: 15px;
 }
 
 .card: hover {
@@ -77,6 +77,16 @@
 }
 .card-selected {
 	-fx-background-color: #fff8e1;
+}
+
+.gameboard {
+	-fx-background-color: #d7ccc8;
+	-fx-border-radius: 10;
+	-fx-background-radius: 10;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
+	-fx-opacity: 1;
+	-fx-border-insets: 20px;
+    -fx-background-insets: 20px;
 }
 
 
