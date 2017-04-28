@@ -207,6 +207,11 @@ public class PlayerThread implements Runnable {
 		        				}
 		        			}
 	    				}
+	    				// If login works, but someone with that name is logged in
+	    				else {
+		    				LoginResponse lr = new LoginResponse(false, resp.username);
+		        			lr.send(clientOutput);
+	    				}
 	    			}
 	    			//If login fails, just tell client, do nothing
 	    			else {
@@ -230,8 +235,11 @@ public class PlayerThread implements Runnable {
 				return;
 	    	}
 			catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			    if (e instanceof SQLIntegrityConstraintViolationException) {
+    				SignUpResponse sr = new SignUpResponse(false, "false");
+    				System.out.println("Sending sign up response invalid");
+        			sr.send(clientOutput);
+			    }
 			}
     	}
     }
