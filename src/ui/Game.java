@@ -80,7 +80,8 @@ public class Game extends BorderPane {
   }
 
   public void handleTableResponse(TableResponse t_resp) {
-    System.out.println("RESP num: " + t_resp.randomnum);
+    //System.out.println("RESP num: " + t_resp.randomnum);
+    System.out.println("Received table response");
     int colindex = 0;
     int rowindex = 0;
 
@@ -90,13 +91,14 @@ public class Game extends BorderPane {
     center_pane.getChildren().clear();
 
     for (Card card : t_resp.table1) {
+      System.out.println(card.getDescription());
       if (card.hole == false) {
         Button setCard = new Button();
         setCard.getStyleClass().add("card");
         String imagesrc = card.toImageFile();
         imagesrc = "ui/resources/images/cards/" + imagesrc;
         // System.out.println(imagesrc);
-        System.out.println(card.randomnum);
+        //System.out.println(card.randomnum);
         Image image = new Image(imagesrc);
         setCard.setGraphic(new ImageView(image));
         //ImagePattern imagePattern = new ImageView(image);
@@ -144,34 +146,40 @@ public class Game extends BorderPane {
   public void handleLeaveGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LeaveGameResponse resp) {
     
+    System.out.println("Got leave game response");
+    
     if (resp.uname == Launcher.username)
     {
-      center_pane.getChildren().clear();
-      Button go_back = new Button("Back to Lobby");
-      go_back.setOnAction(new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent e) {
-          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-        }
-      });
-      center_pane.add(go_back, 0, 0); 
+//      center_pane.getChildren().clear();
+//      Button go_back = new Button("Back to Lobby");
+//      go_back.setOnAction(new EventHandler<ActionEvent>() {
+//        @Override
+//        public void handle(ActionEvent e) {
+//          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//        }
+//      });
+//      center_pane.add(go_back, 0, 0);
+      Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     }
-    //username_to_score_field.get(resp.uname).setText("Surrendered");
-    ((Label) username_to_score_field.get(resp.uname).getRight())
-    .setText("SURRENDERED");
+    else {
+      //username_to_score_field.get(resp.uname).setText("Surrendered");
+      ((Label) username_to_score_field.get(resp.uname).getRight())
+      .setText("SURRENDERED");
+    }
   }
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, EndGameResponse resp) {
-    center_pane.getChildren().clear();
-    Button go_back = new Button("Back to Lobby");
-    go_back.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent e) {
-        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-      }
-    });
-    center_pane.add(go_back, 0, 0);
+//    center_pane.getChildren().clear();
+//    Button go_back = new Button("Back to Lobby");
+//    go_back.setOnAction(new EventHandler<ActionEvent>() {
+//      @Override
+//      public void handle(ActionEvent e) {
+//        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+//      }
+//    });
+//    center_pane.add(go_back, 0, 0);
+    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     EndGameMessage e_msg = new EndGameMessage();
     e_msg.send(outToServer);
   }
