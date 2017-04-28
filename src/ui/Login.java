@@ -43,7 +43,7 @@ import java.util.ArrayList;
  */
 public class Login extends GridPane {
   
-  private Text action_target = null;
+  private Label action_target = null;
   
   public void handleLoginResponse (Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, LoginResponse resp) {
@@ -54,6 +54,7 @@ public class Login extends GridPane {
     }
     else
     {
+      this.action_target.getStyleClass().add("failure");
       this.action_target.setText("Wrong username or password");
     }
   }
@@ -61,11 +62,13 @@ public class Login extends GridPane {
   public void handleSignUpResponse (SignUpResponse resp) {
     if (resp.is_valid)
     {
-     this.action_target.setText("Signed up"); 
+     this.action_target.getStyleClass().add("success");
+     this.action_target.setText("Signed up succesfully!");
     }
     else
     {
-      this.action_target.setText("Already a user with that username");
+      this.action_target.getStyleClass().add("failure");
+      this.action_target.setText("Username taken.");
     }
   }
   
@@ -76,6 +79,7 @@ public class Login extends GridPane {
     this.setVgap(10);
     this.setPadding(new Insets(25, 25, 25, 25));
     this.getStyleClass().add("login");
+    
     
     Label scenetitle = new Label("SET");
     GridPane.setHalignment(scenetitle, HPos.CENTER);
@@ -114,9 +118,11 @@ public class Login extends GridPane {
     this.add(hbBtn, 1, 4);
     //this.setthisLinesVisible(true);
       
-    action_target = new Text();
+    action_target = new Label();
     action_target.setId("actiontarget");
-    this.add(action_target, 1, 6);
+    this.action_target.getStyleClass().add("message");
+    GridPane.setHalignment(action_target, HPos.CENTER);
+    this.add(action_target, 0, 6, 2, 1);
       
     sign_up_btn.setOnAction(new EventHandler<ActionEvent>(){
       @Override
@@ -182,7 +188,7 @@ public class Login extends GridPane {
     this.add(hbBtn, 1, 4);
     //this.setthisLinesVisible(true);
       
-    Text actiontarget = new Text();
+    Label actiontarget = new Label();
     actiontarget.setId("actiontarget");
     this.add(actiontarget, 1, 6);
     

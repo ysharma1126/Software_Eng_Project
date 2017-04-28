@@ -8,6 +8,7 @@
 	-fx-background-color: #efebe9;
 }
 
+
 .title {
 	-fx-font-size: 84;
 	-fx-font-weight: bold;
@@ -64,4 +65,18 @@
 
 .btn-signin: hover {
 	-fx-background-color: #26a69a;
+}
+.message {
+	-fx-font-size: 14;
+	-fx-font-weight: bold;
+	-fx-font-style: italic;
+	-fx-text-fill: #37474f;
+}
+
+.success {
+	-fx-text-fill: #43a047;
+}
+
+.failure {
+	-fx-text-fill: #e53935;
 }
