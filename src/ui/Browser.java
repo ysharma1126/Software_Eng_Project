@@ -59,7 +59,6 @@ import message.TableResponse;
 
 public class Browser extends VBox {
 
-  private MenuBar menubar;
   private GridPane content;
   private Task task;
   private Map<Long, Set<Player>> gameplayers;
@@ -352,11 +351,14 @@ public class Browser extends VBox {
       public void handle(MouseEvent event) {
         // System.out.println("clicked on " +
         // game_tbl.getSelectionModel().getSelectedItem().game_id.get());
+        GamesUpdateMessage refresh = new GamesUpdateMessage();
+        refresh.send(outToServer);
         JoinRoomMessage msg = new JoinRoomMessage(Launcher.username,
             game_tbl.getSelectionModel().getSelectedItem().game_id.get());
         System.out.println("clicked on: " + Launcher.username + " " +
             game_tbl.getSelectionModel().getSelectedItem().game_id.get());
         msg.send(outToServer);
+
         // join_room(primaryStage, outToServer, inFromServer,
         // game_tbl.getSelectionModel().getSelectedItem().game_id.get());
       }
