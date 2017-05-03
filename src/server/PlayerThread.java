@@ -194,6 +194,12 @@ public class PlayerThread implements Runnable {
 			        	        			gur1.send(clientOutput);
 			        	        			System.out.println("Refresh Response");
 			        					}
+			        					else if (obj instanceof GamesUpdateMessage) {
+			        						System.out.println("Refresh Message");
+			        						GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+			        	        			gur1.send(clientOutput);
+			        	        			System.out.println("Refresh Response");
+			        					}
 			        					else {
 			        						//Handle request we don't understand
 			        					}
