@@ -485,7 +485,7 @@ public class Browser extends VBox {
     userinfo.setPrefHeight(120);
     userinfo.setHgap(10);
     userinfo.setVgap(10);
-    userinfo.setPadding(new Insets(0, 20, 0, 20));
+    userinfo.setPadding(new Insets(0, 10, 0, 10));
 
     // ImageView user_avatar = new ImageView();
     Label user_name = new Label(Launcher.username);
@@ -497,7 +497,7 @@ public class Browser extends VBox {
     //
     // user_wins.getChildren().addAll(ngold, nsilver, nbronze);
     Label user_img = new Label("\ue853");
-    user_img.setMinWidth(40);
+    user_img.setMinWidth(24);
     userinfo.add(user_img, 0, 0, 1, 1);
     user_img.getStyleClass().add("user-icon");
     userinfo.add(user_name, 1, 0, 1, 1);

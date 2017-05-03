@@ -166,7 +166,7 @@ public class Game extends BorderPane {
       ((Label) username_to_score_field.get(resp.uname).getRight())
       .getStyleClass().add("surrendered");
       ((Label) username_to_score_field.get(resp.uname).getRight())
-      .setText("\ue5cd");
+      .setText("X");
     }
   }
 

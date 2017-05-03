@@ -235,7 +235,7 @@
 	-fx-font-smoothing-type: gray;
 }
 .user-icon {
-	-fx-font-family: "Material Icons";
+	-fx-padding: none;
 }
 .btn-card {
 	-fx-font-family: "sans-serif";
@@ -258,7 +258,7 @@
 	-fx-background-color: #303030;
 }
 
-.modal label {
+.modal .label {
 	-fx-font-size: 16;
 	-fx-text-fill: #ffffff;
 }
