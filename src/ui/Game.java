@@ -292,7 +292,6 @@ public class Game extends BorderPane {
       BorderPane scoreboard_entry = new BorderPane();
       Label username = new Label(user);
       Label score = new Label("0");
-      
       scoreboard_entry.setLeft(username);
       scoreboard_entry.setRight(score);
       //Text text = new Text(user);

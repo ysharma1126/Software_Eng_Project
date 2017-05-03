@@ -53,7 +53,10 @@ public class Game {
 	 * x@return		boolean representing whether the card trio is a set
 	 *
 	 */
-	public boolean validateSet(ArrayList <Card> set) {
+	public boolean validateSet(ArrayList <Card> set, ArrayList <Card> table) {
+		if(!table.contains(set.get(0)) || !table.contains(set.get(1)) || !table.contains(set.get(2))){
+			return false;
+		}
 		if (!((set.get(0).shape == set.get(1).shape) && (set.get(1).shape == set.get(2).shape) ||
                 (set.get(0).shape != set.get(1).shape) && (set.get(0).shape != set.get(2).shape) && (set.get(1).shape != set.get(2).shape))) {
             return false;
@@ -110,7 +113,7 @@ public class Game {
                     temp.add(a);
                     temp.add(b);
                     temp.add(c);
-					if (validateSet(temp) 
+					if (validateSet(temp, cards) 
 							&& (!aholecheck) && (!bholecheck) && (!cholecheck) 
 							&& (!this.equals(a,b)) && (!this.equals(a,c)) && (!this.equals(b,c))) {
 						for (Card card: temp) {

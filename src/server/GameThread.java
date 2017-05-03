@@ -231,7 +231,7 @@ public class GameThread implements Runnable {
 					System.out.println("Received a set");
 					SetSelectMessage resp = (SetSelectMessage) obj;
 					//If set's valid, update set count, send to all players in SetSelectResponse
-					if(game.validateSet(resp.cards)) {
+					if(game.validateSet(resp.cards, table)) {
 						System.out.println("Set's valid!");
 						game.updateSetcount(player);
 						

@@ -253,3 +253,9 @@
 
 .btn-menu {
 }
+
+.modal {
+	-fx-background-color: #303030;
+	-fx-font-size: 16;
+	-fx-text-fill: #ffffff;
+}

@@ -40,6 +40,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import message.CreateRoomMessage;
@@ -101,8 +102,24 @@ public class Browser extends VBox {
   public void handleJoinRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, JoinRoomResponse resp) {
     if (resp.uname.equals(Launcher.username)) {
-      System.out.println("Joining room owned by " + gameowners.get(resp.gid));
-      Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
+      if (resp.is_valid) {
+        System.out.println("Joining room owned by " + gameowners.get(resp.gid));
+        Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
+      } else {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initOwner(primaryStage);
+        Label message = new Label("Can't join game, already started.");
+        message.getStyleClass().add("modal");
+        Scene dialogScene = new Scene(message, 300, 200);
+        
+        dialog.setScene(dialogScene);
+        dialog.show();
+        
+        GamesUpdateMessage refresh = new GamesUpdateMessage();
+        refresh.send(outToServer);
+        
+      }
     } 
   }
 
@@ -115,6 +132,7 @@ public class Browser extends VBox {
     if (resp.uname.equals(Launcher.username)) {
       //task.cancel();
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
+      
     }
   }
 
