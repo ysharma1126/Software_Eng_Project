@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.ArrayList;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 
@@ -74,6 +75,8 @@ public class Browser extends VBox {
   public void handleGamesUpdateResponse(GamesUpdateResponse resp) {
     gameplayers = resp.gameusernames;
     gameowners = resp.gamehost;
+
+    
     System.out.println(resp.gamehost.size());
     System.out.println(System.identityHashCode(gameowners));
     System.out.println(System.identityHashCode(resp.gamehost));
@@ -122,6 +125,8 @@ public class Browser extends VBox {
         dialog.setScene(dialogScene);
         dialog.show();
         
+        GamesUpdateMessage init = new GamesUpdateMessage();
+        init.send(outToServer);
         
       }
     } 
@@ -129,10 +134,7 @@ public class Browser extends VBox {
 
   public void handleCreateRoomResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, CreateRoomResponse resp) {
-    System.out.println("Created Room");
-    System.out.println(resp.gid);
-    System.out.println(resp.uname);
-    System.out.println(Launcher.username);
+    
     if (resp.uname.equals(Launcher.username)) {
       //task.cancel();
       Launcher.openRoom(primaryStage, outToServer, inFromServer, resp.gid, gameowners.get(resp.gid), gameplayers.get(resp.gid));
@@ -366,6 +368,7 @@ public class Browser extends VBox {
     // Get game rooms from server before opening browser
     GamesUpdateMessage init = new GamesUpdateMessage();
     init.send(outToServer);
+    System.out.println("Sent  games update message");
     this.getStyleClass().add("browser");
     
     game_tbl.setOnMouseClicked(new EventHandler<MouseEvent>() {
