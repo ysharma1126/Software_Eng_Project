@@ -307,6 +307,8 @@ public class Game extends BorderPane {
     scoreboard_wrapper.getChildren().add(scoreboard_body);
     scoreboard_title.setPrefWidth(200);
     scoreboard_body.setPrefWidth(200);
+    scoreboard_title.setMaxWidth(200);
+    scoreboard_body.setMaxWidth(200);
     scoreboard_title.getStyleClass().add("scoreboard-title");
     scoreboard_body.getStyleClass().add("scoreboard-body");
     
