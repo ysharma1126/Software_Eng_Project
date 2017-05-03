@@ -27,6 +27,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -109,18 +110,18 @@ public class Browser extends VBox {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(primaryStage);
-        Label message = new Label("Can't join game, already started.");
+        Label message = new Label("Game no longer exists.");
+        VBox modal = new VBox();
+        modal.getChildren().add(message);
         
-        message.getStyleClass().add("modal");
-        
-        Scene dialogScene = new Scene(message, 300, 200);
+        Scene dialogScene = new Scene(modal, 300, 150);
         dialogScene.getStylesheets().add("ui/global.css");
-        
+        dialogScene.getStylesheets().add("ui/browser.css");
+        message.getStyleClass().add("modal");
+        modal.setAlignment(Pos.CENTER);
         dialog.setScene(dialogScene);
         dialog.show();
         
-        GamesUpdateMessage refresh = new GamesUpdateMessage();
-        refresh.send(outToServer);
         
       }
     } 
@@ -496,9 +497,11 @@ public class Browser extends VBox {
     //
     // user_wins.getChildren().addAll(ngold, nsilver, nbronze);
     Label user_img = new Label("\ue853");
+    user_img.setMinWidth(40);
     userinfo.add(user_img, 0, 0, 1, 1);
     user_img.getStyleClass().add("user-icon");
     userinfo.add(user_name, 1, 0, 1, 1);
+    user_name.setMaxWidth(160);
     // userinfo.add(user_wins, 0, 1, 2, 1);
     userinfo.getStyleClass().add("user");
     content.add(userinfo, 3, 0, 1, 1);

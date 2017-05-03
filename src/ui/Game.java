@@ -164,7 +164,9 @@ public class Game extends BorderPane {
     else {
       //username_to_score_field.get(resp.uname).setText("Surrendered");
       ((Label) username_to_score_field.get(resp.uname).getRight())
-      .setText("SURRENDERED");
+      .getStyleClass().add("surrendered");
+      ((Label) username_to_score_field.get(resp.uname).getRight())
+      .setText("\ue5cd");
     }
   }
 
@@ -291,6 +293,7 @@ public class Game extends BorderPane {
     for (String user : users) {
       BorderPane scoreboard_entry = new BorderPane();
       Label username = new Label(user);
+      username.setMaxWidth(160);
       Label score = new Label("0");
       scoreboard_entry.setLeft(username);
       scoreboard_entry.setRight(score);

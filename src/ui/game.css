@@ -118,3 +118,8 @@
 	-fx-font-family: "Montserrat";
 	-fx-text-fill: #ffffff;
 }
+
+.surrendered {
+	-fx-text-fill: #e53935;
+	-fx-font-family: "Material Icons";
+}
