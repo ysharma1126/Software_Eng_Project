@@ -44,7 +44,7 @@ public class GamesUpdateResponse implements Sendable, Serializable {
   {
 	//System.out.println(this.gamehost.size());
     try {
-      outputstream.writeObject(this);
+      outputstream.writeUnshared(this);
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
