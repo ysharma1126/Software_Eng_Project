@@ -226,7 +226,7 @@
 }
 
 .user .label {
-	-fx-font-size: 28;
+	-fx-font-size: 24;
 	-fx-font-weight: bold;
 	-fx-text-fill: #ffffff;
 }
@@ -256,6 +256,9 @@
 
 .modal {
 	-fx-background-color: #303030;
+}
+
+.modal label {
 	-fx-font-size: 16;
 	-fx-text-fill: #ffffff;
 }

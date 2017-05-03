@@ -117,7 +117,7 @@ public class Browser extends VBox {
         Scene dialogScene = new Scene(modal, 300, 150);
         dialogScene.getStylesheets().add("ui/global.css");
         dialogScene.getStylesheets().add("ui/browser.css");
-        message.getStyleClass().add("modal");
+        modal.getStyleClass().add("modal");
         modal.setAlignment(Pos.CENTER);
         dialog.setScene(dialogScene);
         dialog.show();
@@ -485,7 +485,7 @@ public class Browser extends VBox {
     userinfo.setPrefHeight(120);
     userinfo.setHgap(10);
     userinfo.setVgap(10);
-    userinfo.setPadding(new Insets(0, 10, 0, 10));
+    userinfo.setPadding(new Insets(0, 20, 0, 20));
 
     // ImageView user_avatar = new ImageView();
     Label user_name = new Label(Launcher.username);
