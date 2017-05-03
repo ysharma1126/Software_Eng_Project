@@ -16,7 +16,7 @@ public class StartGameResponse implements Sendable, Serializable{
 	public void send(ObjectOutputStream outputstream)
 	  {
 	    try {
-	      outputstream.writeObject(this);
+	      outputstream.writeUnshared(this);
 	    } catch (IOException e) {
 	      // TODO Auto-generated catch block
 	      e.printStackTrace();

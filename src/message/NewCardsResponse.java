@@ -26,7 +26,7 @@ public class NewCardsResponse implements Sendable, Serializable{
 		}
 		System.out.println("New Cards" + this.randomnum);
 	    try {
-	      outputstream.writeObject(this);
+	      outputstream.writeUnshared(this);
 	    } catch (IOException e) {
 	      // TODO Auto-generated catch block
 	      e.printStackTrace();
