@@ -384,6 +384,7 @@ public class GameThread implements Runnable {
     }
 	
 	public void addNewPlayer(PlayerCom playercom){
+		playercom.player.setcount=0;
         this.connected_players.add(playercom);
 	}
 	
