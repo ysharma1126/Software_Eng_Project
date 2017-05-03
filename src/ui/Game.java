@@ -164,7 +164,7 @@ public class Game extends BorderPane {
     else {
       //username_to_score_field.get(resp.uname).setText("Surrendered");
       ((Label) username_to_score_field.get(resp.uname).getRight())
-      .setText("SURRENDERED");
+      .setText("");
     }
   }
 
