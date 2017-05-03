@@ -9,10 +9,12 @@ public class JoinRoomResponse implements Sendable, Serializable{
 	
 	public String uname;
 	public Long gid;
+	public boolean is_valid;
 	
-	public JoinRoomResponse(Player p, Long id) {
+	public JoinRoomResponse(Player p, Long id, boolean is_v) {
 		uname = p.username;
 		gid = id;
+		is_valid = is_v;
 	}
 	
 	public void send(ObjectOutputStream outputstream)

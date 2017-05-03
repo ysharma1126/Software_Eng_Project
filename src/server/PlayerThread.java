@@ -158,22 +158,30 @@ public class PlayerThread implements Runnable {
 			        					else if (obj instanceof JoinRoomMessage) {
 			        						JoinRoomMessage resp2 = (JoinRoomMessage) obj;
 			        						GameThread gt = Server.connected_rooms.get(resp2.gid);
-			        						Thread t = Server.connected_gamethreads.get(resp2.gid);
-			        						gt.addNewPlayer(playercom);
-			        						
-			        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid);
-			        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-			        		    				jgr.send(value);
-			        		    			}
-			        		    			//Once client in game, put this thread to sleep until game finishes
-			        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
-			        		    			gameStarted=true;
-			        		    			gameMessageHandler();
-			        		    			
-			        		    			//Once playerthread wakes up, get refreshed
-		    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
-			        	        			gur1.send(clientOutput);
-			        	        			System.out.println("Refresh Response");
+			        						if (gt != null) {
+				        						Thread t = Server.connected_gamethreads.get(resp2.gid);
+				        						gt.addNewPlayer(playercom);
+				        						
+				        						JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid, true);
+				        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+				        		    				jgr.send(value);
+				        		    			}
+				        		    			//Once client in game, put this thread to sleep until game finishes
+				        		    			//If client leaves game, interrupt sent, which is caught in interruptedexception
+				        		    			gameStarted=true;
+				        		    			gameMessageHandler();
+				        		    			
+				        		    			//Once playerthread wakes up, get refreshed
+			    	        					GamesUpdateResponse gur1 = new GamesUpdateResponse(Server.connected_rooms, Server.connected_playerInput);
+				        	        			gur1.send(clientOutput);
+				        	        			System.out.println("Refresh Response");
+			        						}
+			        						else {
+			        							JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid, false);
+				        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
+				        		    				jgr.send(value);
+				        		    			}
+			        						}
 			        					}
 			        					//If client wants to logout, terminate connection and end player thread
 			        					//DESIGN DECISION: LogOut option only in lobby, client disconnects need to be handled
