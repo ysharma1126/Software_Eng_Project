@@ -238,7 +238,8 @@ public class GameThread implements Runnable {
 						SetSelectResponse ssr = new SetSelectResponse(player, true);
 						for(PlayerCom playercom1: this.connected_players) {
 							ssr.send(playercom1.output);
-		    			}
+							System.out.println("Set count:" + playercom1.player.username + "\t" + playercom1.player.setcount);
+						}
 
 						//If set's valid, remove cards from table
 						//In order to make board configuration intuitive, we had to figure out how to make it so that if the set gets
