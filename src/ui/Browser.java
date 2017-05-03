@@ -110,8 +110,11 @@ public class Browser extends VBox {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(primaryStage);
         Label message = new Label("Can't join game, already started.");
+        
         message.getStyleClass().add("modal");
+        
         Scene dialogScene = new Scene(message, 300, 200);
+        dialogScene.getStylesheets().add("ui/global.css");
         
         dialog.setScene(dialogScene);
         dialog.show();
