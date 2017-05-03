@@ -52,6 +52,7 @@
 .tbl-game: focused {
 	-fx-background-color: #424242;
 	-fx-background-insets: 0;
+	-fx-table-cell-border-color: transparent;
 }
 
 .tbl-game .filler {
@@ -235,6 +236,7 @@
 	-fx-font-smoothing-type: gray;
 }
 .user-icon {
+	-fx-font-family: "Material Icons";
 	-fx-padding: none;
 }
 .btn-card {
