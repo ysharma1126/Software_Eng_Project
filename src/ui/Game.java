@@ -150,16 +150,16 @@ public class Game extends BorderPane {
 	System.out.println("Launcher uname: " + Launcher.username);
     if (resp.uname.equals(Launcher.username))
     {
-//      center_pane.getChildren().clear();
-//      Button go_back = new Button("Back to Lobby");
-//      go_back.setOnAction(new EventHandler<ActionEvent>() {
-//        @Override
-//        public void handle(ActionEvent e) {
-//          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-//        }
-//      });
-//      center_pane.add(go_back, 0, 0);
-      Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+      center_pane.getChildren().clear();
+      Button go_back = new Button("Back to Lobby");
+      go_back.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent e) {
+          Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+        }
+      });
+      center_pane.add(go_back, 0, 0);
+      //Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     }
     else {
       //username_to_score_field.get(resp.uname).setText("Surrendered");
@@ -172,16 +172,16 @@ public class Game extends BorderPane {
 
   public void handleEndGameResponse(Stage primaryStage, ObjectOutputStream outToServer,
       ObjectInputStream inFromServer, EndGameResponse resp) {
-//    center_pane.getChildren().clear();
-//    Button go_back = new Button("Back to Lobby");
-//    go_back.setOnAction(new EventHandler<ActionEvent>() {
-//      @Override
-//      public void handle(ActionEvent e) {
-//        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
-//      }
-//    });
-//    center_pane.add(go_back, 0, 0);
-    Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+    center_pane.getChildren().clear();
+    Button go_back = new Button("Back to Lobby");
+    go_back.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent e) {
+        Launcher.openBrowser(primaryStage, outToServer, inFromServer);
+      }
+    });
+    center_pane.add(go_back, 0, 0);
+    //Launcher.openBrowser(primaryStage, outToServer, inFromServer);
     EndGameMessage e_msg = new EndGameMessage();
     e_msg.send(outToServer);
   }
