@@ -2,7 +2,9 @@ package gamelogic;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Game class, functions needed to control the Set game
@@ -54,16 +56,15 @@ public class Game {
 	 *
 	 */
 	public boolean validateSet(ArrayList <Card> set, ArrayList <Card> table) {
-		if(!table.contains(set.get(0)) || !table.contains(set.get(1)) || !table.contains(set.get(2))){
-			System.out.println("Set not inside table!");
-			System.out.println("--Table:");
-			for(Card c: table){
-				System.out.println(c.getDescription());
+		Set<Card> checkInTable = new HashSet<Card>(3);
+		for(Card set_card: set){
+			for(Card table_card: table){
+				if (this.equals(set_card, table_card)){
+					checkInTable.add(set_card);
+				}
 			}
-			System.out.println("--Submitted set:");
-			for(Card c: set){
-				System.out.println(c.getDescription());
-			}
+		}
+		if(checkInTable.size() != 3){
 			return false;
 		}
 		if (!((set.get(0).shape == set.get(1).shape) && (set.get(1).shape == set.get(2).shape) ||
