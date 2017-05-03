@@ -81,8 +81,8 @@
 
 .gameboard {
 	-fx-background-color: #d7ccc8;
-	-fx-border-radius: 10;
-	-fx-background-radius: 10;
+	-fx-border-radius: 5;
+	-fx-background-radius: 5;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.4) , 5, 0.0 , 0 , 1 );
 	-fx-opacity: 1;
 	-fx-border-insets: 20px;
