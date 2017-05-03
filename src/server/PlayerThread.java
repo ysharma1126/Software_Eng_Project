@@ -178,9 +178,7 @@ public class PlayerThread implements Runnable {
 			        						}
 			        						else {
 			        							JoinRoomResponse jgr = new JoinRoomResponse(player, resp2.gid, false);
-				        		    			for(ObjectOutputStream value : Server.connected_playerOutput.values()) {
-				        		    				jgr.send(value);
-				        		    			}
+			        		    				jgr.send(Server.connected_playerOutput.get(player));
 			        						}
 			        					}
 			        					//If client wants to logout, terminate connection and end player thread
