@@ -218,7 +218,7 @@ public class GameThread implements Runnable {
 			for (Card card: temp) {
 				answer += card.getDescription() + "|";
 			}
-			System.out.print(answer + "\r");
+			//System.out.print(answer + "\r");
 			//Check for messages from each player
 			for (PlayerCom playercom: this.connected_players) {
 				Player player = playercom.player;

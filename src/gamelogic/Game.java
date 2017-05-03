@@ -55,6 +55,15 @@ public class Game {
 	 */
 	public boolean validateSet(ArrayList <Card> set, ArrayList <Card> table) {
 		if(!table.contains(set.get(0)) || !table.contains(set.get(1)) || !table.contains(set.get(2))){
+			System.out.println("Set not inside table!");
+			System.out.println("--Table:");
+			for(Card c: table){
+				System.out.println(c.getDescription());
+			}
+			System.out.println("--Submitted set:");
+			for(Card c: set){
+				System.out.println(c.getDescription());
+			}
 			return false;
 		}
 		if (!((set.get(0).shape == set.get(1).shape) && (set.get(1).shape == set.get(2).shape) ||
